@@ -17,3 +17,4 @@ References
 [3]: http://www.php-fig.org/psr/psr-2 "PSR-2"
 [4]: http://www.php-fig.org/psr/psr-3 "PSR-3"
 [5]: http://www.php-fig.org/psr/psr-4 "PSR-4"
+[6]: https://github.com/phpDocumentor/fig-standards/blob/master/proposed/phpdoc.md "PSR-5 (Proposed)"
