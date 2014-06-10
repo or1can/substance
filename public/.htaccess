@@ -34,3 +34,21 @@ DirectoryIndex index.php
   php_flag session.use_strict_mode on
   php_flag session.use_trans_sid off
 </IfModule>
+
+# Rewrite rules
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+
+  # If rewrite rules are not working properly, set the appropriate base URL for
+  # RewriteRule's. For example, if your site is hosted at http://example.com/
+  # then set the following:
+  # RewriteBase /
+  #
+  # else if hosted in a subdirectory http://www.example.com/substance then set
+  # the following
+  # RewriteBase /substance
+
+  RewriteCond ${REQUEST_FILENAME} !-f
+  RewriteCond ${REQUEST_FILENAME} !-d
+  RewriteRule ^ index.php [L]
+</IfModule>
