@@ -15,19 +15,19 @@ DirectoryIndex index.php
 
 # Force sane defaults for PHP
 <IfModule mod_php5.c>
-  php_flag default_charset "UTF-8"
+  php_value default_charset "UTF-8"
   php_flag magic_quotes_gpc off
   php_flag magic_quotes_runtime off
   php_flag magic_quotes_sybase off
-  php_flag mbstring.encoding_translation "UTF-8"
-  php_flag mbstring.internal_encoding "UTF-8"
-  php_flag mbstring.http_input "UTF-8"
-  php_flag mbstring.http_output "UTF-8"
-#  php_flag mbstring.script_encoding "UTF-8"
-#  php_flag zend.script_encoding "UTF-8"
+  php_value mbstring.encoding_translation "UTF-8"
+  php_value mbstring.internal_encoding "UTF-8"
+  php_value mbstring.http_input "UTF-8"
+  php_value mbstring.http_output "UTF-8"
+#  php_value mbstring.script_encoding "UTF-8"
+#  php_value zend.script_encoding "UTF-8"
   php_flag register_globals off
   php_flag session.auto_start off
-  php_flag session.cache_limiter ""
+#  php_value session.cache_limiter ""
   php_flag session.cookie_httponly on
   php_flag session.use_cookies on
   php_flag session.use_only_cookies on
@@ -48,7 +48,7 @@ DirectoryIndex index.php
   # the following
   # RewriteBase /substance
 
-  RewriteCond ${REQUEST_FILENAME} !-f
-  RewriteCond ${REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^ index.php [L]
 </IfModule>
