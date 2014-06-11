@@ -39,6 +39,9 @@ DirectoryIndex index.php
 <IfModule mod_rewrite.c>
   RewriteEngine on
 
+  # Block hidden directories, e.g. .svn or .git
+  RewriteRule (^|/)\. - [F,L]
+
   # If rewrite rules are not working properly, set the appropriate base URL for
   # RewriteRule's. For example, if your site is hosted at http://example.com/
   # then set the following:
