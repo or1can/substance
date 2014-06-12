@@ -9,6 +9,15 @@ framework can do and as a driver for the development of the framework.
 The framework is based on carefully chosen standards (which ideally *would
 not* include PHP as a base!).
 
+Installation
+============
+
+We use composer (https://getcomposer.org) to manage our dependencies, so
+installation is pretty simple.
+
+1. Run `./bin/bootstrap.sh` to fetch composer and install the required
+   dependencies.
+
 Development
 ===========
 
@@ -16,7 +25,7 @@ We use Vagrant to allow us to easily check substance against our supported
 platforms. Currently, we have a single platform, Centos 6.5, Apache 2.2 and
 PHP 5.3. Install Vagrant and from the project root type:
 
-vagrant up
+    vagrant up
 
 to get you up and running. If you are running a system that already has Apache
 2.2 and PHP 5.3, set up a virtual host with your document root pointing at the

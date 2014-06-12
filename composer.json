@@ -1,0 +1,17 @@
+{
+  "name": "Substance",
+  "license": "GPL-3.0",
+  "type": "project",
+  "description": "Substance - a content management system and application framework",
+  "autoload": {
+    "PSR-4": {
+    }
+  },
+  "require": {
+    "php": ">=5.3.3",
+    "filp/whoops": "~1.1.0"
+  },
+  "config": {
+    "bin-dir": "bin"
+  }
+}
