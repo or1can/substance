@@ -19,3 +19,26 @@
 /**
  * Substance Front Controller.
  */
+
+// Report all errors.
+error_reporting(E_ALL | E_STRICT);
+
+require '../vendor/autoload.php';
+
+use Substance\Modules\Configuration\Config;
+use Whoops\Run;
+use Whoops\Handler\PrettyPageHandler;
+
+$run = new Run;
+$handler = new PrettyPageHandler;
+
+$run->pushHandler( $handler );
+$run->register();
+
+$config = new Config();
+
+var_dump( $config );
+
+// throw new Exception("foo");
+
+echo "hello\n";
