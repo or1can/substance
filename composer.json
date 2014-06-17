@@ -4,12 +4,23 @@
   "type": "project",
   "description": "Substance - a content management system and application framework",
   "autoload": {
-    "PSR-4": {
+    "psr-4": {
+      "Substance\\": "public/Substance/"
     }
   },
   "require": {
     "php": ">=5.3.3",
-    "filp/whoops": "~1.1.0"
+    "filp/whoops": "~1.1.0",
+    "monolog/monolog": "~1.10.0",
+    "mockery/mockery": "~0.9.1",
+    "leafo/lessphp": "v0.4.0",
+    "twig/twig": "v1.15.1",
+    "twig/extensions": "v1.0.1",
+    "frameworks/jquery": "~2.1.1",
+    "davedevelopment/phpmig": "v1.0.0",
+    "pimple/pimple": "v1.1.1",
+    "j4mie/paris": "v1.4.2",
+    "j4mie/idiorm": "v1.4.1"
   },
   "config": {
     "bin-dir": "bin"
