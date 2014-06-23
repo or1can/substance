@@ -9,7 +9,7 @@
     }
   },
   "require": {
-    "php": ">=5.3.3",
+    "php": ">=5.3.7",
     "filp/whoops": "~1.1.0",
     "monolog/monolog": "~1.10.0",
     "mockery/mockery": "~0.9.1",
@@ -17,10 +17,10 @@
     "twig/twig": "v1.15.1",
     "twig/extensions": "v1.0.1",
     "frameworks/jquery": "~2.1.1",
-    "davedevelopment/phpmig": "v1.0.0",
     "pimple/pimple": "v1.1.1",
     "j4mie/paris": "v1.4.2",
-    "j4mie/idiorm": "v1.4.1"
+    "j4mie/idiorm": "v1.4.1",
+    "ircmaxell/password-compat": "~1.0.3"
   },
   "config": {
     "bin-dir": "bin"
