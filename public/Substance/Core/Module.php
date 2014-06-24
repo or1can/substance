@@ -24,6 +24,35 @@ namespace Substance\Core;
 abstract class Module {
 
   /**
+   * Finds all available modules for the current site.
+   *
+   * @return array an array of module files.
+   */
+  public static function findModules() {
+    static $search_dirs = array(
+      'Substance/Modules',
+      'Sites/All/Modules',
+    );
+
+    $modules = array();
+
+    foreach ( $search_dirs as $dir ) {
+      $candidates = glob( $dir . '/*/*.module' );
+      switch ( count( $candidates ) > 1 ) {
+        case 1:
+          $modules[] = $candidates[ 0 ];
+        case 0:
+          break;
+        default:
+          // FIXME - Only one *.module file allowed per "module".
+          break;
+      }
+    }
+
+    return $modules;
+  }
+
+  /**
    * Checks the run-time requirements for this module.
    */
   public static function requirements() {}
