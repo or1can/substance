@@ -28,6 +28,7 @@ require '../vendor/autoload.php';
 use Substance\Modules\Configuration\Config;
 use Whoops\Run;
 use Whoops\Handler\PrettyPageHandler;
+use Substance\Core\Module;
 
 $run = new Run;
 $handler = new PrettyPageHandler;
@@ -42,3 +43,5 @@ var_dump( $config );
 // throw new Exception("foo");
 
 echo "hello\n";
+
+var_dump( Module::findModules() );
