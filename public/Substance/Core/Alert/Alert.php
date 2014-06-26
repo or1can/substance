@@ -135,7 +135,7 @@ class Alert extends \Exception {
    * @see Exception::__toString()
    */
   public function __toString() {
-    return parent::__toString();
+    return $this->getMessage() . PHP_EOL . $this->getInfo();
   }
 
 }
