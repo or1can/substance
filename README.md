@@ -9,6 +9,13 @@ framework can do and as a driver for the development of the framework.
 The framework is based on carefully chosen standards (which ideally *would
 not* include PHP as a base!).
 
+Requirements
+============
+
+* PHP 5.3.7+ (except Redhat/CentOS where 5.3.3+)
+* mb_string extension
+* composer
+
 Installation
 ============
 
