@@ -57,7 +57,7 @@ class Alert extends \Exception {
    * @param number $code the alert code.
    * @param string $previous the previous exception in the chain.
    */
-  public function __construct( $message = '', $explanation = '', $code = 0, $previous = NULL ) {
+  public function __construct( $message, $explanation = '', $code = 0, $previous = NULL ) {
     parent::__construct( $message, $code, $previous );
     $this->explanation = $explanation;
   }
