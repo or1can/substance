@@ -8,6 +8,14 @@ Command line
 
 Substance has a command line interface, that can be extended by modules.
 
+Internationalisation / Localisation
+===================================
+
+Unicode (UTF-8) by default, not customisable at this time.
+
+* intl PHP extension
+* mb_string PHP extension
+
 Modules
 =======
 
