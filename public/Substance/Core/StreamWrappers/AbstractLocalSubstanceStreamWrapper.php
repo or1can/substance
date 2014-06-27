@@ -18,6 +18,8 @@
 
 namespace Substance\Core\StreamWrappers;
 
+use Substance\Core\Alert\Alert;
+
 /**
  * Prototype StreamWrapper class.
  */
@@ -36,7 +38,7 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
   /**
    * @var string
    */
-  protected $root_uri;
+  protected $root_dir;
 
   /* (non-PHPdoc)
    * @see \Substance\Core\StreamWrappers\StreamWrapper::dir_closedir()
@@ -101,7 +103,7 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
    * @param string $uri
    */
   public function resolve( $uri ) {
-    $path = $this->root_uri . '/' . $uri;
+    $path = $this->root_dir . '/' . $uri;
     $realpath = realpath( $path );
   }
 
@@ -117,6 +119,17 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
     // FIXME - rmdir() does not allow recursive delete, so we must implement it
     // ourselves.
     rmdir( $path, $this->context );
+  }
+
+  protected function setRootDir( $dir ) {
+    $realdir = realpath( $dir );
+    if ( $realdir === FALSE ) {
+      throw Alert::alert('Dir does not exist')->culprit( 'dir', $dir );
+    }
+    if ( is_dir( $realdir ) ) {
+      throw Alert::alert('Dir is not a directory')->culprit( 'dir', $dir );
+    }
+    $this->root_dir = $realdir;
   }
 
   /* (non-PHPdoc)
