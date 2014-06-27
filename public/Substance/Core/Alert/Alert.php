@@ -18,6 +18,11 @@
 
 namespace Substance\Core\Alert;
 
+use Substance\Core\Presentation\Elements\Container;
+use Substance\Core\Presentation\Elements\TextField;
+use Substance\Core\Presentation\Presentable;
+use Substance\Themes\Text\TextTheme;
+
 /**
  * An Alert, our Exception on steroids. The more information you can pack in
  * when something goes wrong, the easier it is for someone to understand what's
@@ -26,7 +31,7 @@ namespace Substance\Core\Alert;
  * This Alert is heavily based on the Alert used in MillScript, but I've had to
  * cut out lots of bits converting from Java.
  */
-class Alert extends \Exception {
+class Alert extends \Exception implements Presentable {
 
   /**
    * This alerts culprits.
@@ -122,6 +127,22 @@ class Alert extends \Exception {
     return $info;
   }
 
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Presentable::present()
+   */
+  public function present() {
+    $container = Container::create();
+    $container->addElement(
+      TextField::create()->setDefaultValue( $this->getMessage() )
+    );
+    foreach ( $this->culprits as $culprit ) {
+      $container->addElement(
+        TextField::create()->setDefaultValue( (string) $culprit )
+      );
+    }
+    return $container;
+  }
+
   /**
    * Reports this alert to the specified reporter.
    *
@@ -135,7 +156,7 @@ class Alert extends \Exception {
    * @see Exception::__toString()
    */
   public function __toString() {
-    return $this->getMessage() . PHP_EOL . $this->getInfo();
+    return TextTheme::create()->renderPresentable( $this );
   }
 
 }
