@@ -29,6 +29,7 @@ use Substance\Modules\Configuration\Config;
 use Whoops\Run;
 use Whoops\Handler\PrettyPageHandler;
 use Substance\Core\Module;
+use Substance\Core\Alert\Alert;
 
 $run = new Run;
 $handler = new PrettyPageHandler;
@@ -45,3 +46,11 @@ var_dump( $config );
 echo "hello\n";
 
 var_dump( Module::findModules() );
+
+$alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
+
+var_export( $alert->present() );
+
+// throw $alert;
+
+echo $alert;

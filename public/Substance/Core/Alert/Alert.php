@@ -68,6 +68,20 @@ class Alert extends \Exception implements Presentable {
   }
 
   /**
+   * Returns a new Alert. This method is an alertnative to the constructor, so
+   * you can neatly chain methods.
+   *
+   * @param string $message the alert message.
+   * @param string $explanation the alert explanation.
+   * @param number $code the alert code.
+   * @param string $previous the previous exception in the chain.
+   * @return self
+   */
+  public static function alert( $message, $explanation = '', $code = 0, $previous = NULL ) {
+    return new Alert( $message, $explanation, $code, $previous );
+  }
+
+  /**
    * Appends a culprit to this alert.
    *
    * @param string $type the culprit type
