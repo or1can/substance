@@ -19,6 +19,7 @@
 namespace Substance\Core\Presentation\Elements;
 
 use Substance\Core\Presentation\Element;
+use Substance\Core\Presentation\Theme;
 
 /**
  * A simple container element.
@@ -57,6 +58,13 @@ class Container extends Element {
    */
   public function getElements() {
     return $this->elements;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Element::render()
+   */
+  public function render( Theme $theme ) {
+    return $theme->renderContainer( $this );
   }
 
 }

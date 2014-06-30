@@ -36,8 +36,16 @@ abstract class Element {
     throw new Alert('Element cannot be constructed.');
   }
 
-  public function render( Theme $theme ) {
-
-  }
+  /**
+   * Renders this element using the specific Theme.
+   *
+   * This allows an Element to have some control over how it is themed. For
+   * most Elements, this is implemented as a simple callback to a specific
+   * rendering method in the specified Theme - but this may not be appropriate
+   * for all Elements.
+   *
+   * @param Theme $theme
+   */
+  abstract public function render( Theme $theme );
 
 }

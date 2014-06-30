@@ -28,14 +28,7 @@ abstract class AbstractTheme implements Theme {
    * @see \Substance\Core\Presentation\Theme::render()
    */
   public function render( Element $element ) {
-    switch ( get_class( $element ) ) {
-      case 'Substance\Core\Presentation\Elements\Container':
-        return $this->renderContainer( $element );
-        break;
-      case 'Substance\Core\Presentation\Elements\TextField':
-        return $this->renderTextField( $element );
-        break;
-    }
+    return $element->render( $this );
   }
 
   /* (non-PHPdoc)

@@ -19,6 +19,7 @@
 namespace Substance\Core\Presentation\Elements;
 
 use Substance\Core\Presentation\ValueElement;
+use Substance\Core\Presentation\Theme;
 
 /**
  * A simple text field element.
@@ -30,6 +31,13 @@ class TextField extends ValueElement {
    */
   public static function create() {
     return new TextField();
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Element::render()
+   */
+  public function render( Theme $theme ) {
+    return $theme->renderTextField( $this );
   }
 
 }

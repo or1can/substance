@@ -37,6 +37,24 @@ interface Theme {
   /**
    * Renders the specified Element.
    *
+   * This method allows the Theme control over how each Element is rendered.
+   * The default themes ask each Element how to render itself, and each Element
+   * calls back to a Theme method for that specific type of Element.
+   *
+   * A Theme could take control over this process by examining the Element and
+   * choosing different Theme methods, e.g.
+   *
+   * switch ( get_class( $element ) ) {
+   *   case 'Substance\Core\Presentation\Elements\TextField':
+   *     // Theme a TextField as a Container.
+   *     return $this->renderContainer( $element );
+   *     break;
+   *   default:
+   *     // Theme other Elements using their default behaviour.
+   *     return $element->render( $this );
+   *     break;
+   * }
+   *
    * @return Element the Element to render.
    * @return string the rendered Element.
    */
