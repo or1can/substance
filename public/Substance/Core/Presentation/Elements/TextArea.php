@@ -18,11 +18,19 @@
 
 namespace Substance\Core\Presentation\Elements;
 
+use Substance\Core\Presentation\Theme;
 use Substance\Core\Presentation\ValueElement;
 
 /**
  * A simple text area element.
  */
 class TextArea extends ValueElement {
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Element::render()
+   */
+  public function render( Theme $theme ) {
+    return $theme->renderTextArea( $this );
+  }
 
 }

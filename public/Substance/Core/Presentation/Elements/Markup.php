@@ -19,6 +19,7 @@
 namespace Substance\Core\Presentation\Elements;
 
 use Substance\Core\Presentation\Element;
+use Substance\Core\Presentation\Theme;
 
 /**
  * A simple text field element.
@@ -31,5 +32,12 @@ class Markup extends Element {
    * @var string
    */
   protected $default_value;
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Element::render()
+   */
+  public function render( Theme $theme ) {
+    return $theme->renderMarkup( $this );
+  }
 
 }

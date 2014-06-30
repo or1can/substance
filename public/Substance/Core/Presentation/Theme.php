@@ -19,8 +19,11 @@
 namespace Substance\Core\Presentation;
 
 use Substance\Core\Alert\Alert;
-use Substance\Core\Presentation\Elements\TextField;
 use Substance\Core\Presentation\Elements\Container;
+use Substance\Core\Presentation\Elements\Fieldset;
+use Substance\Core\Presentation\Elements\Markup;
+use Substance\Core\Presentation\Elements\TextArea;
+use Substance\Core\Presentation\Elements\TextField;
 
 /**
  * A theme is responsible for rendering elements with a particular appearance.
@@ -76,7 +79,31 @@ interface Theme {
    */
   public function renderContainer( Container $container );
 
-    /**
+  /**
+   * Render the specified Fieldset object.
+   *
+   * @param Fieldset $fieldset the Fieldset to render.
+   * @return string the rendered Fieldset.
+   */
+  public function renderFieldset( Fieldset $fieldset );
+
+  /**
+   * Render the specified Markup object.
+   *
+   * @param Markup $markup the Markup to render.
+   * @return string the rendered Markup.
+   */
+  public function renderMarkup( Markup $markup );
+
+  /**
+   * Render the specified TextArea object.
+   *
+   * @param TextArea $textarea the TextArea to render.
+   * @return string the rendered TextArea.
+   */
+  public function renderTextArea( TextArea $textarea );
+
+  /**
    * Render the specified TextField object.
    *
    * @param TextField $textfield the TextField to render.

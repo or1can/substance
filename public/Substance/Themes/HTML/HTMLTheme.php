@@ -19,8 +19,11 @@
 namespace Substance\Themes\HTML;
 
 use Substance\Core\Presentation\AbstractTheme;
-use Substance\Core\Presentation\Elements\TextField;
 use Substance\Core\Presentation\Elements\Container;
+use Substance\Core\Presentation\Elements\Fieldset;
+use Substance\Core\Presentation\Elements\Markup;
+use Substance\Core\Presentation\Elements\TextArea;
+use Substance\Core\Presentation\Elements\TextField;
 
 /**
  * A renderer renders elements.
@@ -43,6 +46,27 @@ class HTMLTheme extends AbstractTheme {
       $output .= $this->render( $element );
     }
     return $output . '</div>';
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderFieldset()
+   */
+  public function renderFieldset( Fieldset $fieldset ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderMarkup()
+   */
+  public function renderMarkup( Markup $markup ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderTextArea()
+   */
+  public function renderTextArea( TextArea $textarea ) {
+
   }
 
   /* (non-PHPdoc)
