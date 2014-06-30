@@ -53,21 +53,26 @@ class TextTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderFieldset()
    */
   public function renderFieldset( Fieldset $fieldset ) {
-
+    $output = '';
+    foreach ( $fieldset->getElements() as $element ) {
+      $output .= $this->render( $element );
+      $output .= PHP_EOL;
+    }
+    return $output;
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderMarkup()
    */
   public function renderMarkup( Markup $markup ) {
-
+    return $markup->getMarkup();
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderTextArea()
    */
   public function renderTextArea( TextArea $textarea ) {
-
+    return $textarea->getValue();
   }
 
   /* (non-PHPdoc)

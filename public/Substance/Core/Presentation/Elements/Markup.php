@@ -22,16 +22,25 @@ use Substance\Core\Presentation\Element;
 use Substance\Core\Presentation\Theme;
 
 /**
- * A simple text field element.
+ * A simple markup element.
  */
 class Markup extends Element {
 
   /**
-   * The text field value.
+   * The markup contents.
    *
    * @var string
    */
-  protected $default_value;
+  protected $markup;
+
+  /**
+   * Returns this elements markup.
+   *
+   * @return mixed the markup.
+   */
+  public function getMarkup() {
+    return $this->markup;
+  }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
@@ -39,5 +48,17 @@ class Markup extends Element {
   public function render( Theme $theme ) {
     return $theme->renderMarkup( $this );
   }
+
+  /**
+   * Set the markup for this element.
+   *
+   * @param mixed $markup the markup
+   * @return self this element so methods can be chained.
+   */
+  public function setMarkup( $markup ) {
+    $this->markup = $markup;
+    return $this;
+  }
+
 
 }

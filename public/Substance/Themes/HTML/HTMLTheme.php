@@ -52,21 +52,25 @@ class HTMLTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderFieldset()
    */
   public function renderFieldset( Fieldset $fieldset ) {
-
+    $output = '<fieldset>';
+    foreach ( $fieldset->getElements() as $element ) {
+      $output .= $this->render( $element );
+    }
+    return $output . '</fieldset>';
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderMarkup()
    */
   public function renderMarkup( Markup $markup ) {
-
+    return $markup->getMarkup();
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderTextArea()
    */
   public function renderTextArea( TextArea $textarea ) {
-
+    return '<textarea>' . $textarea->getValue() . '</textarea>';
   }
 
   /* (non-PHPdoc)

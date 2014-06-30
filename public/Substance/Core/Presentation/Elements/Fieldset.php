@@ -22,9 +22,13 @@ use Substance\Core\Presentation\Element;
 use Substance\Core\Presentation\Theme;
 
 /**
- * A simple text field element.
+ * A fieldset element, which is a subset of a Container.
  */
-class Fieldset extends Element {
+class Fieldset extends Container {
+
+  public static function create() {
+    return new Fieldset();
+  }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
