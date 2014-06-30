@@ -21,7 +21,10 @@ namespace Substance\Core\StreamWrappers;
 use Substance\Core\Alert\Alert;
 
 /**
- * Prototype StreamWrapper class.
+ * Convenience class for implementing local file based stream wrappers.
+ *
+ * These local files based stream wrappers are based on a root folder which
+ * they cannot see outside of (similar to a chroot).
  */
 abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWrapper {
 
@@ -36,9 +39,11 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
   protected $handle;
 
   /**
+   * Base URI for the root of this stream wrapper.
+   *
    * @var string
    */
-  protected $root_dir;
+  protected $base_uri;
 
   /* (non-PHPdoc)
    * @see \Substance\Core\StreamWrappers\StreamWrapper::dir_closedir()
@@ -51,8 +56,7 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
    * @see \Substance\Core\StreamWrappers\StreamWrapper::dir_opendir()
    */
   public function dir_opendir( $path, $options ) {
-    // FIXME - Resolve the full path to the local file.
-    $path = $path;
+    $path = $this->resolveRealpath( $path );
 
     $this->handle = opendir( $path, $this->context );
 
@@ -79,8 +83,7 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
    * @see \Substance\Core\StreamWrappers\StreamWrapper::mkdir()
    */
   public function mkdir( $path, $mode, $options ) {
-    // FIXME - Resolve the full path to the local file.
-    $path = $path;
+    $path = $this->resolveRealpath( $path );
 
     // Official documentation at http://uk3.php.net/manual/en/streamwrapper.mkdir.php
     // does not specify what all the options are, just STREAM_MKDIR_RECURSIVE
@@ -91,28 +94,67 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
    * @see \Substance\Core\StreamWrappers\StreamWrapper::rename()
    */
   public function rename( $path_from, $path_to ) {
-    // FIXME - Resolve the full path to the local file.
-    $path_from = $path_from;
-    $path_to = $path_to;
+    $path_from = $this->resolveRealpath( $path_from );
+    $path_to = $this->resolveRealpath( $path_to );
 
     return rename( $path_from, $path_to, $this->context );
   }
 
   /**
-   * Resolves the specified uri relative to the local root uri.
+   * Resolves the specified uri relative to the stream base URI.
+   *
    * @param string $uri
    */
   public function resolve( $uri ) {
-    $path = $this->root_dir . '/' . $uri;
+    $segments = explode( '/', $uri );
+    $canonical_segments = array();
+    while ( count( $segments ) > 0 ) {
+      $segment = array_shift( $segments );
+      switch ( $segment ) {
+        case '.':
+          // Do nothing, it's the "current" segment.
+          break;
+        case '..':
+          // Go up a segment.
+          if ( count( $canonical_segments ) == 0 ) {
+            // We cannot go "up" beyond the root of this stream.
+            throw Alert::alert('Attempting to go outside the root');
+          } else {
+            // Remove the last segment
+            array_pop( $canonical_segments );
+          }
+          break;
+        default:
+          // It's a normal path segment, so add it to the canonical version.
+          $canonical_segments[] = $segment;
+          break;
+      }
+    }
+    array_unshift( $canonical_segments, $this->base_uri );
+    return implode( '/', $canonical_segments );
+  }
+
+  /**
+   * Resolves the specified uri relative to the stream base URI and
+   * canonicalises it to an absolute pathname.
+   *
+   * @param string $uri
+   */
+  public function resolveRealpath( $uri ) {
+    $path = $this->resolve( $uri );
     $realpath = realpath( $path );
+    if ( $realpath === FALSE ) {
+      throw Alert::alert('URI does not exist')
+        ->culprit( 'URI', $uri );
+    }
+    return $realpath;
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\StreamWrappers\StreamWrapper::rmdir()
    */
   public function rmdir( $path, $options ) {
-    // FIXME - Resolve the full path to the local file.
-    $path = $path;
+    $path = $this->resolveRealpath( $path );
 
     // Official documentation at http://uk3.php.net/manual/en/streamwrapper.mkdir.php
     // does not specify what all the options are, just STREAM_MKDIR_RECURSIVE.
@@ -121,15 +163,15 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
     rmdir( $path, $this->context );
   }
 
-  protected function setRootDir( $dir ) {
-    $realdir = realpath( $dir );
+  protected function setBaseURI( $uri ) {
+    $realdir = realpath( $uri );
     if ( $realdir === FALSE ) {
-      throw Alert::alert('Dir does not exist')->culprit( 'dir', $dir );
+      throw Alert::alert('URI does not exist')->culprit( 'URI', $uri );
     }
     if ( is_dir( $realdir ) ) {
-      throw Alert::alert('Dir is not a directory')->culprit( 'dir', $dir );
+      throw Alert::alert('URI is not a directory')->culprit( 'URI', $uri );
     }
-    $this->root_dir = $realdir;
+    $this->base_uri = $realdir;
   }
 
   /* (non-PHPdoc)
@@ -178,8 +220,7 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
    * @see \Substance\Core\StreamWrappers\StreamWrapper::stream_open()
    */
   public function stream_open( $path, $mode, $options, &$opened_path ) {
-    // FIXME - Resolve the full path to the local file.
-    $path = $path;
+    $path = $this->resolveRealpath( $path );
 
     if ( $options & STREAM_REPORT_ERRORS ) {
       $this->handle = fopen( $path, $mode, false, $this->context );
@@ -245,8 +286,7 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
    * @see \Substance\Core\StreamWrappers\StreamWrapper::unlink()
    */
   public function unlink( $path ) {
-    // FIXME - Resolve the full path to the local file.
-    $path = $path;
+    $path = $this->resolveRealpath( $path );
 
     return unlink( $path, $this->context );
   }
@@ -255,8 +295,7 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
    * @see \Substance\Core\StreamWrappers\StreamWrapper::url_stat()
    */
   public function url_stat( $path, $flags ) {
-    // FIXME - Resolve the full path to the local file.
-    $path = $path;
+    $path = $this->resolveRealpath( $path );
 
     if ( $flags & STREAM_URL_STAT_LINK && is_link( $path ) ) {
       if ( $flags & STREAM_URL_STAT_QUIET ) {
