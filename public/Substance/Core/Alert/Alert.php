@@ -170,7 +170,7 @@ class Alert extends \Exception implements Presentable {
    * @param AlertReporter $reporter the AlertReporter to report this alert to.
    */
   public function report( AlertReporter $reporter ) {
-    $reporter.report( $this );
+    $reporter->report( $this );
   }
 
 }
