@@ -44,19 +44,19 @@ class Container extends Element {
   }
 
   /**
+   * @return \Substance\Core\Presentation\Elements\Container
+   */
+  public static function create() {
+    return new Container();
+  }
+
+  /**
    * Returns the containers elements.
    *
    * @return Element[] the containers elements.
    */
   public function getElements() {
     return $this->elements;
-  }
-
-  /**
-   * @return \Substance\Core\Presentation\Elements\Container
-   */
-  public static function create() {
-    return new Container();
   }
 
 }

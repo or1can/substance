@@ -81,6 +81,13 @@ class Alert extends \Exception implements Presentable {
     return new Alert( $message, $explanation, $code, $previous );
   }
 
+  /* (non-PHPdoc)
+   * @see Exception::__toString()
+   */
+  public function __toString() {
+    return TextTheme::create()->renderPresentable( $this );
+  }
+
   /**
    * Appends a culprit to this alert.
    *
@@ -164,13 +171,6 @@ class Alert extends \Exception implements Presentable {
    */
   public function report( AlertReporter $reporter ) {
     $reporter.report( $this );
-  }
-
-  /* (non-PHPdoc)
-   * @see Exception::__toString()
-   */
-  public function __toString() {
-    return TextTheme::create()->renderPresentable( $this );
   }
 
 }
