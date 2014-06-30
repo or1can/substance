@@ -13,6 +13,9 @@ apache::vhost { 'substance.vm':
 package { 'php-devel':
 }
 
+package { 'php-mbstring':
+}
+
 package { 'php-pear':
 }
 
