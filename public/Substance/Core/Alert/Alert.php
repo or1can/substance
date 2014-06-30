@@ -22,6 +22,7 @@ use Substance\Core\Presentation\Elements\Container;
 use Substance\Core\Presentation\Elements\TextField;
 use Substance\Core\Presentation\Presentable;
 use Substance\Themes\Text\TextTheme;
+use Substance\Core\Environment\Environment;
 
 /**
  * An Alert, our Exception on steroids. The more information you can pack in
@@ -85,7 +86,7 @@ class Alert extends \Exception implements Presentable {
    * @see Exception::__toString()
    */
   public function __toString() {
-    return TextTheme::create()->renderPresentable( $this );
+    return Environment::getEnvironment()->outputAsString( $this );
   }
 
   /**

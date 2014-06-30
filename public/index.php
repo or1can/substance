@@ -30,6 +30,9 @@ use Whoops\Run;
 use Whoops\Handler\PrettyPageHandler;
 use Substance\Core\Module;
 use Substance\Core\Alert\Alert;
+use Substance\Core\Environment\Environment;
+use Substance\Themes\HTML\HTMLTheme;
+use Substance\Themes\Text\TextTheme;
 
 $run = new Run;
 $handler = new PrettyPageHandler;
@@ -47,10 +50,18 @@ echo "hello\n";
 
 var_dump( Module::findModules() );
 
+$environment = Environment::getEnvironment();
+$environment->setOutputTheme( HTMLTheme::create() );
+
 $alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
 
 var_export( $alert->present() );
 
 // throw $alert;
+
+echo $alert;
+
+
+$environment->setOutputTheme( TextTheme::create() );
 
 echo $alert;
