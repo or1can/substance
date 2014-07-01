@@ -30,7 +30,7 @@ abstract class Element {
   /**
    * Returns a new instance of the element. This method should be overridden in
    * all subclasses.
-   * @return Element A new instance of the element.
+   * @return self A new instance of the element.
    */
   public static function create() {
     throw new Alert('Element cannot be constructed.');
