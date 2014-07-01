@@ -19,11 +19,34 @@
 namespace Substance\Themes\Text;
 
 use Substance\Core\Presentation\AbstractTheme;
+use Substance\Core\Presentation\Elements\Actions;
+use Substance\Core\Presentation\Elements\Button;
+use Substance\Core\Presentation\Elements\Checkbox;
+use Substance\Core\Presentation\Elements\Checkboxes;
 use Substance\Core\Presentation\Elements\Container;
+use Substance\Core\Presentation\Elements\Date;
 use Substance\Core\Presentation\Elements\Fieldset;
+use Substance\Core\Presentation\Elements\File;
+use Substance\Core\Presentation\Elements\Form;
+use Substance\Core\Presentation\Elements\Hidden;
+use Substance\Core\Presentation\Elements\ImageButton;
+use Substance\Core\Presentation\Elements\Item;
+use Substance\Core\Presentation\Elements\MachineName;
 use Substance\Core\Presentation\Elements\Markup;
+use Substance\Core\Presentation\Elements\Password;
+use Substance\Core\Presentation\Elements\PasswordConfirm;
+use Substance\Core\Presentation\Elements\Radio;
+use Substance\Core\Presentation\Elements\Radios;
+use Substance\Core\Presentation\Elements\Select;
+use Substance\Core\Presentation\Elements\Submit;
+use Substance\Core\Presentation\Elements\Table;
+use Substance\Core\Presentation\Elements\TableCell;
+use Substance\Core\Presentation\Elements\TableRow;
+use Substance\Core\Presentation\Elements\TableSelect;
 use Substance\Core\Presentation\Elements\TextArea;
 use Substance\Core\Presentation\Elements\TextField;
+use Substance\Core\Presentation\Elements\Token;
+use Substance\Core\Presentation\Elements\Weight;
 
 /**
  * A renderer renders elements.
@@ -35,6 +58,34 @@ class TextTheme extends AbstractTheme {
    */
   public static function create() {
     return new TextTheme();
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderActions()
+   */
+  public function renderActions( Actions $actions ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderButton()
+   */
+  public function renderButton( Button $button ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderCheckbox()
+   */
+  public function renderCheckbox( Checkbox $checkbox ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderCheckboxes()
+   */
+  public function renderCheckboxes( Checkboxes $checkboxes ) {
+
   }
 
   /* (non-PHPdoc)
@@ -50,6 +101,13 @@ class TextTheme extends AbstractTheme {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderDate()
+   */
+  public function renderDate( Date $date ) {
+
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderFieldset()
    */
   public function renderFieldset( Fieldset $fieldset ) {
@@ -62,10 +120,122 @@ class TextTheme extends AbstractTheme {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderFile()
+   */
+  public function renderFile( File $file ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderForm()
+   */
+  public function renderForm( Form $form ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderHidden()
+   */
+  public function renderHidden( Hidden $hidden ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderImageButton()
+   */
+  public function renderImageButton( ImageButton $image_button ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderItem()
+   */
+  public function renderItem( Item $item ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderMachineName()
+   */
+  public function renderMachineName( MachineName $machine_name ) {
+
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderMarkup()
    */
   public function renderMarkup( Markup $markup ) {
     return $markup->getMarkup();
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderPassword()
+   */
+  public function renderPassword( Password $password ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderPasswordConfirm()
+   */
+  public function renderPasswordConfirm( PasswordConfirm $password_confirm ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderRadio()
+   */
+  public function renderRadio( Radio $radio ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderRadios()
+   */
+  public function renderRadios( Radios $radios ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderSelect()
+   */
+  public function renderSelect( Select $select ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderSubmit()
+   */
+  public function renderSubmit( Submit $submit ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderTable()
+   */
+  public function renderTable( Table $table ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderTableCell()
+   */
+  public function renderTableCell( TableCell $table_cell ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderTableRow()
+   */
+  public function renderTableRow( TableRow $table_row ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderTableSelect()
+   */
+  public function renderTableSelect( TableSelect $table_select ) {
+
   }
 
   /* (non-PHPdoc)
@@ -80,6 +250,20 @@ class TextTheme extends AbstractTheme {
    */
   public function renderTextField( TextField $textfield ) {
     return $textfield->getValue();
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderToken()
+   */
+  public function renderToken( Token $token ) {
+
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderWeight()
+   */
+  public function renderWeight( Weight $weight ) {
+
   }
 
 }
