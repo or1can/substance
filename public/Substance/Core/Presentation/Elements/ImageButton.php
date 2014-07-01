@@ -25,13 +25,6 @@ use Substance\Core\Presentation\Theme;
  */
 class ImageButton extends Submit {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new ImageButton();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

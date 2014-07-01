@@ -26,13 +26,6 @@ use Substance\Core\Presentation\Theme;
  */
 class Radio extends ValueElement {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new Radio();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

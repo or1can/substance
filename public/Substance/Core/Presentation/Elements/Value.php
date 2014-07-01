@@ -29,13 +29,6 @@ use Substance\Core\Presentation\ValueElement;
  */
 class Value extends ValueElement {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new Value();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

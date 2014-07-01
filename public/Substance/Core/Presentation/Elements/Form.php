@@ -27,13 +27,6 @@ use Substance\Core\Presentation\Theme;
  */
 class Form extends Container {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new Form();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

@@ -25,13 +25,6 @@ use Substance\Core\Presentation\Theme;
  */
 class Table extends Container {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new Table();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

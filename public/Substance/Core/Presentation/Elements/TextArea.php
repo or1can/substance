@@ -26,13 +26,6 @@ use Substance\Core\Presentation\ValueElement;
  */
 class TextArea extends ValueElement {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new TextArea();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

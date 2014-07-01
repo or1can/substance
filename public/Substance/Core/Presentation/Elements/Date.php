@@ -25,13 +25,6 @@ use Substance\Core\Presentation\Theme;
  */
 class Date extends TextField {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new Date();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

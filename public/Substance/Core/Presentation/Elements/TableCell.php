@@ -26,13 +26,6 @@ use Substance\Core\Presentation\Theme;
  */
 class TableCell extends Element {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new TableCell();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

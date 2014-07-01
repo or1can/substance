@@ -25,13 +25,6 @@ use Substance\Core\Presentation\Theme;
  */
 class Actions extends Container {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new Actions();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

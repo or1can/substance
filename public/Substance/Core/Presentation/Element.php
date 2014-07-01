@@ -33,7 +33,7 @@ abstract class Element {
    * @return self A new instance of the element.
    */
   public static function create() {
-    throw new Alert('Element cannot be constructed.');
+    return new static;
   }
 
   /**

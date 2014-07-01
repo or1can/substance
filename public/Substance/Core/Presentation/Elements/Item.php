@@ -26,13 +26,6 @@ use Substance\Core\Presentation\Theme;
  */
 class Item extends Element {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new Item();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

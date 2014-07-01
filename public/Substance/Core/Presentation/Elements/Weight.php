@@ -25,13 +25,6 @@ use Substance\Core\Presentation\Theme;
  */
 class Weight extends Select {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new Weight();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

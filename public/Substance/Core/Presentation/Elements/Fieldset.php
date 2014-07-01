@@ -26,10 +26,6 @@ use Substance\Core\Presentation\Theme;
  */
 class Fieldset extends Container {
 
-  public static function create() {
-    return new Fieldset();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

@@ -25,13 +25,6 @@ use Substance\Core\Presentation\Theme;
  */
 class Submit extends Button {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new Submit();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

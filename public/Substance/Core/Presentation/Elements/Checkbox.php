@@ -26,13 +26,6 @@ use Substance\Core\Presentation\Theme;
  */
 class Checkbox extends ValueElement {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new Checkbox();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

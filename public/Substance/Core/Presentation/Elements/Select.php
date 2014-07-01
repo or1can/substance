@@ -26,13 +26,6 @@ use Substance\Core\Presentation\Theme;
  */
 class Select extends ValueElement {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new Select();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

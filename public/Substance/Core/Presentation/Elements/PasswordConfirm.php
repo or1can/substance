@@ -25,13 +25,6 @@ use Substance\Core\Presentation\Theme;
  */
 class PasswordConfirm extends TextField {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new PasswordConfirm();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

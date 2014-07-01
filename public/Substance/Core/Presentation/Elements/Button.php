@@ -26,13 +26,6 @@ use Substance\Core\Presentation\Theme;
  */
 class Button extends Element {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new Button();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

@@ -25,13 +25,6 @@ use Substance\Core\Presentation\Theme;
  */
 class Hidden extends TextField {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new Hidden();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

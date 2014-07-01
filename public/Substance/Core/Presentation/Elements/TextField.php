@@ -26,13 +26,6 @@ use Substance\Core\Presentation\Theme;
  */
 class TextField extends ValueElement {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new TextField();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

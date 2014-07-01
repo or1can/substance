@@ -26,13 +26,6 @@ use Substance\Core\Presentation\Theme;
  */
 class Password extends TextField {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new Password();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

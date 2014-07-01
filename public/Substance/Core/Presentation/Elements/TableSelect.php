@@ -28,13 +28,6 @@ use Substance\Core\Presentation\Theme;
  */
 class TableSelect extends Table {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new TableSelect();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

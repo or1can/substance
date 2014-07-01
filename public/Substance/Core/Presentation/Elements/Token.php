@@ -27,13 +27,6 @@ use Substance\Core\Presentation\Theme;
  */
 class Token extends Hidden {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new Token();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

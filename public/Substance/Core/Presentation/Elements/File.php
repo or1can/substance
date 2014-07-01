@@ -26,13 +26,6 @@ use Substance\Core\Presentation\Theme;
  */
 class File extends ValueElement {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new File();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

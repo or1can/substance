@@ -25,13 +25,6 @@ use Substance\Core\Presentation\Theme;
  */
 class MachineName extends TextField {
 
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new MachineName();
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */

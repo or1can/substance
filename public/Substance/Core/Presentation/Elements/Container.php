@@ -45,13 +45,6 @@ class Container extends Element {
   }
 
   /**
-   * @return self
-   */
-  public static function create() {
-    return new Container();
-  }
-
-  /**
    * Returns the containers elements.
    *
    * @return Element[] the containers elements.
