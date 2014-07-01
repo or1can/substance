@@ -86,9 +86,7 @@ class HTMLTheme extends AbstractTheme {
    */
   public function renderContainer( Container $container ) {
     $output = '<div>';
-    foreach ( $container->getElements() as $element ) {
-      $output .= $this->render( $element );
-    }
+    $output .= parent::renderContainer( $container );
     return $output . '</div>';
   }
 
@@ -104,9 +102,7 @@ class HTMLTheme extends AbstractTheme {
    */
   public function renderFieldset( Fieldset $fieldset ) {
     $output = '<fieldset>';
-    foreach ( $fieldset->getElements() as $element ) {
-      $output .= $this->render( $element );
-    }
+    $output .= parent::renderContainer( $fieldset );
     return $output . '</fieldset>';
   }
 
@@ -121,7 +117,7 @@ class HTMLTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderForm()
    */
   public function renderForm( Form $form ) {
-    return '<form>' . $this->renderContainer( $form ) . '</form>';
+    return '<form>' . parent::renderContainer( $form ) . '</form>';
   }
 
   /* (non-PHPdoc)
@@ -212,7 +208,7 @@ class HTMLTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderTableRow()
    */
   public function renderTableRow( TableRow $table_row ) {
-    return '<tr>' . $this->renderContainer( $table_row ) . '</tr>';
+    return '<tr>' . parent::renderContainer( $table_row ) . '</tr>';
   }
 
   /* (non-PHPdoc)
