@@ -34,6 +34,13 @@ class Markup extends Element {
   protected $markup;
 
   /**
+   * @return self
+   */
+  public static function create() {
+    return new Markup();
+  }
+
+  /**
    * Returns this elements markup.
    *
    * @return mixed the markup.

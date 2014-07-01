@@ -18,53 +18,28 @@
 
 namespace Substance\Core\Presentation\Elements;
 
-use Substance\Core\Presentation\Element;
 use Substance\Core\Presentation\Theme;
 
 /**
- * A container for other Elements.
+ * A table select element, a table which allows either an individual or
+ * multiple rows to be selected. The left hand column is formatted as either
+ * radio buttons (for individual row selection) or checkboxes (for multiple row
+ * selection).
  */
-class Container extends Element {
-
-  /**
-   * The containers elements.
-   *
-   * @var Element[]
-   */
-  protected $elements = array();
-
-  /**
-   * Adds an Element to the container.
-   *
-   * @param Element $element the Element to add.
-   * @return self this element so methods can be chained.
-   */
-  public function addElement( Element $element ) {
-    $this->elements[] = $element;
-    return $this;
-  }
+class TableSelect extends Table {
 
   /**
    * @return self
    */
   public static function create() {
-    return new Container();
-  }
-
-  /**
-   * Returns the containers elements.
-   *
-   * @return Element[] the containers elements.
-   */
-  public function getElements() {
-    return $this->elements;
+    return new TableSelect();
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */
   public function render( Theme $theme ) {
-    return $theme->renderContainer( $this );
+    return $theme->renderTableSelect( $this );
   }
 
 }

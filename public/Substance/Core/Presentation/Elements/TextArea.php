@@ -22,9 +22,16 @@ use Substance\Core\Presentation\Theme;
 use Substance\Core\Presentation\ValueElement;
 
 /**
- * A simple text area element.
+ * A text area input field.
  */
 class TextArea extends ValueElement {
+
+  /**
+   * @return self
+   */
+  public static function create() {
+    return new TextArea();
+  }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()

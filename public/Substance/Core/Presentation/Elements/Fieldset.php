@@ -22,7 +22,7 @@ use Substance\Core\Presentation\Element;
 use Substance\Core\Presentation\Theme;
 
 /**
- * A fieldset element, which is a subset of a Container.
+ * A fieldset element, i.e. a special Container for other elements.
  */
 class Fieldset extends Container {
 

@@ -18,53 +18,26 @@
 
 namespace Substance\Core\Presentation\Elements;
 
-use Substance\Core\Presentation\Element;
+use Substance\Core\Presentation\ValueElement;
 use Substance\Core\Presentation\Theme;
 
 /**
- * A container for other Elements.
+ * A password input field.
  */
-class Container extends Element {
-
-  /**
-   * The containers elements.
-   *
-   * @var Element[]
-   */
-  protected $elements = array();
-
-  /**
-   * Adds an Element to the container.
-   *
-   * @param Element $element the Element to add.
-   * @return self this element so methods can be chained.
-   */
-  public function addElement( Element $element ) {
-    $this->elements[] = $element;
-    return $this;
-  }
+class Password extends TextField {
 
   /**
    * @return self
    */
   public static function create() {
-    return new Container();
-  }
-
-  /**
-   * Returns the containers elements.
-   *
-   * @return Element[] the containers elements.
-   */
-  public function getElements() {
-    return $this->elements;
+    return new Password();
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */
   public function render( Theme $theme ) {
-    return $theme->renderContainer( $this );
+    return $theme->renderPassword( $this );
   }
 
 }

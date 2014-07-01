@@ -22,12 +22,12 @@ use Substance\Core\Presentation\ValueElement;
 use Substance\Core\Presentation\Theme;
 
 /**
- * A simple text field element.
+ * A text input field.
  */
 class TextField extends ValueElement {
 
   /**
-   * @return \Substance\Core\Presentation\Elements\TextField
+   * @return self
    */
   public static function create() {
     return new TextField();
