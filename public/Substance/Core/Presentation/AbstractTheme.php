@@ -19,6 +19,7 @@
 namespace Substance\Core\Presentation;
 
 use Substance\Core\Presentation\Elements\Container;
+
 /**
  * Abstract implementation of Theme, to simplify Theme developement.
  */
