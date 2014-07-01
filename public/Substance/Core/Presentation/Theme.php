@@ -19,12 +19,18 @@
 namespace Substance\Core\Presentation;
 
 use Substance\Core\Alert\Alert;
+use Substance\Core\Presentation\Elements\Actions;
+use Substance\Core\Presentation\Elements\Button;
 use Substance\Core\Presentation\Elements\Checkbox;
 use Substance\Core\Presentation\Elements\Checkboxes;
 use Substance\Core\Presentation\Elements\Container;
 use Substance\Core\Presentation\Elements\Date;
 use Substance\Core\Presentation\Elements\Fieldset;
 use Substance\Core\Presentation\Elements\File;
+use Substance\Core\Presentation\Elements\Form;
+use Substance\Core\Presentation\Elements\Hidden;
+use Substance\Core\Presentation\Elements\ImageButton;
+use Substance\Core\Presentation\Elements\Item;
 use Substance\Core\Presentation\Elements\MachineName;
 use Substance\Core\Presentation\Elements\Markup;
 use Substance\Core\Presentation\Elements\Password;
@@ -32,12 +38,14 @@ use Substance\Core\Presentation\Elements\PasswordConfirm;
 use Substance\Core\Presentation\Elements\Radio;
 use Substance\Core\Presentation\Elements\Radios;
 use Substance\Core\Presentation\Elements\Select;
+use Substance\Core\Presentation\Elements\Submit;
 use Substance\Core\Presentation\Elements\Table;
 use Substance\Core\Presentation\Elements\TableCell;
 use Substance\Core\Presentation\Elements\TableRow;
 use Substance\Core\Presentation\Elements\TableSelect;
 use Substance\Core\Presentation\Elements\TextArea;
 use Substance\Core\Presentation\Elements\TextField;
+use Substance\Core\Presentation\Elements\Token;
 use Substance\Core\Presentation\Elements\Weight;
 
 /**
@@ -77,6 +85,22 @@ interface Theme {
    * @return string the rendered Element.
    */
   public function render( Element $element );
+
+  /**
+   * Render the specified Actions object.
+   *
+   * @param Actions $actions the Actions to render.
+   * @return string the rendered Actions.
+   */
+  public function renderActions( Actions $actions );
+
+  /**
+   * Render the specified Button object.
+   *
+   * @param Button $button the Button to render.
+   * @return string the rendered Button.
+   */
+  public function renderButton( Button $button );
 
   /**
    * Render the specified Checkbox object.
@@ -125,6 +149,38 @@ interface Theme {
    * @return string the rendered File.
    */
   public function renderFile( File $file );
+
+  /**
+   * Render the specified Form object.
+   *
+   * @param Form Form the Form to render.
+   * @return string the rendered Form.
+   */
+  public function renderForm( Form $form );
+
+  /**
+   * Render the specified Hidden object.
+   *
+   * @param Hidden $hidden the Hidden to render.
+   * @return string the rendered Hidden.
+   */
+  public function renderHidden( Hidden $hidden );
+
+  /**
+   * Render the specified ImageButton object.
+   *
+   * @param ImageButton $image_button the ImageButton to render.
+   * @return string the rendered ImageButton.
+   */
+  public function renderImageButton( ImageButton $image_button );
+
+  /**
+   * Render the specified Item object.
+   *
+   * @param Item $item the Item to render.
+   * @return string the rendered Item.
+   */
+  public function renderItem( Item $item );
 
   /**
    * Render the specified MachineName object.
@@ -191,6 +247,14 @@ interface Theme {
   public function renderSelect( Select $select );
 
   /**
+   * Render the specified Submit object.
+   *
+   * @param Submit $submit the Submit to render.
+   * @return string the rendered Submit.
+   */
+  public function renderSubmit( Submit $submit );
+
+  /**
    * Render the specified TableSelect object.
    *
    * @param TableSelect $tableselect the TableSelect to render.
@@ -222,7 +286,7 @@ interface Theme {
    */
   public function renderTableSelect( TableSelect $table_select );
 
-/**
+  /**
    * Render the specified TextArea object.
    *
    * @param TextArea $textarea the TextArea to render.
@@ -237,6 +301,14 @@ interface Theme {
    * @return string the rendered TextField.
    */
   public function renderTextField( TextField $textfield );
+
+  /**
+   * Render the specified Token object.
+   *
+   * @param Token $token the Token to render.
+   * @return string the rendered Token.
+   */
+  public function renderToken( Token $token );
 
   /**
    * Render the specified Weight object.
