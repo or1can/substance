@@ -61,31 +61,24 @@ class TextTheme extends AbstractTheme {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Presentation\Theme::renderActions()
-   */
-  public function renderActions( Actions $actions ) {
-
-  }
-
-  /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderButton()
    */
   public function renderButton( Button $button ) {
-
+    // TODO
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderCheckbox()
    */
   public function renderCheckbox( Checkbox $checkbox ) {
-
+    return $checkbox->getValue();
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderCheckboxes()
    */
   public function renderCheckboxes( Checkboxes $checkboxes ) {
-
+    return $checkboxes->getValue();
   }
 
   /* (non-PHPdoc)
@@ -104,7 +97,7 @@ class TextTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderDate()
    */
   public function renderDate( Date $date ) {
-
+    return $date->getValue();
   }
 
   /* (non-PHPdoc)
@@ -123,112 +116,113 @@ class TextTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderFile()
    */
   public function renderFile( File $file ) {
-
+    // TODO
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderForm()
    */
   public function renderForm( Form $form ) {
-
+    return $this->renderContainer( $form );
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderHidden()
    */
   public function renderHidden( Hidden $hidden ) {
-
+    return $hidden->getValue();
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderImageButton()
    */
   public function renderImageButton( ImageButton $image_button ) {
-
+    // TODO
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderItem()
    */
   public function renderItem( Item $item ) {
-
+    // TODO
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderMachineName()
    */
   public function renderMachineName( MachineName $machine_name ) {
-
+    return $machine_name->getValue();
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderPassword()
    */
   public function renderPassword( Password $password ) {
-
+    return $password->getValue();
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderPasswordConfirm()
    */
   public function renderPasswordConfirm( PasswordConfirm $password_confirm ) {
-
+    return $password_confirm->getValue();
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderRadio()
    */
   public function renderRadio( Radio $radio ) {
-
+    return $radio->getValue();
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderRadios()
    */
   public function renderRadios( Radios $radios ) {
-
+    return $radios->getValue();
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderSelect()
    */
   public function renderSelect( Select $select ) {
-
+    return $select->getValue();
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderSubmit()
    */
   public function renderSubmit( Submit $submit ) {
-
+    // TODO
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderTable()
    */
   public function renderTable( Table $table ) {
-
+    // TODO - Rendering a table like a container will work for the time being.
+    return $this->renderContainer( $table );
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderTableCell()
    */
   public function renderTableCell( TableCell $table_cell ) {
-
+    // TODO
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderTableRow()
    */
   public function renderTableRow( TableRow $table_row ) {
-
+    // TODO
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderTableSelect()
    */
   public function renderTableSelect( TableSelect $table_select ) {
-
+    // TODO
   }
 
   /* (non-PHPdoc)
@@ -243,20 +237,6 @@ class TextTheme extends AbstractTheme {
    */
   public function renderTextField( TextField $textfield ) {
     return $textfield->getValue();
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Presentation\Theme::renderToken()
-   */
-  public function renderToken( Token $token ) {
-
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Presentation\Theme::renderWeight()
-   */
-  public function renderWeight( Weight $weight ) {
-
   }
 
 }

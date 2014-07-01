@@ -20,6 +20,9 @@ namespace Substance\Core\Presentation;
 
 use Substance\Core\Presentation\Elements\Container;
 use Substance\Core\Presentation\Elements\Markup;
+use Substance\Core\Presentation\Elements\Token;
+use Substance\Core\Presentation\Elements\Weight;
+use Substance\Core\Presentation\Elements\Actions;
 
 /**
  * Abstract implementation of Theme, to simplify Theme developement.
@@ -31,6 +34,14 @@ abstract class AbstractTheme implements Theme {
    */
   public function render( Element $element ) {
     return $element->render( $this );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderActions()
+   */
+  public function renderActions( Actions $actions ) {
+    // Actions are just a special kind of container, so render it the same.
+    return $this->renderContainer( $actions );
   }
 
   /* (non-PHPdoc)
@@ -56,6 +67,22 @@ abstract class AbstractTheme implements Theme {
    */
   public function renderPresentable( Presentable $presentable ) {
     return $this->render( $presentable->present() );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderToken()
+   */
+  public function renderToken( Token $token ) {
+    // A Token is just a special kind of hidden field, so render it the same.
+    return $this->renderHidden( $token );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderWeight()
+   */
+  public function renderWeight( Weight $weight ) {
+    // A Weight is just a special kind of select field, so render it the same.
+    return $this->renderSelect( $weight );
   }
 
 }

@@ -61,31 +61,24 @@ class HTMLTheme extends AbstractTheme {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Presentation\Theme::renderActions()
-   */
-  public function renderActions( Actions $actions ) {
-
-  }
-
-  /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderButton()
    */
   public function renderButton( Button $button ) {
-
+    // TODO
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderCheckbox()
    */
   public function renderCheckbox( Checkbox $checkbox ) {
-
+    return '<div><input type="checkbox" value="' . $checkbox->getValue() . '" /></div>';
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderCheckboxes()
    */
   public function renderCheckboxes( Checkboxes $checkboxes ) {
-
+    return '<div><input type="checkbox" value="' . $checkboxes->getValue() . '" /></div>';
   }
 
   /* (non-PHPdoc)
@@ -103,7 +96,7 @@ class HTMLTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderDate()
    */
   public function renderDate( Date $date ) {
-
+    return '<div><input type="text" value="' . $date->getValue() . '" /></div>';
   }
 
   /* (non-PHPdoc)
@@ -121,119 +114,119 @@ class HTMLTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderFile()
    */
   public function renderFile( File $file ) {
-
+    // TODO
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderForm()
    */
   public function renderForm( Form $form ) {
-
+    return '<form>' . $this->renderContainer( $form ) . '</form>';
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderHidden()
    */
   public function renderHidden( Hidden $hidden ) {
-
+    return '<div><input type="hidden" value="' . $hidden->getValue() . '" /></div>';
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderImageButton()
    */
   public function renderImageButton( ImageButton $image_button ) {
-
+    // TODO
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderItem()
    */
   public function renderItem( Item $item ) {
-
+    // TODO
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderMachineName()
    */
   public function renderMachineName( MachineName $machine_name ) {
-
+    return '<div><input type="text" value="' . $machine_name->getValue() . '" /></div>';
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderPassword()
    */
   public function renderPassword( Password $password ) {
-
+    return '<div><input type="text" value="' . $password->getValue() . '" /></div>';
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderPasswordConfirm()
    */
   public function renderPasswordConfirm( PasswordConfirm $password_confirm ) {
-
+    return '<div><input type="text" value="' . $password_confirm->getValue() . '" /><input type="text" value="' . $password_confirm->getValue() . '" /></div>';
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderRadio()
    */
   public function renderRadio( Radio $radio ) {
-
+    return '<div><input type="radio" value="' . $radio->getValue() . '" /></div>';
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderRadios()
    */
   public function renderRadios( Radios $radios ) {
-
+    return '<div><input type="radio" value="' . $radios->getValue() . '" /></div>';
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderSelect()
    */
   public function renderSelect( Select $select ) {
-
+    return '<div><select><option selected="" value="' . $select->getValue() . '" /></select></div>';
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderSubmit()
    */
   public function renderSubmit( Submit $submit ) {
-
+    return '<div><input type="submit" value="' . $submit->getValue() . '" /></div>';
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderTable()
    */
   public function renderTable( Table $table ) {
-
+    return '<table>' . $this->renderContainer( $table ) . '</table>';
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderTableCell()
    */
   public function renderTableCell( TableCell $table_cell ) {
-
+    // TODO
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderTableRow()
    */
   public function renderTableRow( TableRow $table_row ) {
-
+    return '<tr>' . $this->renderContainer( $table_row ) . '</tr>';
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderTableSelect()
    */
   public function renderTableSelect( TableSelect $table_select ) {
-
+    // TODO
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderTextArea()
    */
   public function renderTextArea( TextArea $textarea ) {
-    return '<textarea>' . $textarea->getValue() . '</textarea>';
+    return '<div><textarea>' . $textarea->getValue() . '</textarea><div>';
   }
 
   /* (non-PHPdoc)
@@ -241,20 +234,6 @@ class HTMLTheme extends AbstractTheme {
    */
   public function renderTextField( TextField $textfield ) {
     return '<div><input type="text" value="' . $textfield->getValue() . '" /></div>';
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Presentation\Theme::renderToken()
-   */
-  public function renderToken( Token $token ) {
-
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Presentation\Theme::renderWeight()
-   */
-  public function renderWeight( Weight $weight ) {
-
   }
 
 }
