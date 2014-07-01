@@ -160,13 +160,6 @@ class HTMLTheme extends AbstractTheme {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Presentation\Theme::renderMarkup()
-   */
-  public function renderMarkup( Markup $markup ) {
-    return $markup->getMarkup();
-  }
-
-  /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderPassword()
    */
   public function renderPassword( Password $password ) {

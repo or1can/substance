@@ -19,6 +19,7 @@
 namespace Substance\Core\Presentation;
 
 use Substance\Core\Presentation\Elements\Container;
+use Substance\Core\Presentation\Elements\Markup;
 
 /**
  * Abstract implementation of Theme, to simplify Theme developement.
@@ -41,6 +42,13 @@ abstract class AbstractTheme implements Theme {
       $output .= $this->render( $element );
     }
     return $output;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderMarkup()
+   */
+  public function renderMarkup( Markup $markup ) {
+    return $markup->getMarkup();
   }
 
   /* (non-PHPdoc)
