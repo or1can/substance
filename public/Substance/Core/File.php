@@ -18,15 +18,33 @@
 
 namespace Substance\Core;
 
+use Substance\Core\Alert\Alert;
+
 /**
  * A File module to represent files.
  */
 class File {
 
+  protected $path = NULL;
+
   public static function scanDirectory( $dir, $pattern, $callback = NULL ) {
     if ( is_dir( $dir ) ) {
       $handle = opendir( $dir );
 
+    }
+  }
+
+  /**
+   * Constructs a new File object for the specified path.
+   *
+   * @param unknown $path
+   */
+  public function __construct( $path ) {
+    if ( is_file( $path ) ) {
+      $this->path = $path;
+    } else {
+      throw Alert::alert( 'Not a file', 'Supplied path does not point to a file' )
+        ->culprit( 'path', $path );
     }
   }
 
