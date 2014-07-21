@@ -19,6 +19,7 @@
 namespace Substance\Core\StreamWrappers;
 
 use Substance\Core\Alert\Alert;
+use Substance\Core\File;
 
 /**
  * Convenience class for implementing local file based stream wrappers.
@@ -44,6 +45,13 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
    * @var string
    */
   protected $base_uri;
+
+  /**
+   * Realpath for the base URI.
+   *
+   * @var string
+   */
+  protected $base_realpath;
 
   /* (non-PHPdoc)
    * @see \Substance\Core\StreamWrappers\StreamWrapper::dir_closedir()
@@ -77,6 +85,37 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
     rewinddir( $this->handle );
     // Assume rewinddir works, as we have no way of telling.
     return TRUE;
+  }
+
+  /**
+   * Finds files matching the supplied glob pattern.
+   *
+   * The search is recursive and will look at all files in this stream wrappers
+   * base URI and then recurse into all the folders.
+   *
+   * @param string $file_glob the glob pattern for the files you want to find
+   */
+  public function find( $file_glob, $depth = 0 ) {
+
+  }
+
+  public function find_scan( $dir, $file_glob ) {
+    $files = array();
+    if ( is_dir( $dir ) ) {
+      $handle = opendir( $dir );
+      while ( ( $filename = readdir( $handle ) ) !== FALSE ) {
+        $path = "$dir/$filename";
+        if ( is_dir( $path ) ) {
+          // It's another directory, so can it's contents.
+          $files = array_merge( $files, $this->find_scan( $path, $file_glob ) );
+        } else if ( fnmatch( $file_glob, $filename ) ) {
+          // It's not a directory and it matches the glob pattern, so add it.
+          // TODO $files needs to be keyed off something...
+          $files[] = new File( $path );
+        }
+      }
+    }
+    return $files;
   }
 
   /* (non-PHPdoc)
@@ -171,7 +210,8 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
     if ( is_dir( $realdir ) ) {
       throw Alert::alert('URI is not a directory')->culprit( 'URI', $uri );
     }
-    $this->base_uri = $realdir;
+    $this->base_realpath = $realdir;
+    $this->base_uri = $uri;
   }
 
   /* (non-PHPdoc)
