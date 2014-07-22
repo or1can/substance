@@ -25,26 +25,29 @@ use Substance\Core\Alert\Alert;
  */
 class File {
 
-  protected $path = NULL;
+  protected $uri = NULL;
 
-  public static function scanDirectory( $dir, $pattern, $callback = NULL ) {
-    if ( is_dir( $dir ) ) {
-      $handle = opendir( $dir );
-
-    }
-  }
+  protected $filename = NULL;
 
   /**
    * Constructs a new File object for the specified path.
    *
    * @param unknown $path
    */
-  public function __construct( $path ) {
-    if ( is_file( $path ) ) {
-      $this->path = $path;
+  public function __construct( $uri ) {
+    if ( is_file( $uri ) ) {
+      $this->uri = $uri;
+      $this->filename = basename( $uri );
     } else {
-      throw Alert::alert( 'Not a file', 'Supplied path does not point to a file' )
-        ->culprit( 'path', $path );
+      throw Alert::alert( 'Not a file', 'Supplied URI does not point to a file' )
+        ->culprit( 'uri', $uri );
+    }
+  }
+
+  public static function scanDirectory( $dir, $pattern, $callback = NULL ) {
+    if ( is_dir( $dir ) ) {
+      $handle = opendir( $dir );
+
     }
   }
 

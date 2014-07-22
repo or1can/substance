@@ -18,6 +18,7 @@
 
 namespace Substance\Core\Environment;
 
+use Substance\Core\Folder;
 use Substance\Core\Presentation\Theme;
 use Substance\Core\Presentation\Presentable;
 use Substance\Themes\Text\TextTheme;
@@ -28,6 +29,11 @@ use Substance\Themes\HTML\HTMLTheme;
  * througout the application.
  */
 class Environment {
+
+  /**
+   * @var Folder
+   */
+  protected $application_root;
 
   /**
    * @var Environment
@@ -44,6 +50,19 @@ class Environment {
    * the getEnvironment method instead.
    */
   private function __construct() {
+    // Set the application root to the public folder.
+    $this->setApplicationRoot(
+      new Folder( dirname( dirname( __DIR__ ) ) )
+    );
+  }
+
+  /**
+   * Returns the applications root folder.
+   *
+   * @return Folder the root folder.
+   */
+  public function getApplicationRoot() {
+    return $this->application_root;
   }
 
   /**
@@ -61,7 +80,7 @@ class Environment {
    */
   public static function getEnvironment() {
     if ( is_null( self::$environment ) ) {
-      self::$environment = self::initialiseTextEnvironment();
+      self::$environment = self::initialiseHTMLEnvironment();
     }
     return self::$environment;
   }
@@ -118,6 +137,15 @@ class Environment {
    */
   public function outputAsString( Presentable $presentable ) {
     return $this->getOutputTheme()->renderPresentable( $presentable );
+  }
+
+  /**
+   * Sets the Folder to be used for this Environments application root.
+   *
+   * @param Folder $folder the applications root folder.
+   */
+  public function setApplicationRoot( Folder $folder ) {
+    $this->application_root = $folder;
   }
 
   /**

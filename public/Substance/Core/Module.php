@@ -18,6 +18,7 @@
 
 namespace Substance\Core;
 
+use Substance\Core\Environment\Environment;
 /**
  * A Substance module, from which all modules inherit.
  */
@@ -29,27 +30,8 @@ abstract class Module {
    * @return array an array of module files.
    */
   public static function findModules() {
-    static $search_dirs = array(
-      'Substance/Modules',
-      'Sites/All/Modules',
-    );
-
-    $modules = array();
-
-    foreach ( $search_dirs as $dir ) {
-      $candidates = glob( $dir . '/*/*.module' );
-      switch ( count( $candidates ) > 1 ) {
-        case 1:
-          $modules[] = $candidates[ 0 ];
-        case 0:
-          break;
-        default:
-          // FIXME - Only one *.module file allowed per "module".
-          break;
-      }
-    }
-
-    return $modules;
+    $root = Environment::getEnvironment()->getApplicationRoot();
+    return $root->find('*.module');
   }
 
   /**

@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /* Substance - Content Management System and application framework.
  * Copyright (C) 2014 Kevin Rogers
@@ -47,6 +48,7 @@ var_dump( $config );
 // throw new Exception("foo");
 
 try {
+  Environment::initialiseTextEnvironment();
   $environment = Environment::getEnvironment();
 
   var_dump( Module::findModules() );

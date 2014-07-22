@@ -87,37 +87,6 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
     return TRUE;
   }
 
-  /**
-   * Finds files matching the supplied glob pattern.
-   *
-   * The search is recursive and will look at all files in this stream wrappers
-   * base URI and then recurse into all the folders.
-   *
-   * @param string $file_glob the glob pattern for the files you want to find
-   */
-  public function find( $file_glob, $depth = 0 ) {
-
-  }
-
-  public function find_scan( $dir, $file_glob ) {
-    $files = array();
-    if ( is_dir( $dir ) ) {
-      $handle = opendir( $dir );
-      while ( ( $filename = readdir( $handle ) ) !== FALSE ) {
-        $path = "$dir/$filename";
-        if ( is_dir( $path ) ) {
-          // It's another directory, so can it's contents.
-          $files = array_merge( $files, $this->find_scan( $path, $file_glob ) );
-        } else if ( fnmatch( $file_glob, $filename ) ) {
-          // It's not a directory and it matches the glob pattern, so add it.
-          // TODO $files needs to be keyed off something...
-          $files[] = new File( $path );
-        }
-      }
-    }
-    return $files;
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\StreamWrappers\StreamWrapper::mkdir()
    */
@@ -157,7 +126,9 @@ abstract class AbstractLocalSubstanceStreamWrapper implements SubstanceStreamWra
           // Go up a segment.
           if ( count( $canonical_segments ) == 0 ) {
             // We cannot go "up" beyond the root of this stream.
-            throw Alert::alert('Attempting to go outside the root');
+            throw Alert::alert('Attempting to go outside local stream root')
+              ->culprit( 'base', $this->base_uri )
+              ->culprit( 'uri', $uri );
           } else {
             // Remove the last segment
             array_pop( $canonical_segments );
