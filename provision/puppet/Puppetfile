@@ -1,0 +1,5 @@
+# Puppetfile
+# Configuration for librarian-puppet. For example:
+# 
+forge "http://forge.puppetlabs.com"
+mod "puppetlabs/apache"

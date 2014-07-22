@@ -29,17 +29,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   
   # Before provisioning with Puppet, ensure that modules required by our Puppet
   # manifest are installed.
-  config.vm.provision :shell do |shell|
-    shell.inline = "puppet module install puppetlabs-apache --force"
-  end
-
+  config.vm.provision :shell, :path => "provision/shell/main.sh"
+  
   # Enable provisioning with Puppet stand alone.  Puppet manifests
   # are contained in a directory path relative to this Vagrantfile.
   # You will need to create the manifests directory and a manifest in
   # the file centos6.5.pp in the manifests_path directory.
   #
   config.vm.provision :puppet do |puppet|
-    puppet.manifests_path = "vagrant/manifests"
-    puppet.manifest_file  = "site.pp"
+    puppet.manifests_path = 'provision/puppet/manifests'
+    puppet.manifest_file = 'site.pp'
+    puppet.module_path = [ 'provision/puppet/modules' ]
+    # puppet.options = "--verbose --debug"
   end
 end
