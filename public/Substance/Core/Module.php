@@ -19,6 +19,7 @@
 namespace Substance\Core;
 
 use Substance\Core\Environment\Environment;
+
 /**
  * A Substance module, from which all modules inherit.
  */
