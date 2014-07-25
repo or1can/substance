@@ -18,12 +18,36 @@
 
 namespace Substance\Core\Presentation\Elements;
 
+use Substance\Core\Alert\Alert;
+use Substance\Core\Presentation\Element;
 use Substance\Core\Presentation\Theme;
 
 /**
  * A table row, i.e a container of cell elements.
  */
 class TableRow extends Container {
+
+  /**
+   * Add's a cell to this row.
+   *
+   * This method is a shorthand for addElement, to make code a little clearer.
+   *
+   * @param TableCell $cell the cell to add
+   */
+  public function addCell( TableCell $cell ) {
+    return $this->addElement( $cell );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Elements\Container::addElement()
+   */
+  public function addElement( Element $element ) {
+    if ( !( $element instanceof TableCell ) ) {
+      throw Alert::alert( 'Table cell required', 'Only TableCell\'s can be added to a table row' )
+        ->culprit( 'element', $element );
+    }
+    return parent::addElement( $element );
+  }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()

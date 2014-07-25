@@ -18,13 +18,12 @@
 
 namespace Substance\Core\Presentation\Elements;
 
-use Substance\Core\Presentation\Element;
 use Substance\Core\Presentation\Theme;
 
 /**
- * A table cell.
+ * A table cell, i.e. a container of elements.
  */
-class TableCell extends Element {
+class TableCell extends Container {
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()

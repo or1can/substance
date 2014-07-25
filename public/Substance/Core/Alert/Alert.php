@@ -18,7 +18,10 @@
 
 namespace Substance\Core\Alert;
 
-use Substance\Core\Presentation\Elements\Container;
+use Substance\Core\Presentation\Elements\Markup;
+use Substance\Core\Presentation\Elements\Table;
+use Substance\Core\Presentation\Elements\TableRow;
+use Substance\Core\Presentation\Elements\TableCell;
 use Substance\Core\Presentation\Elements\TextField;
 use Substance\Core\Presentation\Presentable;
 use Substance\Themes\Text\TextTheme;
@@ -153,16 +156,32 @@ class Alert extends \Exception implements Presentable {
    * @see \Substance\Core\Presentation\Presentable::present()
    */
   public function present() {
-    $container = Container::create();
-    $container->addElement(
-      TextField::create()->setDefaultValue( $this->getMessage() )
+    $table = Table::create();
+    $table->addRow(
+      TableRow::createWithElement(
+        TableCell::createWithElement(
+          Markup::create()->setMarkup( 'Message : ' )
+        )
+      )->addCell(
+        TableCell::createWithElement(
+          Markup::create()->setMarkup( $this->getMessage() )
+        )
+      )
     );
     foreach ( $this->culprits as $culprit ) {
-      $container->addElement(
-        TextField::create()->setDefaultValue( (string) $culprit )
+      $table->addRow(
+        TableRow::createWithElement(
+          TableCell::create()->addElement(
+            Markup::create()->setMarkup( mb_strtoupper( $culprit->getType() . ' : ' ) )
+          )
+        )->addCell(
+          TableCell::create()->addElement(
+            Markup::create()->setMarkup( $culprit->getValue() )
+          )
+        )
       );
     }
-    return $container;
+    return $table;
   }
 
   /**

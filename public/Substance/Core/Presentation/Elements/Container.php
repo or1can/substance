@@ -45,6 +45,17 @@ class Container extends Element {
   }
 
   /**
+   * Returns a new instance of this element, with the supplied element added to it.
+   *
+   * @return self A new instance of this element.
+   */
+  public static function createWithElement( Element $element ) {
+    $container = new static;
+    $container->addElement( $element );
+    return $container;
+  }
+
+  /**
    * Returns the containers elements.
    *
    * @return Element[] the containers elements.

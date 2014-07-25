@@ -208,14 +208,16 @@ class TextTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderTableCell()
    */
   public function renderTableCell( TableCell $table_cell ) {
-    // TODO
+    // TODO - Rendering a table like a container will work for the time being.
+    return $this->renderContainer( $table_cell );
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderTableRow()
    */
   public function renderTableRow( TableRow $table_row ) {
-    // TODO
+    // TODO - Rendering a table like a container will work for the time being.
+    return $this->renderContainer( $table_row );
   }
 
   /* (non-PHPdoc)

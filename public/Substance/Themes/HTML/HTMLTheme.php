@@ -201,7 +201,7 @@ class HTMLTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderTableCell()
    */
   public function renderTableCell( TableCell $table_cell ) {
-    // TODO
+    return '<td>' . parent::renderContainer( $table_cell ) . '</td>';
   }
 
   /* (non-PHPdoc)
