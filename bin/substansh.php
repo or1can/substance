@@ -26,20 +26,21 @@ error_reporting(E_ALL | E_STRICT);
 
 require '../vendor/autoload.php';
 
-use Substance\Modules\Configuration\Config;
-use Whoops\Run;
-use Whoops\Handler\PrettyPageHandler;
-use Substance\Core\Module;
 use Substance\Core\Alert\Alert;
+use Substance\Core\Database\MySQL\Connection;
 use Substance\Core\Environment\Environment;
+use Substance\Core\Module;
+use Substance\Modules\Configuration\Config;
 use Substance\Themes\HTML\HTMLTheme;
 use Substance\Themes\Text\TextTheme;
+use Whoops\Run;
+use Whoops\Handler\PrettyPageHandler;
 
-$run = new Run;
-$handler = new PrettyPageHandler;
+// $run = new Run;
+// $handler = new PrettyPageHandler;
 
-$run->pushHandler( $handler );
-$run->register();
+// $run->pushHandler( $handler );
+// $run->register();
 
 $config = new Config();
 
@@ -65,6 +66,10 @@ try {
   $environment->setOutputTheme( TextTheme::create() );
 
   echo $alert;
+
+  $connection = new Connection('mysql:host=127.0.0.1;;port=3306;dbname=drupal', 'username', 'passwd');
+
+  var_dump( $connection->query('SELECT * FROM system LIMIT 1') );
 
 } catch ( Alert $a ) {
   echo $a;

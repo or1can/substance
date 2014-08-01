@@ -16,6 +16,12 @@ package { 'php-devel':
 package { 'php-mbstring':
 }
 
+package { 'php-mysql':
+}
+
+package { 'php-pdo':
+}
+
 package { 'php-pear':
 }
 
