@@ -10,6 +10,16 @@ apache::vhost { 'substance.vm':
   serveradmin => 'admin@substance.vm',
 }
 
+class { '::mysql::server':
+}
+
+mysql::db { 'mydb':
+  user => 'myuser',
+  password => 'mypass',
+  host => 'localhost',
+  grant => ['ALL'],
+}
+
 package { 'php-devel':
 }
 
