@@ -67,9 +67,9 @@ try {
 
   echo $alert;
 
-  $connection = new Connection('mysql:host=127.0.0.1;;port=3306;dbname=drupal', 'username', 'passwd');
+  $connection = new Connection('mysql:host=127.0.0.1;port=3306;dbname=mydb', 'myuser', 'mypass');
 
-  var_dump( $connection->query('SELECT * FROM system LIMIT 1') );
+  var_dump( $connection->query('SELECT * FROM information_schema.TABLES LIMIT 1') );
 
 } catch ( Alert $a ) {
   echo $a;
