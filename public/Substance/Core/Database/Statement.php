@@ -22,16 +22,16 @@ namespace Substance\Core\Database;
  * Represents a database statement in Substance, which is an extension of the
  * core PHP PDOStatement class.
  */
-abstract class Statement extends \PDOStatement {
+class Statement extends \PDOStatement {
 
   /**
    * @var Connection
    */
   protected $connection;
 
-  public function __construct( Connection $connection ) {
+  protected function __construct( Connection $connection ) {
     $this->connection = $connection;
-    $this->setFetchMode( PDO::FETCH_OBJ );
+    $this->setFetchMode( \PDO::FETCH_OBJ );
   }
 
 }

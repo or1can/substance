@@ -27,7 +27,7 @@ abstract class Connection extends \PDO {
   public function __construct( $dsn, $username, $passwd, $options = array() ) {
     parent::__construct( $dsn, $username, $passwd, $options );
 
-    $this->setAttribute( PDO::ATTR_STATEMENT_CLASS, array( Substance\Core\Database\Statement, array( $this ) ) );
+    $this->setAttribute( \PDO::ATTR_STATEMENT_CLASS, array( '\Substance\Core\Database\Statement', array( $this ) ) );
   }
 
 }
