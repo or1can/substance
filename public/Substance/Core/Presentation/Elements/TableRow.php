@@ -32,21 +32,27 @@ class TableRow extends Container {
    *
    * This method is a shorthand for addElement, to make code a little clearer.
    *
-   * @param TableCell $cell the cell to add
+   * @param TableCell ...$cell the cell to add
    */
   public function addCell( TableCell $cell ) {
-    return $this->addElement( $cell );
+    call_user_func_array( array( $this, 'addElement' ), func_get_args() );
+    return $this;
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Elements\Container::addElement()
    */
   public function addElement( Element $element ) {
-    if ( !( $element instanceof TableCell ) ) {
-      throw Alert::alert( 'Table cell required', 'Only TableCell\'s can be added to a table row' )
-        ->culprit( 'element', $element );
+    for ( $i = 0; $i < func_num_args(); $i++ ) {
+      $elem = func_get_arg( $i );
+      if ( $elem instanceof TableCell ) {
+        parent::addElement( $elem );
+      } else {
+        throw Alert::alert( 'Table cell required', 'Only TableCell\'s can be added to a table row' )
+          ->culprit( 'element', $element );
+      }
     }
-    return parent::addElement( $element );
+    return $this;
   }
 
   /* (non-PHPdoc)

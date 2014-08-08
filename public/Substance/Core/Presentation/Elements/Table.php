@@ -31,11 +31,16 @@ class Table extends Container {
    * @see \Substance\Core\Presentation\Elements\Container::addElement()
    */
   public function addElement( Element $element ) {
-    if ( !( $element instanceof TableRow ) ) {
-      throw Alert::alert( 'Table row required', 'Only TableRow\'s can be added to a table' )
-        ->culprit( 'element', $element );
+    for ( $i = 0; $i < func_num_args(); $i++ ) {
+      $elem = func_get_arg( $i );
+      if ( $elem instanceof TableRow ) {
+        parent::addElement( $elem );
+      } else {
+        throw Alert::alert( 'Table row required', 'Only TableRow\'s can be added to a table' )
+          ->culprit( 'element', $element );
+      }
     }
-    return parent::addElement( $element );
+    return $this;
   }
 
   /**
@@ -43,10 +48,11 @@ class Table extends Container {
    *
    * This method is a shorthand for addElement, to make code a little clearer.
    *
-   * @param TableRow $row the row to add
+   * @param TableRow ...$row the row to add
    */
   public function addRow( TableRow $row ) {
-    return $this->addElement( $row );
+    call_user_func_array( array( $this, 'addElement' ), func_get_args() );
+    return $this;
   }
 
   /* (non-PHPdoc)

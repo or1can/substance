@@ -161,8 +161,7 @@ class Alert extends \Exception implements Presentable {
       TableRow::createWithElement(
         TableCell::createWithElement(
           Markup::create()->setMarkup( 'Message : ' )
-        )
-      )->addCell(
+        ),
         TableCell::createWithElement(
           Markup::create()->setMarkup( $this->getMessage() )
         )
@@ -173,8 +172,7 @@ class Alert extends \Exception implements Presentable {
         TableRow::createWithElement(
           TableCell::create()->addElement(
             Markup::create()->setMarkup( mb_strtoupper( $culprit->getType() . ' : ' ) )
-          )
-        )->addCell(
+          ),
           TableCell::create()->addElement(
             Markup::create()->setMarkup( $culprit->getValue() )
           )

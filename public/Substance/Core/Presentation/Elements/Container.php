@@ -36,22 +36,41 @@ class Container extends Element {
   /**
    * Adds an Element to the container.
    *
-   * @param Element $element the Element to add.
+   * @param Element ...$element the Element to add.
    * @return self this element so methods can be chained.
    */
   public function addElement( Element $element ) {
-    $this->elements[] = $element;
+    for ( $i = 0; $i < func_num_args(); $i++ ) {
+      $elem = func_get_arg( $i );
+      if ( $elem instanceof Element ) {
+        $this->elements[] = $element;
+      } else {
+        throw new \InvalidArgumentException('Can only add Elements to a Container');
+      }
+    }
+    return $this;
+  }
+
+  /**
+   * Adds an array of Elements to the container.
+   *
+   * @param Element[] $elements the array of Elements to add.
+   * @return self this element so methods can be chained.
+   */
+  public function addElements( array $elements ) {
+    call_user_func_array( array( $this, 'addElement' ), $elements );
     return $this;
   }
 
   /**
    * Returns a new instance of this element, with the supplied element added to it.
    *
+   * @param Element ...$element the Element to add.
    * @return self A new instance of this element.
    */
   public static function createWithElement( Element $element ) {
     $container = new static;
-    $container->addElement( $element );
+    $container->addElements( func_get_args() );
     return $container;
   }
 
