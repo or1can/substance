@@ -37,3 +37,34 @@ Database management is a key component, and anything but easy.
 * Migrations SHOULD allow rollback?
 * Migrations MUST be defined once and only once (i.e. no hook_update_N and
   hook_schema like Drupal)
+  
+Presentation arrays
+===================
+
+Would it be useful to allow an array based presentation system, kind of like a
+serialised Element structure? e.g. the following table strucutre:
+
+$table_array = array(
+  '#type' => 'table',
+  '#rows' => array(
+    array(
+      '#type' => 'table_row',
+      '#cells' => array(
+        array(
+          '#type' => 'table_cell',
+          '#value' => array(
+            '#type' => 'markup',
+            '#markup' => 'Message : ',
+          ),
+        ),
+        array(
+          '#type' => 'table_cell',
+          '#value' => array(
+            '#type' => 'markup',
+            '#markup' => $this->getMessage(),
+          ),
+        ),
+      ),
+    ),
+  )
+);
