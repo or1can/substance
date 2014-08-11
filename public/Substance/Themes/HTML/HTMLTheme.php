@@ -194,7 +194,7 @@ class HTMLTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderTable()
    */
   public function renderTable( Table $table ) {
-    return '<table>' . $this->renderContainer( $table ) . '</table>';
+    return '<table>' . parent::renderContainer( $table ) . '</table>';
   }
 
   /* (non-PHPdoc)
