@@ -86,6 +86,7 @@ class TextTheme extends AbstractTheme {
    */
   public function renderContainer( Container $container ) {
     $output = '';
+    $output .= PHP_EOL;
     foreach ( $container->getElements() as $element ) {
       $output .= $this->render( $element );
       $output .= PHP_EOL;
@@ -208,16 +209,24 @@ class TextTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderTableCell()
    */
   public function renderTableCell( TableCell $table_cell ) {
-    // TODO - Rendering a table like a container will work for the time being.
-    return $this->renderContainer( $table_cell );
+    // Keep it simple and render each item with nothing inbetween
+    $output = '';
+    foreach ( $table_cell->getElements() as $element ) {
+      $output .= $this->render( $element );
+    }
+    return $output;
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderTableRow()
    */
   public function renderTableRow( TableRow $table_row ) {
-    // TODO - Rendering a table like a container will work for the time being.
-    return $this->renderContainer( $table_row );
+    // Keep it simple and render each cell with a tab inbetween
+    $output = array();
+    foreach ( $table_row->getElements() as $element ) {
+      $output[] = $this->render( $element );
+    }
+    return implode( ' : ', $output );
   }
 
   /* (non-PHPdoc)
