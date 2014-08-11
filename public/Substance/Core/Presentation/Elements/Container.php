@@ -43,7 +43,7 @@ class Container extends Element {
     for ( $i = 0; $i < func_num_args(); $i++ ) {
       $elem = func_get_arg( $i );
       if ( $elem instanceof Element ) {
-        $this->elements[] = $element;
+        $this->elements[] = $elem;
       } else {
         throw new \InvalidArgumentException('Can only add Elements to a Container');
       }
