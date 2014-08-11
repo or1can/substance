@@ -152,6 +152,17 @@ class Alert extends \Exception implements Presentable {
     return $info;
   }
 
+  /**
+   * Returns an origin message. An origin is a combination of file and line
+   * number information, with the line number appened in parenthesis after the
+   * file name.
+   *
+   * @return string the origin message
+   */
+  public function getOrigin() {
+    return $this->getFile() . '(' . $this->getLine() . ')';
+  }
+
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Presentable::present()
    */
@@ -160,7 +171,7 @@ class Alert extends \Exception implements Presentable {
     $table->addRow(
       TableRow::createWithElement(
         TableCell::createWithElement(
-          Markup::create()->setMarkup( 'Message : ' )
+          Markup::create()->setMarkup( 'Message' )
         ),
         TableCell::createWithElement(
           Markup::create()->setMarkup( $this->getMessage() )
@@ -171,10 +182,49 @@ class Alert extends \Exception implements Presentable {
       $table->addRow(
         TableRow::createWithElement(
           TableCell::create()->addElement(
-            Markup::create()->setMarkup( mb_strtoupper( $culprit->getType() . ' : ' ) )
+            Markup::create()->setMarkup( mb_strtoupper( $culprit->getType() ) )
           ),
           TableCell::create()->addElement(
             Markup::create()->setMarkup( $culprit->getValue() )
+          )
+        )
+      );
+    }
+    $table->addRow(
+      TableRow::createWithElement(
+        TableCell::createWithElement(
+          Markup::create()->setMarkup( 'Origin' )
+        ),
+        TableCell::createWithElement(
+          Markup::create()->setMarkup( $this->getOrigin() )
+        )
+      )
+    );
+    foreach ( $this->getTrace() as $index => $trace ) {
+      $method = $trace['file'] . '(' . $trace['line'] . '): ';
+      if ( $trace['class'] != '' ) {
+        $method .= $trace['class'];
+        $method .= $trace['type'];
+      }
+      $method .= $trace['function'];
+      $method .= '(';
+      if ( $trace['args'] ) {
+        $method .= implode(
+          ', ',
+          array_map(
+            function( $value ) { return var_export( $value, TRUE ); },
+            $trace['args']
+          )
+        );
+      }
+      $method .= ')';
+      $table->addRow(
+        TableRow::createWithElement(
+          TableCell::create()->addElement(
+            Markup::create()->setMarkup( 'Trace #' . $index )
+          ),
+          TableCell::create()->addElement(
+            Markup::create()->setMarkup( $method )
           )
         )
       );
