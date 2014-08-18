@@ -19,29 +19,30 @@
 namespace Substance\Core\Database\MySQL;
 
 use Substance\Core\Database\Database;
+
 /**
  * Represents a database connection in Substance, which is an extension of the
  * core PHP PDO class.
  */
 class Connection extends \Substance\Core\Database\Connection {
 
-  public function __construct( $dsn, $username, $passwd, &$options = array() ) {
+  public function __construct( $dsn, $username, $passwd, &$pdo_options = array(), &$options = array() ) {
     // Set default MySQL options
-    $options += array(
+    $pdo_options += array(
       // Use buffered queries for consistency with other drivers.
       \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => TRUE,
     );
 
-//     $options += array(
-//       Database::INIT_COMMANDS => array(),
-//     );
-//     $options[ Database::INIT_COMMANDS ] += array(
-//       'sql_mode' => "SET sql_mode = 'ANSI,STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER'",
-//     );
+    // Set default
+    $options += array(
+      Database::INIT_COMMANDS => array(),
+    );
+    $options[ Database::INIT_COMMANDS ] += array(
+      'sql_mode' => "SET sql_mode = 'ANSI,STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER'",
+      'names' => "SET NAMES utf8",
+    );
 
-    parent::__construct( $dsn, $username, $passwd, $options );
-
-    $this->exec('SET NAMES utf8;');
+    parent::__construct( $dsn, $username, $passwd, $options, $pdo_options );
   }
 
 }

@@ -23,4 +23,6 @@ namespace Substance\Core\Database;
  */
 abstract class Database {
 
+  const INIT_COMMANDS = 'init_commands';
+
 }

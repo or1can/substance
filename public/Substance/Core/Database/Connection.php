@@ -24,12 +24,12 @@ namespace Substance\Core\Database;
  */
 abstract class Connection extends \PDO {
 
-  public function __construct( $dsn, $username, $passwd, &$options = array() ) {
+  public function __construct( $dsn, $username, $passwd, &$pdo_options = array(), &$options = array() ) {
     // Force error exceptions, always.
     $options[ \PDO::ATTR_ERRMODE ] = \PDO::ERRMODE_EXCEPTION;
 
     // Set default options.
-    $options += array(
+    $pdo_options += array(
       // Use our default statement class for all statements.
       \PDO::ATTR_STATEMENT_CLASS => array( '\Substance\Core\Database\Statement', array( $this ) ),
       // Emulate prepared statements until we know that we'll be running the
@@ -38,7 +38,7 @@ abstract class Connection extends \PDO {
     );
 
     // Call PDO::__construct to initiate the connection
-    parent::__construct( $dsn, $username, $passwd, $options );
+    parent::__construct( $dsn, $username, $passwd, $pdo_options );
 
     // Execute init commands.
     if ( !empty( $options[ Database::INIT_COMMANDS ] ) ) {
