@@ -20,6 +20,7 @@ namespace Substance\Core\Presentation\Elements;
 
 use Substance\Core\Alert\Alert;
 use Substance\Core\Presentation\Element;
+use Substance\Core\Presentation\ElementBuilder;
 use Substance\Core\Presentation\Theme;
 
 /**
@@ -53,6 +54,65 @@ class TableRow extends Container {
       }
     }
     return $this;
+  }
+
+  /**
+   * $elements - a build array or array of simple cells.
+   * $elements['#row'] - the table row, either an array of simple cells or an
+   * array of table cell build arrays.
+   *
+   * @see \Substance\Core\Presentation\Container::build()
+   */
+  public static function build( $element ) {
+    if ( is_array( $element ) ) {
+      // Check if $element has a '#type' key, in which case, treat $element as
+      // a full build array.
+      if ( array_key_exists( '#type', $element ) ) {
+        if ( $element['#type'] != get_called_class() ) {
+          // The supplied element has a #type, but it's not for a TableCell, so
+          // we can't build it.
+          throw Alert::alert('TableRow element can only build ' . __CLASS__ . ' elements')
+            ->culprit( 'type', $element['#type'] );
+        }
+        // Check for the required #row, as this contains the row contents.
+        if ( array_key_exists( '#row', $element ) ) {
+          if ( is_array( $element['#row'] ) ) {
+            // Iterate over the row to build each cell.
+            $table_row = TableRow::create();
+            foreach ( $element['#row'] as $cell ) {
+              if ( is_array( $cell ) ) {
+                // The row is an array, so handle like an other build array.
+                $table_row->addCell( ElementBuilder::build( $cell ) );
+              } else {
+                // The row is not an array, so we treat this as markup and have
+                // to deliberately wrap it in a table cell.
+                $table_row->addCell(
+                    TableCell::createWithElement( ElementBuilder::build( $cell ) )
+                );
+              }
+            }
+            return $table_row;
+          } else {
+            throw Alert::alert('TableRow build array #row property must be an array');
+          }
+        } else {
+          throw Alert::alert('TableRow build array requires #row property');
+        }
+      } else {
+        // The supplied build array doesn't have a type, so it must be an array
+        // of simple cells, so rebuild it as a proper build array and build.
+        $element = array(
+          '#type' => 'Substance\Core\Presentation\Elements\TableRow',
+          '#row' => $element,
+        );
+        return self::build( $element );
+      }
+    } else {
+      throw Alert::alert(
+        'TableRow can only be built with an array',
+        'Building a TableRow requires either an array of simple cells (i.e. strings) or an array of build arrays (i.e. TableCells).'
+      )->culprit( 'element', $element );
+    }
   }
 
   /* (non-PHPdoc)

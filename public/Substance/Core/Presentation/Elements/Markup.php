@@ -33,6 +33,34 @@ class Markup extends Element {
    */
   protected $markup;
 
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Container::build()
+   */
+  public static function build( $element ) {
+    if ( is_array( $element ) ) {
+      // The supplied element is an array, so we treat it as a build array.
+      if ( !array_key_exists( '#type', $element ) ) {
+        // The supplied element does not have a #type, so it's not a build array
+        throw Alert::alert('Markup build array requires #type property');
+      } else if ( $element['#type'] != get_called_class() ) {
+        // The supplied element has a #type, but it's not for a TableCell, so
+        // we can't build it.
+        throw Alert::alert('Markup element can only build ' . __CLASS__ . ' elements')
+          ->culprit( 'type', $element['#type'] );
+      }
+      // Check for the required #markup, as this contains the markup.
+      if ( array_key_exists( '#markup', $element ) ) {
+        return Markup::create()->setMarkup( $element['#markup'] );
+      } else {
+        throw Alert::alert('Markup build array requires #markup property');
+      }
+    } else {
+      // The supplied element is not an array, so we treat it as cell contents,
+      // using the standard element builder to handle it as markup.
+      return Markup::create()->setMarkup( $element );
+    }
+  }
+
   /**
    * Returns this elements markup.
    *

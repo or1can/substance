@@ -65,7 +65,7 @@ try {
 
   echo $alert;
 
-  $connection = new Connection('mysql:host=127.0.0.1;port=3306;dbname=mydb', 'myuser', 'mypass');
+  $connection = $config['database']['*']['master'];
 
   var_dump( $connection->query('SELECT * FROM information_schema.TABLES LIMIT 1') );
 

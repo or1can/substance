@@ -21,6 +21,7 @@ namespace Substance\Core\Presentation\Elements;
 use Substance\Core\Alert\Alert;
 use Substance\Core\Presentation\Element;
 use Substance\Core\Presentation\Theme;
+use Substance\Core\Presentation\ElementBuilder;
 
 /**
  * A table, i.e. a container of TableRows.
@@ -53,6 +54,44 @@ class Table extends Container {
   public function addRow( TableRow $row ) {
     call_user_func_array( array( $this, 'addElement' ), func_get_args() );
     return $this;
+  }
+
+  /**
+   * #rows - an array of rows
+   *
+   * @see \Substance\Core\Presentation\Container::build()
+   */
+  public static function build( $element ) {
+    if ( is_array( $element ) ) {
+      // The supplied element is an array, so we treat it as a build array.
+      if ( !array_key_exists( '#type', $element ) ) {
+        // The supplied element does not have a #type, so it's not a build array
+        throw Alert::alert('Table build array requires #type property');
+      } else if ( $element['#type'] != get_called_class() ) {
+        // The supplied element has a #type, but it's not for a TableCell, so
+        // we can't build it.
+        throw Alert::alert('Table element can only build ' . __CLASS__ . ' elements')
+          ->culprit( 'type', $element['#type'] );
+      }
+      // Check for the required #elements, as this contains the cell contents.
+      if ( array_key_exists( '#rows', $element ) ) {
+        if ( is_array( $element['#rows'] ) ) {
+          $table = Table::create();
+          foreach ( $element['#rows'] as $row ) {
+            $table->addRow(
+              TableRow::build( $row )
+            );
+          }
+          return $table;
+        } else {
+          throw Alert::alert('Table build array #rows property must be an array');
+        }
+      } else {
+        throw Alert::alert('Table build array requires #rows property');
+      }
+    } else {
+      throw Alert::alert('Table can only be built with a build array');
+    }
   }
 
   /* (non-PHPdoc)

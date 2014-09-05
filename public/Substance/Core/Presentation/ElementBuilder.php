@@ -25,16 +25,7 @@ use Substance\Core\Alert\Alert;
  * building a structured Element, which is then rendered appropriately for the
  * current context.
  */
-abstract class Element {
-
-  /**
-   * Returns a new instance of the element. This method should be overridden in
-   * all subclasses.
-   * @return self A new instance of the element.
-   */
-  public static function create() {
-    return new static;
-  }
+class ElementBuilder {
 
   /**
    * Returns a new instance of the element, using the supplied object.
@@ -49,20 +40,33 @@ abstract class Element {
    * @return self A new instance of the element.
    */
   public static function build( $element ) {
-    $element_class = get_called_class();
-    throw Alert::alert('Cannot build element', "$element_class does not support building instances from array.");
+    if ( is_array( $element ) ) {
+      if ( array_key_exists( '#type', $element ) ) {
+        // We have an element array with a defined type, so we can just get on
+        // with it.
+        $class = $element['#type'];
+        if ( is_subclass_of( $class, 'Substance\Core\Presentation\Element' ) ) {
+          return $class::build( $element );
+        } else {
+          throw Alert::alert(
+            'Can only build elements of type Element',
+            'Supplied #type must be the class name of a class that extends Substance\Core\Presentation\Element'
+          )->culprit( 'supplied class', $class );
+        }
+      } else {
+        // We have an element array without a defined type, so we default the
+        // type to markup and carry on as normal.
+        $element['#type'] = 'Substance\Core\Presentation\Elements\Markup';
+        return self::build( $element );
+      }
+    } else {
+      // It's not an array, so treat it as markup and carry on as normal.
+      $element = array(
+        '#type' => 'Substance\Core\Presentation\Elements\Markup',
+        '#markup' => $element,
+      );
+      return self::build( $element );
+    }
   }
-
-  /**
-   * Renders this element using the specific Theme.
-   *
-   * This allows an Element to have some control over how it is themed. For
-   * most Elements, this is implemented as a simple callback to a specific
-   * rendering method in the specified Theme - but this may not be appropriate
-   * for all Elements.
-   *
-   * @param Theme $theme
-   */
-  abstract public function render( Theme $theme );
 
 }

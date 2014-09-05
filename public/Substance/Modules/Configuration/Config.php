@@ -17,7 +17,8 @@ class Config extends Pimple {
     require 'Sites/_default/settings.php';
 
     if ( !array_key_exists( '*', $databases ) ) {
-      throw Alert::alert('You must define database name "*" in your database configuration' );
+      throw Alert::alert('You must define connection name "*" in your database configuration' )
+        ->culprit( 'defined connection names', implode( ',', array_keys( $databases ) ) );
     }
     foreach ( $databases as $connection_name => $server_types ) {
       $this['database'][ $connection_name ] = new \Pimple();

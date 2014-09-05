@@ -18,6 +18,8 @@
 
 namespace Substance\Core\Alert;
 
+use Substance\Core\Environment\Environment;
+use Substance\Core\Presentation\ElementBuilder;
 use Substance\Core\Presentation\Elements\Markup;
 use Substance\Core\Presentation\Elements\Table;
 use Substance\Core\Presentation\Elements\TableRow;
@@ -25,7 +27,6 @@ use Substance\Core\Presentation\Elements\TableCell;
 use Substance\Core\Presentation\Elements\TextField;
 use Substance\Core\Presentation\Presentable;
 use Substance\Themes\Text\TextTheme;
-use Substance\Core\Environment\Environment;
 
 /**
  * An Alert, our Exception on steroids. The more information you can pack in
@@ -99,7 +100,11 @@ class Alert extends \Exception implements Presentable {
    * @see Exception::__toString()
    */
   public function __toString() {
-    return Environment::getEnvironment()->outputAsString( $this );
+    try {
+      return Environment::getEnvironment()->outputAsString( $this );
+    } catch ( \Exception $ex ) {
+      return $ex->getMessage();
+    }
   }
 
   /**
@@ -199,50 +204,18 @@ class Alert extends \Exception implements Presentable {
    * @see \Substance\Core\Presentation\Presentable::present()
    */
   public function present() {
-    $table = Table::create();
-    $table->addRow(
-      TableRow::createWithElement(
-        TableCell::createWithElement(
-          Markup::create()->setMarkup( 'Message' )
-        ),
-        TableCell::createWithElement(
-          Markup::create()->setMarkup( $this->getMessage() )
-        )
-      )
+    $rows = array(
+      array( 'Message', $this->getMessage() ),
     );
-    if ( $this->getExplanation() ) {
-      $table->addRow(
-        TableRow::createWithElement(
-          TableCell::createWithElement(
-            Markup::create()->setMarkup( 'Explanation' )
-          ),
-          TableCell::createWithElement(
-            Markup::create()->setMarkup( $this->getExplanation() )
-          )
-        )
-      );
-    }
     foreach ( $this->culprits as $culprit ) {
-      $table->addRow(
-        TableRow::createWithElement(
-          TableCell::create()->addElement(
-            Markup::create()->setMarkup( mb_strtoupper( $culprit->getType() ) )
-          ),
-          TableCell::create()->addElement(
-            Markup::create()->setMarkup( $culprit->getValue() )
-          )
-        )
+      $rows[] = array(
+        mb_strtoupper( $culprit->getType() ),
+        $culprit->getValue(),
       );
     }
-    $table->addRow(
-      TableRow::createWithElement(
-        TableCell::createWithElement(
-          Markup::create()->setMarkup( 'Origin' )
-        ),
-        TableCell::createWithElement(
-          Markup::create()->setMarkup( $this->getOrigin() )
-        )
-      )
+    $rows[] = array(
+      'Origin',
+      $this->getOrigin(),
     );
     foreach ( $this->getAlertTrace() as $index => $trace ) {
       $method = $trace['file'] . '(' . $trace['line'] . '): ';
@@ -262,60 +235,16 @@ class Alert extends \Exception implements Presentable {
         );
       }
       $method .= ')';
-      $table->addRow(
-        TableRow::createWithElement(
-          TableCell::create()->addElement(
-            Markup::create()->setMarkup( 'Trace #' . $index )
-          ),
-          TableCell::create()->addElement(
-            Markup::create()->setMarkup( $method )
-          )
-        )
+      $rows[] = array(
+        'Trace #' . $index,
+        $method,
       );
     }
+    $table = ElementBuilder::build(array(
+      '#type' => 'Substance\Core\Presentation\Elements\Table',
+      '#rows' => $rows,
+    ));
     return $table;
-
-
-
-
-
-//     $table = array(
-//       array( 'Message', $this->getMessage() ),
-//     );
-//     foreach ( $this->culprits as $culprit ) {
-//       $table[] = array(
-//         mb_strtoupper( $culprit->getType() ),
-//         $culprit->getValue(),
-//       );
-//     }
-//     $table[] = array(
-//       'Origin',
-//       $this->getOrigin(),
-//     );
-//     foreach ( $this->getAlertTrace() as $index => $trace ) {
-//       $method = $trace['file'] . '(' . $trace['line'] . '): ';
-//       if ( $trace['class'] != '' ) {
-//         $method .= $trace['class'];
-//         $method .= $trace['type'];
-//       }
-//       $method .= $trace['function'];
-//       $method .= '(';
-//       if ( $trace['args'] ) {
-//         $method .= implode(
-//           ', ',
-//           array_map(
-//             function( $value ) { return var_export( $value, TRUE ); },
-//             $trace['args']
-//           )
-//         );
-//       }
-//       $method .= ')';
-//       $table[] = array(
-//         'Trace #' . $index,
-//         $method,
-//       );
-//     }
-//     return $table;
   }
 
   /**

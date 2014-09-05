@@ -34,6 +34,9 @@ use Substance\Themes\HTML\HTMLTheme;
 use Substance\Themes\Text\TextTheme;
 use Whoops\Run;
 use Whoops\Handler\PrettyPageHandler;
+use Substance\Core\Presentation\Elements\TableCell;
+use Substance\Core\Presentation\ElementBuilder;
+use Substance\Core\Presentation\Element;
 
 // $run = new Run;
 // $handler = new PrettyPageHandler;
@@ -70,6 +73,57 @@ try {
 
   var_dump( $connection->query('SELECT * FROM information_schema.TABLES LIMIT 1') );
 
+  $tablecell = TableCell::build('Origin');
+
+  var_export( $tablecell );
+
+  echo $environment->getOutputTheme()->render( $tablecell );
+
+  $tablecell = TableCell::build(array(
+    '#type' => 'Substance\Core\Presentation\Elements\TableCell',
+    '#elements' => 'stuff',
+  ));
+
+  var_export( $tablecell );
+
+  echo $environment->getOutputTheme()->render( $tablecell );
+
+  $tablecell = ElementBuilder::build(array(
+    '#type' => 'Substance\Core\Presentation\Elements\TableCell',
+    '#elements' => 'stuff',
+  ));
+
+  var_export( $tablecell );
+
+  echo $environment->getOutputTheme()->render( $tablecell );
+
+
+  $environment->setOutputTheme( HTMLTheme::create() );
+
+
+  $tablerow = ElementBuilder::build(array(
+    '#type' => 'Substance\Core\Presentation\Elements\TableRow',
+    '#row' => array( 'stuff', 'morestuff' ),
+  ));
+
+  var_export( $tablerow );
+
+  echo $environment->getOutputTheme()->render( $tablerow );
+
+  $table = ElementBuilder::build(array(
+    '#type' => 'Substance\Core\Presentation\Elements\Table',
+    '#rows' => array(
+      array( 'stuff', 'morestuff' ),
+      array( 'stuff2', 'morestuff2' )
+    ),
+  ));
+
+  var_export( $table );
+
+  echo $environment->getOutputTheme()->render( $table );
+
 } catch ( Alert $a ) {
+  $environment->setOutputTheme( TextTheme::create() );
+
   echo $a;
 }
