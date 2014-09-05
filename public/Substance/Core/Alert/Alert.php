@@ -210,6 +210,18 @@ class Alert extends \Exception implements Presentable {
         )
       )
     );
+    if ( $this->getExplanation() ) {
+      $table->addRow(
+        TableRow::createWithElement(
+          TableCell::createWithElement(
+            Markup::create()->setMarkup( 'Explanation' )
+          ),
+          TableCell::createWithElement(
+            Markup::create()->setMarkup( $this->getExplanation() )
+          )
+        )
+      );
+    }
     foreach ( $this->culprits as $culprit ) {
       $table->addRow(
         TableRow::createWithElement(
@@ -262,6 +274,48 @@ class Alert extends \Exception implements Presentable {
       );
     }
     return $table;
+
+
+
+
+
+//     $table = array(
+//       array( 'Message', $this->getMessage() ),
+//     );
+//     foreach ( $this->culprits as $culprit ) {
+//       $table[] = array(
+//         mb_strtoupper( $culprit->getType() ),
+//         $culprit->getValue(),
+//       );
+//     }
+//     $table[] = array(
+//       'Origin',
+//       $this->getOrigin(),
+//     );
+//     foreach ( $this->getAlertTrace() as $index => $trace ) {
+//       $method = $trace['file'] . '(' . $trace['line'] . '): ';
+//       if ( $trace['class'] != '' ) {
+//         $method .= $trace['class'];
+//         $method .= $trace['type'];
+//       }
+//       $method .= $trace['function'];
+//       $method .= '(';
+//       if ( $trace['args'] ) {
+//         $method .= implode(
+//           ', ',
+//           array_map(
+//             function( $value ) { return var_export( $value, TRUE ); },
+//             $trace['args']
+//           )
+//         );
+//       }
+//       $method .= ')';
+//       $table[] = array(
+//         'Trace #' . $index,
+//         $method,
+//       );
+//     }
+//     return $table;
   }
 
   /**
