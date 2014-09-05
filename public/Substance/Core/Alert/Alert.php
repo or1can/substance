@@ -38,6 +38,14 @@ use Substance\Core\Environment\Environment;
 class Alert extends \Exception implements Presentable {
 
   /**
+   * This indicates if the alert was constructed in the alert, e.g. in a static
+   * method like Alert::alert(). This matters because the location of the
+   * new Alert() determines the Exception's origin.
+   * @var boolean
+   */
+  protected $constructed_in_alert = FALSE;
+
+  /**
    * This alerts culprits.
    *
    * @var \Substance\Core\Alert\Culprit[]
@@ -82,7 +90,9 @@ class Alert extends \Exception implements Presentable {
    * @return self
    */
   public static function alert( $message, $explanation = '', $code = 0, $previous = NULL ) {
-    return new Alert( $message, $explanation, $code, $previous );
+    $alert = new Alert( $message, $explanation, $code, $previous );
+    $alert->constructed_in_alert = TRUE;
+    return $alert;
   }
 
   /* (non-PHPdoc)
@@ -120,6 +130,35 @@ class Alert extends \Exception implements Presentable {
   }
 
   /**
+   * Returns the alert message. This should really be an override of
+   * getMessage(), but PHP helpfully declares getMessage() as final.
+   *
+   * @return string the alert information.
+   */
+  public function getAlertMessage() {
+    $info = '';
+    foreach ( $this->culprits as $culprit ) {
+      $info .= $culprit;
+      $info .= PHP_EOL; // FIXME - Make this a configuration option, as it may vary in Web context?
+    }
+    return $info;
+  }
+
+  /**
+   * Returns the alert trace. This should really be an override of getTrace(),
+   * but PHP helpfully declares getMessage() as final.
+   *
+   * @return string the alert information.
+   */
+  public function getAlertTrace() {
+    $trace = $this->getTrace();
+    if ( $this->constructed_in_alert ) {
+      array_shift( $trace );
+    }
+    return $trace;
+  }
+
+  /**
    * Returns the culprits for this alert.
    *
    * @return \Substance\Core\Alert\Culprit[] the alert culprits.
@@ -138,21 +177,6 @@ class Alert extends \Exception implements Presentable {
   }
 
   /**
-   * Returns the alert information. This should really be an override of
-   * getMessage(), but PHP helpfully declares getMessage() as final.
-   *
-   * @return string the alert information.
-   */
-  public function getInfo() {
-    $info = '';
-    foreach ( $this->culprits as $culprit ) {
-      $info .= $culprit;
-      $info .= PHP_EOL; // FIXME - Make this a configuration option, as it may vary in Web context?
-    }
-    return $info;
-  }
-
-  /**
    * Returns an origin message. An origin is a combination of file and line
    * number information, with the line number appened in parenthesis after the
    * file name.
@@ -160,7 +184,15 @@ class Alert extends \Exception implements Presentable {
    * @return string the origin message
    */
   public function getOrigin() {
-    return $this->getFile() . '(' . $this->getLine() . ')';
+    $file = $this->getFile();
+    $line = $this->getLine();
+    if ( $this->constructed_in_alert ) {
+      $trace = $this->getTrace();
+      $trace = array_shift( $trace );
+      $file = $trace['file'];
+      $line = $trace['line'];
+    }
+    return "$file($line)";
   }
 
   /* (non-PHPdoc)
@@ -200,7 +232,7 @@ class Alert extends \Exception implements Presentable {
         )
       )
     );
-    foreach ( $this->getTrace() as $index => $trace ) {
+    foreach ( $this->getAlertTrace() as $index => $trace ) {
       $method = $trace['file'] . '(' . $trace['line'] . '): ';
       if ( $trace['class'] != '' ) {
         $method .= $trace['class'];
