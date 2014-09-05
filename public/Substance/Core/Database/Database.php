@@ -21,8 +21,13 @@ namespace Substance\Core\Database;
 /**
  * Represents a database in Substance.
  */
-abstract class Database {
+class Database {
 
   const INIT_COMMANDS = 'init_commands';
+
+  public static function getConnection( $options = array() ) {
+    $class = $options['driverclass'];
+    return new $class( $options );
+  }
 
 }

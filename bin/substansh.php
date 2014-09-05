@@ -27,7 +27,6 @@ error_reporting(E_ALL | E_STRICT);
 require '../vendor/autoload.php';
 
 use Substance\Core\Alert\Alert;
-use Substance\Core\Database\MySQL\Connection;
 use Substance\Core\Environment\Environment;
 use Substance\Core\Module;
 use Substance\Modules\Configuration\Config;
@@ -67,7 +66,7 @@ try {
 
   echo $alert;
 
-  $connection = new Connection('mysql:host=127.0.0.1;port=3306;dbname=mydb', 'myuser', 'mypass');
+  $connection = $config['database']['*']['master'];
 
   var_dump( $connection->query('SELECT * FROM information_schema.TABLES LIMIT 1') );
 

@@ -26,7 +26,7 @@ use Substance\Core\Database\Database;
  */
 class Connection extends \Substance\Core\Database\Connection {
 
-  public function __construct( $dsn, $username, $passwd, &$pdo_options = array(), &$options = array() ) {
+  public function __construct( &$options = array(), &$pdo_options = array() ) {
     // Set default MySQL options
     $pdo_options += array(
       // Use buffered queries for consistency with other drivers.
@@ -42,7 +42,13 @@ class Connection extends \Substance\Core\Database\Connection {
       'names' => "SET NAMES utf8",
     );
 
-    parent::__construct( $dsn, $username, $passwd, $options, $pdo_options );
+    $dsn = array();
+    $dsn[] = 'host=' . $options['host'];
+    $dsn[] = 'port=' . $options['port'];
+    $dsn[] = 'dbname=' . $options['database'];
+    $dsn = 'mysql:' . implode( ';', $dsn );
+
+    parent::__construct( $dsn, $options['username'], $options['password'], $options, $pdo_options );
   }
 
 }
