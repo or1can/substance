@@ -26,49 +26,38 @@ error_reporting(E_ALL | E_STRICT);
 require '../vendor/autoload.php';
 
 use Substance\Core\Alert\Alert;
-use Substance\Core\Database\MySQL\Connection;
+use Substance\Core\Alert\AlertHandler;
 use Substance\Core\Environment\Environment;
 use Substance\Core\Module;
+use Substance\Core\Presentation\Element;
+use Substance\Core\Presentation\ElementBuilder;
+use Substance\Core\Presentation\Elements\TableCell;
 use Substance\Modules\Configuration\Config;
 use Substance\Themes\HTML\HTMLTheme;
 use Substance\Themes\Text\TextTheme;
-use Whoops\Run;
-use Whoops\Handler\PrettyPageHandler;
 
-$run = new Run;
-$handler = new PrettyPageHandler;
-
-$run->pushHandler( $handler );
-$run->register();
+$alert_handler = new AlertHandler();
+$alert_handler->register();
 
 $config = new Config();
 
 var_dump( $config );
 
-// throw new Exception("foo");
+Environment::initialiseTextEnvironment();
+$environment = Environment::getEnvironment();
 
-try {
-  $environment = Environment::getEnvironment();
+var_dump( Module::findModules() );
 
-  var_dump( Module::findModules() );
+$alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
 
-  $alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
+var_export( $alert->present() );
 
-  var_export( $alert->present() );
+echo $alert;
 
-  // throw $alert;
+$environment->setOutputTheme( TextTheme::create() );
 
-  echo $alert;
+echo $alert;
 
+$connection = $config['database']['*']['master'];
 
-  $environment->setOutputTheme( TextTheme::create() );
-
-  echo $alert;
-
-  $connection = $config['database']['*']['master'];
-
-  var_dump( $connection->query('SELECT * FROM information_schema.TABLES LIMIT 1') );
-
-} catch ( Alert $a ) {
-  echo $a;
-}
+var_dump( $connection->query('SELECT * FROM information_schema.TABLES LIMIT 1') );

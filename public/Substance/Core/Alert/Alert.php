@@ -75,7 +75,7 @@ class Alert extends \Exception implements Presentable {
    * @param number $code the alert code.
    * @param string $previous the previous exception in the chain.
    */
-  public function __construct( $message, $explanation = '', $code = 0, $previous = NULL ) {
+  public function __construct( $message, $explanation = '', $code = 0, \Exception $previous = NULL ) {
     parent::__construct( $message, $code, $previous );
     $this->explanation = $explanation;
   }
@@ -103,7 +103,7 @@ class Alert extends \Exception implements Presentable {
     try {
       return Environment::getEnvironment()->outputAsString( $this );
     } catch ( \Exception $ex ) {
-      return $ex->getMessage();
+      return 'INTERNAL ALERT ERROR:' . PHP_EOL . parent::__toString();
     }
   }
 
@@ -132,6 +132,26 @@ class Alert extends \Exception implements Presentable {
       $this->decorators[] = $decorator;
     }
     return $this;
+  }
+
+  /**
+   * Returns the file where the alert occurred. This should really be an
+   * override of getFile(), but PHP helpfully declares getFile() as final.
+   *
+   * @return string the file the alert occurred in
+   */
+  public function getAlertFile() {
+    return parent::getFile();
+  }
+
+  /**
+   * Returns the line number the alert occurred at. This should really be an
+   * override of getLine(), but PHP helpfully declares getLine() as final.
+   *
+   * @return int the line number the alert occurred at
+   */
+  public function getAlertLine() {
+    return parent::getLine();
   }
 
   /**
@@ -189,8 +209,8 @@ class Alert extends \Exception implements Presentable {
    * @return string the origin message
    */
   public function getOrigin() {
-    $file = $this->getFile();
-    $line = $this->getLine();
+    $file = $this->getAlertFile();
+    $line = $this->getAlertLine();
     if ( $this->constructed_in_alert ) {
       $trace = $this->getTrace();
       $trace = array_shift( $trace );

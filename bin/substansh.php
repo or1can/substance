@@ -27,103 +27,87 @@ error_reporting(E_ALL | E_STRICT);
 require '../vendor/autoload.php';
 
 use Substance\Core\Alert\Alert;
+use Substance\Core\Alert\AlertHandler;
 use Substance\Core\Environment\Environment;
 use Substance\Core\Module;
+use Substance\Core\Presentation\Element;
+use Substance\Core\Presentation\ElementBuilder;
+use Substance\Core\Presentation\Elements\TableCell;
 use Substance\Modules\Configuration\Config;
 use Substance\Themes\HTML\HTMLTheme;
 use Substance\Themes\Text\TextTheme;
-use Whoops\Run;
-use Whoops\Handler\PrettyPageHandler;
-use Substance\Core\Presentation\Elements\TableCell;
-use Substance\Core\Presentation\ElementBuilder;
-use Substance\Core\Presentation\Element;
 
-// $run = new Run;
-// $handler = new PrettyPageHandler;
-
-// $run->pushHandler( $handler );
-// $run->register();
+$alert_handler = new AlertHandler();
+$alert_handler->register();
 
 $config = new Config();
 
 var_dump( $config );
 
-// throw new Exception("foo");
+Environment::initialiseTextEnvironment();
+$environment = Environment::getEnvironment();
 
-try {
-  Environment::initialiseTextEnvironment();
-  $environment = Environment::getEnvironment();
+var_dump( Module::findModules() );
 
-  var_dump( Module::findModules() );
+$alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
 
-  $alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
+var_export( $alert->present() );
 
-  var_export( $alert->present() );
+echo $alert;
 
-  // throw $alert;
+$environment->setOutputTheme( TextTheme::create() );
 
-  echo $alert;
+echo $alert;
 
+$connection = $config['database']['*']['master'];
 
-  $environment->setOutputTheme( TextTheme::create() );
+var_dump( $connection->query('SELECT * FROM information_schema.TABLES LIMIT 1') );
 
-  echo $alert;
+$tablecell = TableCell::build('Origin');
 
-  $connection = $config['database']['*']['master'];
+var_export( $tablecell );
 
-  var_dump( $connection->query('SELECT * FROM information_schema.TABLES LIMIT 1') );
+echo $environment->getOutputTheme()->render( $tablecell );
 
-  $tablecell = TableCell::build('Origin');
+$tablecell = TableCell::build(array(
+  '#type' => 'Substance\Core\Presentation\Elements\TableCell',
+  '#elements' => 'stuff',
+));
 
-  var_export( $tablecell );
+var_export( $tablecell );
 
-  echo $environment->getOutputTheme()->render( $tablecell );
+echo $environment->getOutputTheme()->render( $tablecell );
 
-  $tablecell = TableCell::build(array(
-    '#type' => 'Substance\Core\Presentation\Elements\TableCell',
-    '#elements' => 'stuff',
-  ));
+$tablecell = ElementBuilder::build(array(
+  '#type' => 'Substance\Core\Presentation\Elements\TableCell',
+  '#elements' => 'stuff',
+));
 
-  var_export( $tablecell );
+var_export( $tablecell );
 
-  echo $environment->getOutputTheme()->render( $tablecell );
-
-  $tablecell = ElementBuilder::build(array(
-    '#type' => 'Substance\Core\Presentation\Elements\TableCell',
-    '#elements' => 'stuff',
-  ));
-
-  var_export( $tablecell );
-
-  echo $environment->getOutputTheme()->render( $tablecell );
+echo $environment->getOutputTheme()->render( $tablecell );
 
 
-  $environment->setOutputTheme( HTMLTheme::create() );
+$environment->setOutputTheme( HTMLTheme::create() );
 
 
-  $tablerow = ElementBuilder::build(array(
-    '#type' => 'Substance\Core\Presentation\Elements\TableRow',
-    '#row' => array( 'stuff', 'morestuff' ),
-  ));
+$tablerow = ElementBuilder::build(array(
+  '#type' => 'Substance\Core\Presentation\Elements\TableRow',
+  '#row' => array( 'stuff', 'morestuff' ),
+));
 
-  var_export( $tablerow );
+var_export( $tablerow );
 
-  echo $environment->getOutputTheme()->render( $tablerow );
+echo $environment->getOutputTheme()->render( $tablerow );
 
-  $table = ElementBuilder::build(array(
-    '#type' => 'Substance\Core\Presentation\Elements\Table',
-    '#rows' => array(
-      array( 'stuff', 'morestuff' ),
-      array( 'stuff2', 'morestuff2' )
-    ),
-  ));
+$table = ElementBuilder::build(array(
+  '#type' => 'Substance\Core\Presentation\Elements\Table',
+  '#rows' => array(
+    array( 'stuff', 'morestuff' ),
+    array( 'stuff2', 'morestuff2' )
+  ),
+));
 
-  var_export( $table );
+var_export( $table );
 
-  echo $environment->getOutputTheme()->render( $table );
-
-} catch ( Alert $a ) {
-  $environment->setOutputTheme( TextTheme::create() );
-
-  echo $a;
-}
+echo $environment->getOutputTheme()->render( $table );
