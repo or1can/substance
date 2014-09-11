@@ -61,7 +61,12 @@ class AlertHandler {
    * @param \Exception $ex The uncaught exception.
    */
   public function handleException( \Exception $ex ) {
+    // FIXME - We need to handle this in a more appropriate way. In a CLI
+    // context we must print the exception and exit. In a WEB context we must
+    // generate a complete error page (containing information about anything
+    // we've done so far).
     echo $ex;
+    exit( 1 );
   }
 
   /**
