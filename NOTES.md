@@ -4,6 +4,7 @@ Potentially useful libraries
 Routing: klein, fastroute, slim
 Frontend: http://www.polymer-project.org/, bower.io
 Testing: PhantomJS
+Template engines: Twig, FigDice, H20, mars-templater, RainTPL3
 
 Command line
 ============
