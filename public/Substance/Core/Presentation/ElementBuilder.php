@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2005 - 2014 Kevin Rogers
+ * Copyright (C) 2014 Kevin Rogers
  *
  * Substance is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
