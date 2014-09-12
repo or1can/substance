@@ -27,7 +27,6 @@ error_reporting(E_ALL | E_STRICT);
 require '../vendor/autoload.php';
 
 use Substance\Core\Alert\Alert;
-use Substance\Core\Alert\AlertHandler;
 use Substance\Core\Environment\Environment;
 use Substance\Core\Module;
 use Substance\Core\Presentation\Element;
@@ -38,14 +37,10 @@ use Substance\Modules\Configuration\Config;
 use Substance\Themes\HTML\HTMLTheme;
 use Substance\Themes\Text\TextTheme;
 
-$alert_handler = new AlertHandler();
-$alert_handler->register();
-
 $config = new Config();
 
 var_dump( $config );
 
-Environment::initialiseTextEnvironment();
 $environment = Environment::getEnvironment();
 
 var_dump( Module::findModules() );
@@ -53,10 +48,6 @@ var_dump( Module::findModules() );
 $alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
 
 var_export( $alert->present() );
-
-echo $alert;
-
-$environment->setOutputTheme( TextTheme::create() );
 
 echo $alert;
 
@@ -88,10 +79,6 @@ var_export( $tablecell );
 
 $environment->outputElement( $tablecell );
 
-
-$environment->setOutputTheme( HTMLTheme::create() );
-
-
 $tablerow = ElementBuilder::build(array(
   '#type' => 'Substance\Core\Presentation\Elements\TableRow',
   '#row' => array( 'stuff', 'morestuff' ),
@@ -116,3 +103,5 @@ $environment->outputElement( $table );
 $page = new Page();
 
 $environment->outputElement( $page );
+
+throw $alert;

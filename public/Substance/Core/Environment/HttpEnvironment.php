@@ -16,36 +16,29 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace Substance\Core\Environment;
+
+use Substance\Themes\HTML\HTMLTheme;
+
 /**
- * Substance Front Controller.
+ * An HTTP specific environment.
  */
+class HttpEnvironment extends Environment {
 
-// Report all errors.
-error_reporting(E_ALL | E_STRICT);
+  /**
+   * Hidden constructor, as this class should not be instantiated directly. Use
+   * the getEnvironment method instead.
+   */
+  protected function __construct() {
+    parent::__construct();
+    $this->setOutputTheme( HTMLTheme::create() );
+  }
 
-require '../vendor/autoload.php';
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Environment\Environment::initialise()
+   */
+  public static function initialise() {
+    Environment::setEnvironment( new HttpEnvironment() );
+  }
 
-use Substance\Core\Alert\Alert;
-use Substance\Core\Environment\Environment;
-use Substance\Core\Module;
-use Substance\Modules\Configuration\Config;
-
-$config = new Config();
-
-var_dump( $config );
-
-$environment = Environment::getEnvironment();
-
-var_dump( Module::findModules() );
-
-$alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
-
-var_export( $alert->present() );
-
-echo $alert;
-
-$connection = $config['database']['*']['master'];
-
-var_dump( $connection->query('SELECT * FROM information_schema.TABLES LIMIT 1') );
-
-throw $alert;
+}

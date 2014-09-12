@@ -18,18 +18,24 @@
 
 namespace Substance\Core\Environment;
 
+use Substance\Core\Alert\AlertHandler;
 use Substance\Core\Folder;
 use Substance\Core\Presentation\Element;
-use Substance\Core\Presentation\Theme;
 use Substance\Core\Presentation\Presentable;
-use Substance\Themes\Text\TextTheme;
+use Substance\Core\Presentation\Theme;
 use Substance\Themes\HTML\HTMLTheme;
+use Substance\Themes\Text\TextTheme;
 
 /**
  * Substance uses its Environment to contain configuration that must be shared
  * througout the application.
  */
-class Environment {
+abstract class Environment {
+
+  /**
+   * @var AlertHandler
+   */
+  protected $alert_hander;
 
   /**
    * @var Folder
@@ -50,11 +56,24 @@ class Environment {
    * Hidden constructor, as this class should not be instantiated directly. Use
    * the getEnvironment method instead.
    */
-  private function __construct() {
+  protected function __construct() {
+    // Set the alert handler
+    $alert_handler = new AlertHandler();
+    $alert_handler->register();
+    $this->setAlertHandler( $alert_handler );
     // Set the application root to the public folder.
     $this->setApplicationRoot(
       new Folder( dirname( dirname( __DIR__ ) ) )
     );
+  }
+
+  /**
+   * Returns the applications alert handler.
+   *
+   * @return AlertHandler the alert handler.
+   */
+  public function getAlertHandler() {
+    return $this->application_root;
   }
 
   /**
@@ -81,7 +100,11 @@ class Environment {
    */
   public static function getEnvironment() {
     if ( is_null( self::$environment ) ) {
-      self::$environment = self::initialiseHTMLEnvironment();
+      if ( array_key_exists( 'SERVER_NAME', $_SERVER ) ) {
+        HttpEnvironment::initialise();
+      } else {
+        CliEnvironment::initialise();
+      }
     }
     return self::$environment;
   }
@@ -96,26 +119,10 @@ class Environment {
   }
 
   /**
-   * Initialise a plain text environment.
-   *
-   * This is used when your application is going to output primarily plain
-   * text.
+   * Initialise an environment, defaulting to an HttpEnvironment.
    */
-  public static function initialiseTextEnvironment() {
-    $environment = new Environment();
-    $environment->setOutputTheme( TextTheme::create() );
-    return $environment;
-  }
-
-  /**
-   * Initialise an HTML environment.
-   *
-   * This is used when your application is going to output primarily HTML.
-   */
-  public static function initialiseHTMLEnvironment() {
-    $environment = new Environment();
-    $environment->setOutputTheme( HTMLTheme::create() );
-    return $environment;
+  public static function initialise() {
+    HttpEnvironment::initialise();
   }
 
   /**
@@ -159,6 +166,15 @@ class Environment {
    */
   public function renderPresentable( Presentable $presentable ) {
     return $this->getOutputTheme()->renderPresentable( $presentable );
+  }
+
+  /**
+   * Sets the alert handler to be used as this Environments alert handler.
+   *
+   * @param AlertHandler $alert_handler the applications alert handler.
+   */
+  public function setAlertHandler( AlertHandler $alert_handler ) {
+    $this->alert_hander = $alert_handler;
   }
 
   /**
