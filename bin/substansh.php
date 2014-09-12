@@ -32,6 +32,7 @@ use Substance\Core\Environment\Environment;
 use Substance\Core\Module;
 use Substance\Core\Presentation\Element;
 use Substance\Core\Presentation\ElementBuilder;
+use Substance\Core\Presentation\Elements\Page;
 use Substance\Core\Presentation\Elements\TableCell;
 use Substance\Modules\Configuration\Config;
 use Substance\Themes\HTML\HTMLTheme;
@@ -76,7 +77,7 @@ $tablecell = TableCell::build(array(
 
 var_export( $tablecell );
 
-echo $environment->getOutputTheme()->render( $tablecell );
+$environment->outputElement( $tablecell );
 
 $tablecell = ElementBuilder::build(array(
   '#type' => 'Substance\Core\Presentation\Elements\TableCell',
@@ -85,7 +86,7 @@ $tablecell = ElementBuilder::build(array(
 
 var_export( $tablecell );
 
-echo $environment->getOutputTheme()->render( $tablecell );
+$environment->outputElement( $tablecell );
 
 
 $environment->setOutputTheme( HTMLTheme::create() );
@@ -98,7 +99,7 @@ $tablerow = ElementBuilder::build(array(
 
 var_export( $tablerow );
 
-echo $environment->getOutputTheme()->render( $tablerow );
+$environment->outputElement( $tablerow );
 
 $table = ElementBuilder::build(array(
   '#type' => 'Substance\Core\Presentation\Elements\Table',
@@ -110,4 +111,8 @@ $table = ElementBuilder::build(array(
 
 var_export( $table );
 
-echo $environment->getOutputTheme()->render( $table );
+$environment->outputElement( $table );
+
+$page = new Page();
+
+$environment->outputElement( $page );
