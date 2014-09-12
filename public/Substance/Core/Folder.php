@@ -42,6 +42,16 @@ class Folder {
   }
 
   /**
+   * Returns TRUE if this folder exists (and is a folder) in the filesystem.
+   *
+   * @return boolean TRUE if the folder exists and is a folder, FALSE
+   * otherwise.
+   */
+  public function exists() {
+    return is_dir( $this->uri );
+  }
+
+  /**
    * Finds files matching the supplied glob pattern.
    *
    * The search is recursive and will look at all files in this folder and then
@@ -74,6 +84,44 @@ class Folder {
       }
     }
     return $files;
+  }
+
+  /**
+   * Returns this folders URI.
+   */
+  public function getURI() {
+    return $this->uri;
+  }
+
+  /**
+   * Makes a new child folder with the specified name.
+   *
+   * @param string $folder the name of the file to make.
+   * @return Folder the Folder representing the new directory.
+   * @throws Alert if we fail to make the new folder.
+   */
+  public function makeNew( $folder ) {
+    $new_folder = $this->uri . DIRECTORY_SEPARATOR . $folder;
+    if ( is_file( $new_folder ) ) {
+      // Already a file.
+      throw Alert::alert( 'File already exists', 'Attempted to create a folder with the same name as an existing file' )
+        ->culprit( 'folder', $folder )
+        ->culprit( 'existing file', $new_folder );
+    } elseif ( is_dir( $new_folder ) ) {
+      // Already a folder
+      return new Folder( $new_folder );
+    } else {
+      // TODO - Default mode?
+      // TODO - recursive?
+      if ( mkdir( $new_folder ) ) {
+        // Made new folder
+        return new Folder( $new_folder );
+      } else {
+        // Failed to make new folder
+        throw Alert::alert( 'Failed to create folder' )
+          ->culprit( 'folder', $folder );
+      }
+    }
   }
 
 }
