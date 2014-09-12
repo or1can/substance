@@ -19,6 +19,7 @@
 namespace Substance\Core\Environment;
 
 use Substance\Core\Folder;
+use Substance\Core\Presentation\Element;
 use Substance\Core\Presentation\Theme;
 use Substance\Core\Presentation\Presentable;
 use Substance\Themes\Text\TextTheme;
@@ -118,13 +119,34 @@ class Environment {
   }
 
   /**
+   * Outputs the specified Element using the Environments output Theme.
+   *
+   * @param Element $element the element to output.
+   */
+  public function outputElement( Element $element ) {
+    echo $this->renderElement( $element );
+  }
+
+  /**
    * Outputs the specified Presentable object using the Environments output
    * Theme.
    *
    * @param Presentable $presentable the presentable object to output.
    */
-  public function output( Presentable $presentable ) {
-    echo $this->getOutputTheme()->renderPresentable( $presentable );
+  public function outputPresentable( Presentable $presentable ) {
+    echo $this->renderPresentable( $presentable );
+  }
+
+  /**
+   * Returns a string containing the Element presented in the current output
+   * Theme.
+   *
+   * @param Element $element the Element to output.
+   * @return string a string containing the element rendered in the output
+   * Theme.
+   */
+  public function renderElement( Element $element ) {
+    return $this->getOutputTheme()->render( $element );
   }
 
   /**
@@ -135,7 +157,7 @@ class Environment {
    * @return string a string containing the object presented in the output
    * Theme.
    */
-  public function outputAsString( Presentable $presentable ) {
+  public function renderPresentable( Presentable $presentable ) {
     return $this->getOutputTheme()->renderPresentable( $presentable );
   }
 

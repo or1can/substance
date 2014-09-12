@@ -33,6 +33,7 @@ use Substance\Core\Presentation\Elements\ImageButton;
 use Substance\Core\Presentation\Elements\Item;
 use Substance\Core\Presentation\Elements\MachineName;
 use Substance\Core\Presentation\Elements\Markup;
+use Substance\Core\Presentation\Elements\Page;
 use Substance\Core\Presentation\Elements\Password;
 use Substance\Core\Presentation\Elements\PasswordConfirm;
 use Substance\Core\Presentation\Elements\Radio;
@@ -146,6 +147,15 @@ class HTMLTheme extends AbstractTheme {
    */
   public function renderMachineName( MachineName $machine_name ) {
     return '<div><input type="text" value="' . $machine_name->getValue() . '" /></div>';
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\AbstractTheme::renderPage()
+   */
+  public function renderPage( Page $page ) {
+    $output = '<html><head></head><body>';
+    $output .= parent::renderContainer( $page );
+    return $output . '</body></html>';
   }
 
   /* (non-PHPdoc)

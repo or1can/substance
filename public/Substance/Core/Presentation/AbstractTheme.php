@@ -18,11 +18,12 @@
 
 namespace Substance\Core\Presentation;
 
+use Substance\Core\Presentation\Elements\Actions;
 use Substance\Core\Presentation\Elements\Container;
 use Substance\Core\Presentation\Elements\Markup;
+use Substance\Core\Presentation\Elements\Page;
 use Substance\Core\Presentation\Elements\Token;
 use Substance\Core\Presentation\Elements\Weight;
-use Substance\Core\Presentation\Elements\Actions;
 
 /**
  * Abstract implementation of Theme, to simplify Theme developement.
@@ -60,6 +61,14 @@ abstract class AbstractTheme implements Theme {
    */
   public function renderMarkup( Markup $markup ) {
     return $markup->getMarkup();
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderPage()
+   */
+  public function renderPage( Page $page ) {
+    // Pages are just a special kind of container, so render it the same.
+    return $this->renderContainer( $page );
   }
 
   /* (non-PHPdoc)

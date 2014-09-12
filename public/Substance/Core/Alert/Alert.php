@@ -101,7 +101,7 @@ class Alert extends \Exception implements Presentable {
    */
   public function __toString() {
     try {
-      return Environment::getEnvironment()->outputAsString( $this );
+      return Environment::getEnvironment()->renderPresentable( $this );
     } catch ( \Exception $ex ) {
       return 'INTERNAL ALERT ERROR:' . PHP_EOL . parent::__toString();
     }

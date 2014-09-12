@@ -33,6 +33,7 @@ use Substance\Core\Presentation\Elements\ImageButton;
 use Substance\Core\Presentation\Elements\Item;
 use Substance\Core\Presentation\Elements\MachineName;
 use Substance\Core\Presentation\Elements\Markup;
+use Substance\Core\Presentation\Elements\Page;
 use Substance\Core\Presentation\Elements\Password;
 use Substance\Core\Presentation\Elements\PasswordConfirm;
 use Substance\Core\Presentation\Elements\Radio;
@@ -197,6 +198,14 @@ interface Theme {
    * @return string the rendered Markup.
    */
   public function renderMarkup( Markup $markup );
+
+  /**
+   * Render the specified Page object.
+   *
+   * @param Page $page the Page to render.
+   * @return string the rendered Page.
+   */
+  public function renderPage( Page $page );
 
   /**
    * Render the specified Password object.

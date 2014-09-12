@@ -21,6 +21,7 @@ namespace Substance\Core\Alert;
 use Substance\Core\Environment\Environment;
 use Substance\Core\Presentation\ElementBuilder;
 use Substance\Core\Presentation\Elements\Markup;
+use Substance\Core\Presentation\Elements\Page;
 use Substance\Core\Presentation\Elements\Table;
 use Substance\Core\Presentation\Elements\TableRow;
 use Substance\Core\Presentation\Elements\TableCell;
@@ -61,11 +62,21 @@ class AlertHandler {
    * @param \Exception $ex The uncaught exception.
    */
   public function handleException( \Exception $ex ) {
-    // FIXME - We need to handle this in a more appropriate way. In a CLI
-    // context we must print the exception and exit. In a WEB context we must
-    // generate a complete error page (containing information about anything
-    // we've done so far).
-    echo $ex;
+    try {
+      $page = new Page();
+      $alert = $ex;
+      if ( !$ex instanceof Alert ) {
+        $alert = new Alert( 'Unhandled Exception', 'Exception was not handled by Substance', 0, $ex );
+      }
+      $page->addElement( $ex->present() );
+      Environment::getEnvironment()->outputElement( $page );
+    } catch ( \Exception $ex2 ) {
+      // LOL.
+      // We through an Exception trying to handle an Exception, which presents
+      // us with a bit of a problem. If we don't special case this, we'll could
+      // very well end up in a bit of a recursive loop here.
+      echo $ex2;
+    }
     exit( 1 );
   }
 
