@@ -53,6 +53,11 @@ abstract class Environment {
   protected $output_theme;
 
   /**
+   * @var Folder
+   */
+  protected $temp_folder;
+
+  /**
    * Hidden constructor, as this class should not be instantiated directly. Use
    * the getEnvironment method instead.
    */
@@ -64,6 +69,10 @@ abstract class Environment {
     // Set the application root to the public folder.
     $this->setApplicationRoot(
       new Folder( dirname( dirname( __DIR__ ) ) )
+    );
+    // Set the application temporary files folder
+    $this->setApplicationTempFolder(
+      new Folder( '/tmp/substance' )
     );
   }
 
@@ -83,6 +92,15 @@ abstract class Environment {
    */
   public function getApplicationRoot() {
     return $this->application_root;
+  }
+
+  /**
+   * Returns the applications temporary files folder.
+   *
+   * @return Folder the temporary files folder.
+   */
+  public function getApplicationTempFolder() {
+    return $this->temp_folder;
   }
 
   /**
@@ -184,6 +202,15 @@ abstract class Environment {
    */
   public function setApplicationRoot( Folder $folder ) {
     $this->application_root = $folder;
+  }
+
+  /**
+   * Sets the Folder to be used for this Environments temporary files.
+   *
+   * @param Folder $folder the applications temporary files folder.
+   */
+  public function setApplicationTempFolder( Folder $folder ) {
+    $this->temp_folder = $folder;
   }
 
   /**
