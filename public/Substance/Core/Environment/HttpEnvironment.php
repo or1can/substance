@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Environment;
 
-use Substance\Themes\HTML\HTMLTheme;
+use Substance\Themes\TwigHtml\TwigHTMLTheme;
 
 /**
  * An HTTP specific environment.
@@ -31,7 +31,7 @@ class HttpEnvironment extends Environment {
    */
   protected function __construct() {
     parent::__construct();
-    $this->setOutputTheme( HTMLTheme::create() );
+    $this->setOutputTheme( TwigHTMLTheme::create() );
   }
 
   /* (non-PHPdoc)
