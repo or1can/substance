@@ -153,7 +153,7 @@ class HTMLTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\AbstractTheme::renderPage()
    */
   public function renderPage( Page $page ) {
-    $output = '<html><head></head><body>';
+    $output = '<!DOCTYPE html><html><head></head><body>';
     $output .= parent::renderContainer( $page );
     return $output . '</body></html>';
   }
