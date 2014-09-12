@@ -75,6 +75,7 @@ class AlertHandler {
       // We through an Exception trying to handle an Exception, which presents
       // us with a bit of a problem. If we don't special case this, we'll could
       // very well end up in a bit of a recursive loop here.
+      echo "INTERNAL ALERT HANDLER ERROR:\n";
       echo $ex2;
     }
     exit( 1 );
