@@ -25,20 +25,13 @@ use Substance\Themes\TwigHtml\TwigHTMLTheme;
  */
 class HttpEnvironment extends Environment {
 
-  /**
-   * Hidden constructor, as this class should not be instantiated directly. Use
-   * the getEnvironment method instead.
-   */
-  protected function __construct() {
-    parent::__construct();
-    $this->setOutputTheme( TwigHTMLTheme::create() );
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Environment\Environment::initialise()
    */
   public static function initialise() {
-    Environment::setEnvironment( new HttpEnvironment() );
+    $environment = new HttpEnvironment();
+    Environment::setEnvironment( $environment );
+    $environment->setOutputTheme( TwigHTMLTheme::create() );
   }
 
 }

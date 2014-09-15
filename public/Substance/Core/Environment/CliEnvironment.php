@@ -25,20 +25,13 @@ use Substance\Themes\Text\TextTheme;
  */
 class CliEnvironment extends Environment {
 
-  /**
-   * Hidden constructor, as this class should not be instantiated directly. Use
-   * the getEnvironment method instead.
-   */
-  protected function __construct() {
-    parent::__construct();
-    $this->setOutputTheme( TextTheme::create() );
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Environment\Environment::initialise()
    */
   public static function initialise() {
-    Environment::setEnvironment( new CliEnvironment() );
+    $environment = new CliEnvironment();
+    Environment::setEnvironment( $environment );
+    $environment->setOutputTheme( TextTheme::create() );
   }
 
 }
