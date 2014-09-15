@@ -67,6 +67,20 @@ class ErrorAlert extends Alert {
     $this->context = $errcontext;
   }
 
+  /**
+   * Returns a new ErrorAlert built from the supplied error array. The error
+   * array should have the same struture as that returned by error_get_last().
+   * This method is provided for convenience and for method chaining.
+   *
+   * @param string $error the error to wrap in an Alert.
+   * @return self
+   */
+  public static function errorAlert( array $error ) {
+    $alert = new ErrorAlert( $error['type'], $error['message'], $error['file'], $error['line'], array() );
+    $alert->constructed_in_alert = TRUE;
+    return $alert;
+  }
+
   /* (non-PHPdoc)
    * @see \Substance\Core\Alert\Alert::getAlertFile()
    */

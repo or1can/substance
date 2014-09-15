@@ -87,7 +87,7 @@ class AlertHandler {
   public function handleShutdown() {
     $error = error_get_last();
     if ( $error['type'] == E_ERROR ) {
-      $alert = new ErrorAlert( $error['type'], $error['message'], $error['file'], $error['line'], array() );
+      $alert = ErrorAlert::errorAlert( $error );
       $this->handleException( $alert );
     }
   }
