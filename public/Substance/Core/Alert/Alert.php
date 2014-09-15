@@ -238,7 +238,10 @@ class Alert extends \Exception implements Presentable {
       $this->getOrigin(),
     );
     foreach ( $this->getAlertTrace() as $index => $trace ) {
-      $method = $trace['file'] . '(' . $trace['line'] . '): ';
+      $method = array_key_exists( 'file', $trace ) ? $trace['file'] : 'unknown file';
+      $method .= '(';
+      $method .= array_key_exists( 'line', $trace ) ? $trace['line'] : 'unkown line';
+      $method .= '): ';
       if ( $trace['class'] != '' ) {
         $method .= $trace['class'];
         $method .= $trace['type'];
