@@ -1,6 +1,14 @@
 <!DOCTYPE html>
+{#
+  Template variables:
+  
+  body - the body content
+  header - the header content
+
+#}
 <html>
   <head>
+    {{ header|raw }}
   </head>
   <body>
     {{ body|raw }}

@@ -55,6 +55,18 @@ use Substance\Core\Environment\Environment;
  */
 class TwigHTMLTheme extends AbstractTheme {
 
+  protected $environment;
+
+  protected $loader;
+
+  public function __construct() {
+    $this->loader = new \Twig_Loader_Filesystem( __DIR__ . DIRECTORY_SEPARATOR . 'templates' );
+    $this->environment = new \Twig_Environment( $this->loader, array(
+      'cache' => Environment::getEnvironment()->getApplicationTempFolder()->makeNew('twig')->getURI(),
+      'auto_reload' => TRUE,
+    ));
+  }
+
   /**
    * @return self
    */
@@ -154,12 +166,7 @@ class TwigHTMLTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\AbstractTheme::renderPage()
    */
   public function renderPage( Page $page ) {
-    $loader = new \Twig_Loader_Filesystem('Substance/Themes/TwigHtml/templates');
-    $twig = new \Twig_Environment( $loader, array(
-      'cache' => Environment::getEnvironment()->getApplicationTempFolder()->makeNew('twig')->getURI(),
-      'auto_reload' => TRUE,
-    ));
-    return $twig->render(
+    return $this->environment->render(
       'page.twig',
       array(
         'body'=> parent::renderContainer( $page ),
