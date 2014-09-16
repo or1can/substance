@@ -27,9 +27,11 @@ use Substance\Core\Presentation\Elements\Container;
 use Substance\Core\Presentation\Elements\Date;
 use Substance\Core\Presentation\Elements\Fieldset;
 use Substance\Core\Presentation\Elements\File;
+use Substance\Core\Presentation\Elements\FileStyle;
 use Substance\Core\Presentation\Elements\Form;
 use Substance\Core\Presentation\Elements\Hidden;
 use Substance\Core\Presentation\Elements\ImageButton;
+use Substance\Core\Presentation\Elements\InlineStyle;
 use Substance\Core\Presentation\Elements\Item;
 use Substance\Core\Presentation\Elements\MachineName;
 use Substance\Core\Presentation\Elements\Markup;
@@ -39,6 +41,7 @@ use Substance\Core\Presentation\Elements\PasswordConfirm;
 use Substance\Core\Presentation\Elements\Radio;
 use Substance\Core\Presentation\Elements\Radios;
 use Substance\Core\Presentation\Elements\Select;
+use Substance\Core\Presentation\Elements\Style;
 use Substance\Core\Presentation\Elements\Submit;
 use Substance\Core\Presentation\Elements\Table;
 use Substance\Core\Presentation\Elements\TableCell;
@@ -53,13 +56,6 @@ use Substance\Core\Presentation\Elements\Weight;
  * A renderer renders elements.
  */
 class HTMLTheme extends AbstractTheme {
-
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new HTMLTheme();
-  }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderButton()
@@ -115,6 +111,18 @@ class HTMLTheme extends AbstractTheme {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderFileStyle()
+   */
+  public function renderFileStyle( FileStyle $file_style ) {
+    $output = '<link type="text/css" rel="stylesheet" media="';
+    $output .= $file_style->getMediaType();
+    $output .= '" href="';
+    $output .= $file_style->getFile();
+    $output .= '" />';
+    return $output;
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderForm()
    */
   public function renderForm( Form $form ) {
@@ -136,6 +144,18 @@ class HTMLTheme extends AbstractTheme {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderInlineStyle()
+   */
+  public function renderInlineStyle( InlineStyle $inline_style ) {
+    $output = '<style type="text/css" media="';
+    $output .= $inline_style->getMediaType();
+    $output .= '">';
+    $output .= $inline_style->getData();
+    $output .= '</style>';
+    return $output;
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderItem()
    */
   public function renderItem( Item $item ) {
@@ -153,7 +173,16 @@ class HTMLTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\AbstractTheme::renderPage()
    */
   public function renderPage( Page $page ) {
-    $output = '<!DOCTYPE html><html><head></head><body>';
+    $output = '<!DOCTYPE html><html><head>';
+    foreach ( $page->getStyles() as $style ) {
+      $output .= $style->render( $this );
+    }
+    $output .= '</head><body>';
+    // TODO - title
+    // TODO - scripts
+    // TODO - general headers
+    // TODO - body content
+    // TODO - i18n/language
     $output .= parent::renderContainer( $page );
     return $output . '</body></html>';
   }
@@ -198,6 +227,17 @@ class HTMLTheme extends AbstractTheme {
    */
   public function renderSubmit( Submit $submit ) {
     return '<div><input type="submit" value="' . $submit->getValue() . '" /></div>';
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderStyle()
+   */
+  public function renderStyle( Style $style ) {
+    $output = '<link type="text/css" rel="stylesheet" media="';
+    $output .= $style->getMediaType();
+    $output .= ' href=""';
+    $output .= '" />';
+    return $output;
   }
 
   /* (non-PHPdoc)

@@ -27,9 +27,11 @@ use Substance\Core\Presentation\Elements\Container;
 use Substance\Core\Presentation\Elements\Date;
 use Substance\Core\Presentation\Elements\Fieldset;
 use Substance\Core\Presentation\Elements\File;
+use Substance\Core\Presentation\Elements\FileStyle;
 use Substance\Core\Presentation\Elements\Form;
 use Substance\Core\Presentation\Elements\Hidden;
 use Substance\Core\Presentation\Elements\ImageButton;
+use Substance\Core\Presentation\Elements\InlineStyle;
 use Substance\Core\Presentation\Elements\Item;
 use Substance\Core\Presentation\Elements\MachineName;
 use Substance\Core\Presentation\Elements\Markup;
@@ -39,6 +41,7 @@ use Substance\Core\Presentation\Elements\PasswordConfirm;
 use Substance\Core\Presentation\Elements\Radio;
 use Substance\Core\Presentation\Elements\Radios;
 use Substance\Core\Presentation\Elements\Select;
+use Substance\Core\Presentation\Elements\Style;
 use Substance\Core\Presentation\Elements\Submit;
 use Substance\Core\Presentation\Elements\Table;
 use Substance\Core\Presentation\Elements\TableCell;
@@ -152,6 +155,14 @@ interface Theme {
   public function renderFile( File $file );
 
   /**
+   * Render the specified FileStyle object.
+   *
+   * @param FileStyle $file_style the FileStyle to render.
+   * @return string the rendered FileStyle.
+   */
+  public function renderFileStyle( FileStyle $file_style );
+
+  /**
    * Render the specified Form object.
    *
    * @param Form Form the Form to render.
@@ -174,6 +185,14 @@ interface Theme {
    * @return string the rendered ImageButton.
    */
   public function renderImageButton( ImageButton $image_button );
+
+  /**
+   * Render the specified InlineStyle object.
+   *
+   * @param InlineStyle $inline_style the InlineStyle to render.
+   * @return string the rendered InlineStyle.
+   */
+  public function renderInlineStyle( InlineStyle $inline_style );
 
   /**
    * Render the specified Item object.
@@ -254,6 +273,14 @@ interface Theme {
    * @return string the rendered Select.
    */
   public function renderSelect( Select $select );
+
+  /**
+   * Render the specified Style object.
+   *
+   * @param Style $style the Style to render.
+   * @return string the rendered Style.
+   */
+  public function renderStyle( Style $style );
 
   /**
    * Render the specified Submit object.

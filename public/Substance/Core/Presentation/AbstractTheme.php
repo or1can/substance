@@ -30,6 +30,13 @@ use Substance\Core\Presentation\Elements\Weight;
  */
 abstract class AbstractTheme implements Theme {
 
+  /**
+   * @return self
+   */
+  public static function create() {
+    return new static;
+  }
+
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::render()
    */

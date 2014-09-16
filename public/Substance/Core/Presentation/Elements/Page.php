@@ -26,8 +26,59 @@ use Substance\Core\Presentation\Theme;
  */
 class Page extends Container {
 
+  protected $title;
+
+  protected $scripts;
+
+  /**
+   * The pages styles.
+   *
+   * @var Style[]
+   */
+  protected $styles = array();
+
+  protected $headers;
+
+  /**
+   * Adds an Style to the container.
+   *
+   * @param Style ...$style the Style to add.
+   * @return self this element so methods can be chained.
+   */
+  public function addStyle( Style $style ) {
+    for ( $i = 0; $i < func_num_args(); $i++ ) {
+      $elem = func_get_arg( $i );
+      if ( $elem instanceof Style ) {
+        $this->styles[] = $elem;
+      } else {
+        throw new \InvalidArgumentException('Can only add Styles to the page style');
+      }
+    }
+    return $this;
+  }
+
+  /**
+   * Adds an array of Styles to the container.
+   *
+   * @param Style[] $styles the array of Styles to add.
+   * @return self this element so methods can be chained.
+   */
+  public function addStyles( array $styles ) {
+    call_user_func_array( array( $this, 'addStyle' ), $styles );
+    return $this;
+  }
+
+  /**
+   * Returns the containers styles.
+   *
+   * @return Style[] the containers styles.
+   */
+  public function getStyles() {
+    return $this->styles;
+  }
+
   /* (non-PHPdoc)
-   * @see \Substance\Core\Presentation\Element::render()
+   * @see \Substance\Core\Presentation\Container::render()
    */
   public function render( Theme $theme ) {
     return $theme->renderPage( $this );

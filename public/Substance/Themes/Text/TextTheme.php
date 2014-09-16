@@ -27,9 +27,11 @@ use Substance\Core\Presentation\Elements\Container;
 use Substance\Core\Presentation\Elements\Date;
 use Substance\Core\Presentation\Elements\Fieldset;
 use Substance\Core\Presentation\Elements\File;
+use Substance\Core\Presentation\Elements\FileStyle;
 use Substance\Core\Presentation\Elements\Form;
 use Substance\Core\Presentation\Elements\Hidden;
 use Substance\Core\Presentation\Elements\ImageButton;
+use Substance\Core\Presentation\Elements\InlineStyle;
 use Substance\Core\Presentation\Elements\Item;
 use Substance\Core\Presentation\Elements\MachineName;
 use Substance\Core\Presentation\Elements\Markup;
@@ -38,6 +40,7 @@ use Substance\Core\Presentation\Elements\PasswordConfirm;
 use Substance\Core\Presentation\Elements\Radio;
 use Substance\Core\Presentation\Elements\Radios;
 use Substance\Core\Presentation\Elements\Select;
+use Substance\Core\Presentation\Elements\Style;
 use Substance\Core\Presentation\Elements\Submit;
 use Substance\Core\Presentation\Elements\Table;
 use Substance\Core\Presentation\Elements\TableCell;
@@ -52,13 +55,6 @@ use Substance\Core\Presentation\Elements\Weight;
  * A renderer renders elements.
  */
 class TextTheme extends AbstractTheme {
-
-  /**
-   * @return self
-   */
-  public static function create() {
-    return new TextTheme();
-  }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderButton()
@@ -121,6 +117,13 @@ class TextTheme extends AbstractTheme {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderFileStyle()
+   */
+  public function renderFileStyle( FileStyle $file_style ) {
+    // TODO
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderForm()
    */
   public function renderForm( Form $form ) {
@@ -138,6 +141,13 @@ class TextTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderImageButton()
    */
   public function renderImageButton( ImageButton $image_button ) {
+    // TODO
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderInlineStyle()
+   */
+  public function renderInlineStyle( InlineStyle $inline_style ) {
     // TODO
   }
 
@@ -188,6 +198,13 @@ class TextTheme extends AbstractTheme {
    */
   public function renderSelect( Select $select ) {
     return $select->getValue();
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderStyle()
+   */
+  public function renderStyle( Style $style ) {
+    // TODO
   }
 
   /* (non-PHPdoc)
