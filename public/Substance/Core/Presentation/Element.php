@@ -28,6 +28,20 @@ use Substance\Core\Alert\Alert;
 abstract class Element {
 
   /**
+   * The elements unique identifier.
+   *
+   * @var string
+   */
+  protected $id;
+
+  /**
+   * Constructs a new Element.
+   */
+  public function __construct() {
+     $this->id = ElementId::newElementId( get_called_class() );
+  }
+
+  /**
    * Returns a new instance of the element. This method should be overridden in
    * all subclasses.
    * @return self A new instance of the element.
@@ -51,6 +65,15 @@ abstract class Element {
   public static function build( $element ) {
     $element_class = get_called_class();
     throw Alert::alert('Cannot build element', "$element_class does not support building instances from array.");
+  }
+
+  /**
+   * Returns the unique identifier for this element.
+   *
+   * @return ElementId the unique identifier for this element.
+   */
+  public function getId() {
+    return $this->id;
   }
 
   /**

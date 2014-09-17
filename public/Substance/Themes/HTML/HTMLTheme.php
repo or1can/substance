@@ -244,7 +244,7 @@ class HTMLTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderTable()
    */
   public function renderTable( Table $table ) {
-    return '<table>' . parent::renderContainer( $table ) . '</table>';
+    return '<table id="' . $table->getId() . '">' . parent::renderContainer( $table ) . '</table>';
   }
 
   /* (non-PHPdoc)
@@ -258,7 +258,7 @@ class HTMLTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderTableRow()
    */
   public function renderTableRow( TableRow $table_row ) {
-    return '<tr>' . parent::renderContainer( $table_row ) . '</tr>';
+    return '<tr id="' . $table_row->getId() . '">' . parent::renderContainer( $table_row ) . '</tr>';
   }
 
   /* (non-PHPdoc)
