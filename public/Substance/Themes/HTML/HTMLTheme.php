@@ -51,6 +51,8 @@ use Substance\Core\Presentation\Elements\TextArea;
 use Substance\Core\Presentation\Elements\TextField;
 use Substance\Core\Presentation\Elements\Token;
 use Substance\Core\Presentation\Elements\Weight;
+use Substance\Core\Presentation\ElementAttribute;
+use Substance\Core\Presentation\ElementAttributes;
 
 /**
  * A renderer renders elements.
@@ -92,6 +94,28 @@ class HTMLTheme extends AbstractTheme {
    */
   public function renderDate( Date $date ) {
     return '<div><input type="text" value="' . $date->getValue() . '" /></div>';
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderElementAttribute()
+   */
+  public function renderElementAttribute( ElementAttribute $element_attribute ) {
+    return $element_attribute->getName() . '="' . $element_attribute->getValue() . '"';
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderElementAttributes()
+   */
+  public function renderElementAttributes( ElementAttributes $element_attributes ) {
+    $output = array();
+    foreach ( $element_attributes->getAttributes() as $element_attribute ) {
+      $output[] = $this->renderElementAttribute( $element_attribute );
+    }
+    if ( count( $output ) == 0 ) {
+      return '';
+    } else {
+      return ' ' . implode( ' ', $output );
+    }
   }
 
   /* (non-PHPdoc)
@@ -244,7 +268,7 @@ class HTMLTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderTable()
    */
   public function renderTable( Table $table ) {
-    return '<table id="' . $table->getId() . '">' . parent::renderContainer( $table ) . '</table>';
+    return '<table' . $table->renderAttributes( $this ) . '>' . parent::renderContainer( $table ) . '</table>';
   }
 
   /* (non-PHPdoc)
@@ -258,7 +282,7 @@ class HTMLTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\Theme::renderTableRow()
    */
   public function renderTableRow( TableRow $table_row ) {
-    return '<tr id="' . $table_row->getId() . '">' . parent::renderContainer( $table_row ) . '</tr>';
+    return '<tr>' . parent::renderContainer( $table_row ) . '</tr>';
   }
 
   /* (non-PHPdoc)

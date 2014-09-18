@@ -22,7 +22,7 @@ namespace Substance\Core\Presentation;
  * The ElementId class represents a unique identifier for an Element. The use
  * of this class ensures that no two Id's can be the same.
  */
-class ElementId {
+class ElementId extends ElementAttribute {
 
   /**
    * An array mapping a prefix the its corresponding ElementId.
@@ -32,24 +32,17 @@ class ElementId {
   protected static $existing_ids = array();
 
   /**
-   * The unique identifier.
-   *
-   * @var string
-   */
-  protected $id;
-
-  /**
    * Hidden constructor, as this class should not be instantiated directly. Use
    * the getEnvironment method instead.
    *
    * @param string $id The
    */
-  protected function __construct( $id ) {
-    $this->id = $id;
+  public function __construct( $id ) {
+    parent::__construct( 'id', $id );
   }
 
   public function __toString() {
-    return $this->id;
+    return $this->value;
   }
 
   /**

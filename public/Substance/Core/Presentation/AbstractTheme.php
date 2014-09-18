@@ -64,6 +64,20 @@ abstract class AbstractTheme implements Theme {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderElementAttribute()
+   */
+  public function renderElementAttribute( ElementAttribute $element_attribute ) {
+    // NOOP
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Presentation\Theme::renderElementAttributes()
+   */
+  public function renderElementAttributes( ElementAttributes $element_attributes ) {
+    // NOOP
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Theme::renderMarkup()
    */
   public function renderMarkup( Markup $markup ) {

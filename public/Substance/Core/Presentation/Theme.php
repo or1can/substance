@@ -139,6 +139,22 @@ interface Theme {
   public function renderDate( Date $date );
 
   /**
+   * Render the specified ElementAttribute object.
+   *
+   * @param ElementAttribute $element_attribute the ElementAttribute to render.
+   * @return string the rendered ElementAttribute.
+   */
+  public function renderElementAttribute( ElementAttribute $element_attribute );
+
+  /**
+   * Render the specified ElementAttributes object.
+   *
+   * @param ElementAttributes $element_attributes the ElementAttributes to render.
+   * @return string the rendered ElementAttributes.
+   */
+  public function renderElementAttributes( ElementAttributes $element_attributes );
+
+  /**
    * Render the specified Fieldset object.
    *
    * @param Fieldset $fieldset the Fieldset to render.

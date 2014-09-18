@@ -25,20 +25,20 @@ use Substance\Core\Alert\Alert;
  * building a structured Element, which is then rendered appropriately for the
  * current context.
  */
-abstract class Element {
+abstract class Element implements Renderable {
 
   /**
-   * The elements unique identifier.
+   * The elements attributes.
    *
-   * @var string
+   * @var ElementAttributes
    */
-  protected $id;
+  protected $attributes;
 
   /**
    * Constructs a new Element.
    */
   public function __construct() {
-     $this->id = ElementId::newElementId( get_called_class() );
+     $this->attributes = new ElementAttributes();
   }
 
   /**
@@ -68,24 +68,25 @@ abstract class Element {
   }
 
   /**
-   * Returns the unique identifier for this element.
+   * Returns the elements attributes.
    *
-   * @return ElementId the unique identifier for this element.
+   * @return ElementAttributes the elements attributes.
    */
-  public function getId() {
-    return $this->id;
+  public function getAttributes() {
+    return $this->attributes;
   }
 
   /**
-   * Renders this element using the specific Theme.
+   * Renders this objects attributes using the specified Theme.
    *
-   * This allows an Element to have some control over how it is themed. For
-   * most Elements, this is implemented as a simple callback to a specific
-   * rendering method in the specified Theme - but this may not be appropriate
-   * for all Elements.
+   * This allows an object to have some control over how its attributes are
+   * themed.
    *
-   * @param Theme $theme
+   * @param Theme $theme the Theme to render this objects attributes with.
+   * @return string this objects attributes rendered in the specified Theme.
    */
-  abstract public function render( Theme $theme );
+  public function renderAttributes( Theme $theme ) {
+    return $theme->renderElementAttributes( $this->attributes );
+  }
 
 }
