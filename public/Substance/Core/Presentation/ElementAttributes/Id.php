@@ -16,16 +16,16 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Presentation;
+namespace Substance\Core\Presentation\ElementAttributes;
 
 /**
- * The ElementId class represents a unique identifier for an Element. The use
- * of this class ensures that no two Id's can be the same.
+ * The Id class represents a unique identifier for an Element. The use of this
+ * class ensures that no two Id's can be the same.
  */
-class ElementId extends ElementAttribute {
+class Id extends Value {
 
   /**
-   * An array mapping a prefix the its corresponding ElementId.
+   * An array mapping a prefix the its corresponding Id.
    *
    * @var array
    */
@@ -41,20 +41,17 @@ class ElementId extends ElementAttribute {
     parent::__construct( 'id', $id );
   }
 
-  public function __toString() {
-    return $this->value;
-  }
-
   /**
-   * Returns a new, unique, ElementId for the specified prefix. For example,
-   * the first time this method is called with prefix 'table', the returned
-   * ElementId would be 'table-1', but the second time this method is called,
-   * the returned ElementId would be 'table-2'.
+   * Returns a new, unique, Id for the specified prefix. For example, the first
+   * time this method is called with prefix 'table', the returned Id would be
+   * 'table-1', but the second time this method is called, the returned Id
+   * would be 'table-2'.
    *
    * @param string $prefix the prefix for the unique element ID.
-   * @return ElementId a new, unique, ElementID for the specifed prefix.
+   * @return Id a new, unique, ElementID for the specifed
+   * prefix.
    */
-  public static function newElementId( $prefix ) {
+  public static function newId( $prefix ) {
     $counter = 1;
     $sanitised_prefix = self::sanitise_prefix( $prefix );
     $unique_id = $sanitised_prefix . '-' . $counter;
@@ -63,7 +60,7 @@ class ElementId extends ElementAttribute {
       $unique_id = $sanitised_prefix . '-' . $counter;
     }
     // We've got our unique ID, so build, record and return the object for it.
-    $element_id = new ElementId( $unique_id );
+    $element_id = new Id( $unique_id );
     self::$existing_ids[ $unique_id ] = $element_id;
     return $element_id;
   }

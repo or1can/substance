@@ -16,32 +16,26 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Presentation;
+namespace Substance\Core\Presentation\ElementAttributes;
+
+use Substance\Core\Presentation\ElementAttribute;
 
 /**
- * The ElementAttribute is an Element that represents an attribute of another
- * Element. For example, a id attribute on a form element.
+ * The Value is an ElementAttriute that represents an attribute of an Element.
+ * For example, a id attribute on a form element.
  */
-abstract class ElementAttribute implements Renderable {
+class Value extends ElementAttribute {
 
   /**
-   * The attribute name.
+   * The attribute value.
    *
    * @var string
    */
-  protected $name;
+  protected $value;
 
-  public function __construct( $name ) {
-    $this->name = $name;
-  }
-
-  /**
-   * Returns this attributes name.
-   *
-   * @return string the attributes name.
-   */
-  public function getName() {
-    return $this->name;
+  public function __construct( $name, $value ) {
+    parent::__construct( $name );
+    $this->value = $value;
   }
 
   /**
@@ -49,23 +43,18 @@ abstract class ElementAttribute implements Renderable {
    *
    * @return string the attributes value.
    */
-  abstract public function getValue();
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Presentation\Renderable::render()
-   */
-  public function render( Theme $theme ) {
-    $theme->renderElementAttribute( $this );
+  public function getValue() {
+    return $this->value;
   }
 
   /**
-   * Set the attributes name.
+   * Set the attributes value.
    *
-   * @param string $name the attributes name
+   * @param string $name the attributes value
    * @return self this element so methods can be chained.
    */
-  public function setName( $name ) {
-    $this->name = $name;
+  public function setValue( $value ) {
+    $this->value = $value;
     return $this;
   }
 
