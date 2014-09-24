@@ -11,6 +11,7 @@
   "require": {
     "php": ">=5.3.3",
     "filp/whoops": "~1.1.0",
+    "liquid/liquid": "dev-master",
     "monolog/monolog": "~1.10.0",
     "mockery/mockery": "~0.9.1",
     "leafo/lessphp": "v0.4.0",
