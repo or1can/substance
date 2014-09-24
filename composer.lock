@@ -4,20 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1497dd8a6bf3930b977259ef01f14272",
+    "hash": "b8006dfbb8dcf19f8ca93685f109858b",
     "packages": [
         {
             "name": "filp/whoops",
-            "version": "1.1.1",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filp/whoops.git",
-                "reference": "ae05259236204ccf904a94e5b0d96df8d4351da5"
+                "reference": "9f451fbc7b8cad5e71300672c340c28c6bec09ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/ae05259236204ccf904a94e5b0d96df8d4351da5",
-                "reference": "ae05259236204ccf904a94e5b0d96df8d4351da5",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/9f451fbc7b8cad5e71300672c340c28c6bec09ff",
+                "reference": "9f451fbc7b8cad5e71300672c340c28c6bec09ff",
                 "shasum": ""
             },
             "require": {
@@ -62,7 +62,7 @@
                 "whoops",
                 "zf2"
             ],
-            "time": "2014-05-13 05:05:11"
+            "time": "2014-07-11 05:56:54"
         },
         {
             "name": "frameworks/jquery",
@@ -286,17 +286,68 @@
             "time": "2013-08-09 17:09:19"
         },
         {
-            "name": "mockery/mockery",
-            "version": "0.9.1",
+            "name": "liquid/liquid",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/padraic/mockery.git",
-                "reference": "17f63ee40ed14a8afb7ba1f0ae15cc4491d719d1"
+                "url": "https://github.com/kalimatas/php-liquid.git",
+                "reference": "77d969bce7a8ddfd371ac3035507277f4bd27454"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/17f63ee40ed14a8afb7ba1f0ae15cc4491d719d1",
-                "reference": "17f63ee40ed14a8afb7ba1f0ae15cc4491d719d1",
+                "url": "https://api.github.com/repos/kalimatas/php-liquid/zipball/77d969bce7a8ddfd371ac3035507277f4bd27454",
+                "reference": "77d969bce7a8ddfd371ac3035507277f4bd27454",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">= 5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Liquid\\": "src/Liquid"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Guz Alexander",
+                    "email": "kalimatas@gmail.com",
+                    "homepage": "http://guzalexander.com"
+                },
+                {
+                    "name": "Harald Hanek"
+                },
+                {
+                    "name": "Mateo Murphy"
+                }
+            ],
+            "description": "Liquid template engine for PHP",
+            "homepage": "https://github.com/kalimatas/php-liquid",
+            "keywords": [
+                "liquid",
+                "template"
+            ],
+            "time": "2014-09-16 08:51:00"
+        },
+        {
+            "name": "mockery/mockery",
+            "version": "0.9.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/padraic/mockery.git",
+                "reference": "95a4855380dc70176c51807c678fb3bd6198529a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/padraic/mockery/zipball/95a4855380dc70176c51807c678fb3bd6198529a",
+                "reference": "95a4855380dc70176c51807c678fb3bd6198529a",
                 "shasum": ""
             },
             "require": {
@@ -325,7 +376,7 @@
             ],
             "authors": [
                 {
-                    "name": "P\u00e1draic Brady",
+                    "name": "Pádraic Brady",
                     "email": "padraic.brady@gmail.com",
                     "homepage": "http://blog.astrumfutura.com"
                 },
@@ -349,7 +400,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2014-05-02 12:16:45"
+            "time": "2014-09-03 10:11:10"
         },
         {
             "name": "monolog/monolog",
@@ -619,9 +670,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
+    "stability-flags": {
+        "liquid/liquid": 20
+    },
     "platform": {
         "php": ">=5.3.3"
     },
