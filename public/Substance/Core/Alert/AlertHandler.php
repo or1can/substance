@@ -64,6 +64,7 @@ class AlertHandler {
   public function handleException( \Exception $ex ) {
     try {
       $page = new Page();
+      $page->setTitle('Alert!');
       $alert = $ex;
       if ( !$ex instanceof Alert ) {
         $alert = new Alert( 'Unhandled Exception', 'Exception was not handled by Substance', 0, $ex );

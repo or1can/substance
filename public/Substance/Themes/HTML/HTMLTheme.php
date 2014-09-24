@@ -197,11 +197,19 @@ class HTMLTheme extends AbstractTheme {
    * @see \Substance\Core\Presentation\AbstractTheme::renderPage()
    */
   public function renderPage( Page $page ) {
-    $output = '<!DOCTYPE html><html><head>';
+    $output = '<!DOCTYPE html>';
+    $output .= PHP_EOL;
+    $output .= '<html>';
+    $output .= PHP_EOL;
+    $output .= '<head>';
+    $output .= PHP_EOL;
+    $output .= '    <title>' . $page->getTitle() . '</title>' . PHP_EOL;
     foreach ( $page->getStyles() as $style ) {
       $output .= $style->render( $this );
     }
-    $output .= '</head><body>';
+    $output .= '</head>';
+    $output .= PHP_EOL;
+    $output .= '<body>';
     // TODO - title
     // TODO - scripts
     // TODO - general headers

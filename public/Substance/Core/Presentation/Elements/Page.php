@@ -77,11 +77,31 @@ class Page extends Container {
     return $this->styles;
   }
 
+  /**
+   * Returns the page title.
+   *
+   * @return string the page title.
+   */
+  public function getTitle() {
+    return $this->title;
+  }
+
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Container::render()
    */
   public function render( Theme $theme ) {
     return $theme->renderPage( $this );
+  }
+
+  /**
+   * Sets the page title.
+   *
+   * @param string $title the page title.
+   * @return self this element so methods can be chained.
+   */
+  public function setTitle( $title ) {
+    $this->title = $title;
+    return $this;
   }
 
 }
