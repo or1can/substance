@@ -227,6 +227,9 @@ class Alert extends \Exception implements Presentable {
     $rows = array(
       array( 'Message', $this->getMessage() ),
     );
+    if ( isset( $this->explanation ) ) {
+      $rows[] = array( 'Explanation', $this->explanation );
+    }
     foreach ( $this->culprits as $culprit ) {
       $rows[] = array(
         mb_strtoupper( $culprit->getType() ),
