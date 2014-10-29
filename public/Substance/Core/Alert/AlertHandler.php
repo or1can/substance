@@ -18,13 +18,14 @@
 
 namespace Substance\Core\Alert;
 
+use Substance\Core\Alert\Alerts\ExceptionWrapper;
 use Substance\Core\Environment\Environment;
 use Substance\Core\Presentation\ElementBuilder;
 use Substance\Core\Presentation\Elements\Markup;
 use Substance\Core\Presentation\Elements\Page;
 use Substance\Core\Presentation\Elements\Table;
-use Substance\Core\Presentation\Elements\TableRow;
 use Substance\Core\Presentation\Elements\TableCell;
+use Substance\Core\Presentation\Elements\TableRow;
 use Substance\Core\Presentation\Elements\TextField;
 use Substance\Core\Presentation\Presentable;
 use Substance\Themes\Text\TextTheme;
@@ -67,9 +68,9 @@ class AlertHandler {
       $page->setTitle('Alert!');
       $alert = $ex;
       if ( !$ex instanceof Alert ) {
-        $alert = new Alert( 'Unhandled Exception', 'Exception was not handled by Substance', 0, $ex );
+        $alert = new ExceptionWrapper( $ex );
       }
-      $page->addElement( $ex->present() );
+      $page->addElement( $alert->present() );
       Environment::getEnvironment()->outputElement( $page );
     } catch ( \Exception $ex2 ) {
       // LOL.
