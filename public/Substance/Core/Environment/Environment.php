@@ -72,6 +72,7 @@ abstract class Environment {
     );
     // Set the application temporary files folder
     $this->setApplicationTempFolder(
+      // FIXME - This needs to be configured and already exist!
       new Folder( '/tmp/substance' )
     );
   }
