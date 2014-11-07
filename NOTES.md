@@ -38,7 +38,22 @@ Database management is a key component, and anything but easy.
 * Migrations SHOULD allow rollback?
 * Migrations MUST be defined once and only once (i.e. no hook_update_N and
   hook_schema like Drupal)
-  
+
+Alerts
+======
+
+Alerts should have links to appropriate documentation, where it exists. Some
+would be specific to Substance and others would be specific to modules or the
+application that has been built with Substance. We should allow for this
+possibility somehow, e.g.
+
+$alert = new Alert('Whoops.');
+$alert->culprit( 'thing', 'value' );
+$alert->see( '[namespace]', '[errorcode]' );
+
+Then we allow for applications to provide a decorator or similar that converts
+the errorcode into a link for the specified namespace (or class).
+
 Presentation arrays
 ===================
 
