@@ -18,6 +18,7 @@
 
 namespace Substance\Core\Database;
 
+use Substance\Core\Environment\Environment;
 /**
  * Represents a database in Substance.
  */
@@ -25,9 +26,35 @@ class Database {
 
   const INIT_COMMANDS = 'init_commands';
 
-  public static function getConnection( $options = array() ) {
+  public static function getConnectionFromSettings( $options = array() ) {
     $class = $options['driverclass'];
     return new $class( $options );
+  }
+
+  /**
+   * @param string $name the database name, either '*' for or a more specific
+   * name.
+   * @param string $type the database type, either 'master' or 'slave'.
+   * @return Connection the database connection for the specified name and
+   * type.
+   */
+  public static function getConnection( $name = '*', $type = 'master' ) {
+    $databases = Environment::getEnvironment()->getSettings()->getDatabaseSettings();
+    if ( !array_key_exists( '*', $databases ) ) {
+      throw Alert::alert('You must define connection name "*" in your database configuration' )
+        ->culprit( 'defined connection names', implode( ',', array_keys( $databases ) ) );
+    }
+    if ( !array_key_exists( $name, $databases ) ) {
+      throw Alert::alert('No such database name in database settings.' )
+        ->culprit( 'name', $name );
+    }
+    $database = $databases[ $name ];
+    if ( !array_key_exists( $type, $database ) ) {
+      throw Alert::alert('No such database type for given name in database settings.' )
+        ->culprit( 'name', $name )
+        ->culprit( 'type', $type );
+    }
+    return Database::getConnectionFromSettings( $database[ $type ] );
   }
 
 }

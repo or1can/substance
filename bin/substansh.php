@@ -27,21 +27,19 @@ error_reporting(E_ALL | E_STRICT);
 require '../vendor/autoload.php';
 
 use Substance\Core\Alert\Alert;
+use Substance\Core\Bootstrap;
+use Substance\Core\Database\Database;
 use Substance\Core\Environment\Environment;
 use Substance\Core\Module;
 use Substance\Core\Presentation\Element;
 use Substance\Core\Presentation\ElementBuilder;
 use Substance\Core\Presentation\Elements\Page;
 use Substance\Core\Presentation\Elements\TableCell;
-use Substance\Modules\Configuration\Config;
 use Substance\Themes\HTML\HTMLTheme;
 use Substance\Themes\Text\TextTheme;
 
-$config = new Config();
-
-var_dump( $config );
-
-$environment = Environment::getEnvironment();
+// Bootstap the system.
+Bootstrap::initialise();
 
 var_dump( Module::findModules() );
 
@@ -51,7 +49,7 @@ var_export( $alert->present() );
 
 echo $alert;
 
-$connection = $config['database']['*']['master'];
+$connection = Database::getConnection( '*', 'master' );
 
 var_dump( $connection->query('SELECT * FROM information_schema.TABLES LIMIT 1') );
 
@@ -59,6 +57,7 @@ $tablecell = TableCell::build('Origin');
 
 var_export( $tablecell );
 
+$environment = Environment::getEnvironment();
 echo $environment->getOutputTheme()->render( $tablecell );
 
 $tablecell = TableCell::build(array(

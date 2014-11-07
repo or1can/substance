@@ -18,17 +18,26 @@
 
 namespace Substance\Core\Environment;
 
+use Substance\Core\Alert\Alert;
 use Substance\Core\Alert\AlertHandler;
 use Substance\Core\Folder;
 use Substance\Core\Presentation\Element;
 use Substance\Core\Presentation\Presentable;
 use Substance\Core\Presentation\Theme;
+use Substance\Core\Settings;
 use Substance\Themes\HTML\HTMLTheme;
 use Substance\Themes\Text\TextTheme;
 
 /**
  * Substance uses its Environment to contain configuration that must be shared
  * througout the application.
+ *
+ * The distinction between an Environment and Settings is that the Environment
+ * describes where the application is running, while the Settings configure the
+ * application. Hence an application can run in different Environments with the
+ * same Settings.
+ *
+ * @see Settings
  */
 abstract class Environment {
 
@@ -53,6 +62,11 @@ abstract class Environment {
   protected $output_theme;
 
   /**
+   * @var Settings
+   */
+  protected $settings;
+
+  /**
    * @var Folder
    */
   protected $temp_folder;
@@ -69,11 +83,6 @@ abstract class Environment {
     // Set the application root to the public folder.
     $this->setApplicationRoot(
       new Folder( dirname( dirname( __DIR__ ) ) )
-    );
-    // Set the application temporary files folder
-    $this->setApplicationTempFolder(
-      // FIXME - This needs to be configured and already exist!
-      new Folder( '/tmp/substance' )
     );
   }
 
@@ -135,6 +144,21 @@ abstract class Environment {
    */
   public function getOutputTheme() {
     return $this->output_theme;
+  }
+
+  /**
+   * Returns the application settings.
+   *
+   * @return Settings the application settings.
+   */
+  public function getSettings() {
+    if ( is_null( $this->settings ) ) {
+      throw Alert::alert(
+        'No settings have been configured.',
+        'Your application needs to define it\'s settings in Sites\_default\settings.php or similar.'
+      );
+    }
+    return $this->settings;
   }
 
   /**
@@ -234,6 +258,15 @@ abstract class Environment {
    */
   public function setOutputTheme( Theme $theme ) {
     $this->output_theme = $theme;
+  }
+
+  /**
+   * Sets the application settings.
+   *
+   * @param Settings $settings the application settings.
+   */
+  public function setSettings( Settings $settings ) {
+    return $this->settings = $settings;
   }
 
 }

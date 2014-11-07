@@ -18,7 +18,6 @@
     "twig/twig": "v1.15.1",
     "twig/extensions": "v1.0.1",
     "frameworks/jquery": "~2.1.1",
-    "pimple/pimple": "v1.1.1",
     "j4mie/paris": "v1.4.2",
     "j4mie/idiorm": "v1.4.1",
     "ircmaxell/password-compat": "~1.0.3"
