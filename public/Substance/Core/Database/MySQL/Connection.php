@@ -51,4 +51,24 @@ class Connection extends \Substance\Core\Database\Connection {
     parent::__construct( $dsn, $options['username'], $options['password'], $options, $pdo_options );
   }
 
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Connection::quoteChar()
+   */
+  public function quoteChar() {
+    return '`';
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Connection::quoteTable()
+   */
+  public function quoteTable( $table ) {
+    $quote_char = $this->quoteChar();
+    $double_quote_char = $quote_char . $quote_char;
+    $parts = explode( '.', $table );
+    foreach ( $parts as &$part ) {
+      $part = $quote_char . str_replace( $quote_char, $double_quote_char, $part ) . $quote_char;
+    }
+    return implode( '.', $parts );
+  }
+
 }

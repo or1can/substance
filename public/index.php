@@ -28,6 +28,8 @@ require '../vendor/autoload.php';
 use Substance\Core\Alert\Alert;
 use Substance\Core\Bootstrap;
 use Substance\Core\Database\Database;
+use Substance\Core\Database\SQL\ColumnExpression;
+use Substance\Core\Database\SQL\SelectQuery;
 use Substance\Core\Environment\Environment;
 use Substance\Core\Module;
 
@@ -45,5 +47,13 @@ echo $alert;
 $connection = Database::getConnection( '*', 'master' );
 
 var_dump( $connection->query('SELECT * FROM information_schema.TABLES LIMIT 1') );
+
+$select = new SelectQuery('information_schema.TABLES');
+$select->addExpression( new ColumnExpression( '*' ) );
+$select->limit( 1 );
+$select->offset( 2 );
+echo $select, "\n\n";
+echo $select->build( $connection ), "\n\n";
+
 
 throw $alert;

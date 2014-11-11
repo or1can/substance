@@ -16,30 +16,26 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database;
+namespace Substance\Core\Database\SQL;
 
 /**
- * A Substance module, from which all modules inherit.
+ * Represents a select expression in a SQL query.
  */
-abstract class AbstractTable implements Table {
+interface Expression {
 
   /**
-   * @var string the table name.
+   * Returns the field name.
+   *
+   * @return string the field name.
    */
-  protected $name;
+  public function getName();
 
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Table::getName()
+  /**
+   * Returns the field name quoted according to the database in use at the time
+   * this method is called.
+   *
+   * @return string the quoted field name.
    */
-  public function getName() {
-    return $this->name;
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Table::getQuotedName()
-   */
-  public function getQuotedName() {
-    // TODO
-  }
+  public function getQuotedName();
 
 }
