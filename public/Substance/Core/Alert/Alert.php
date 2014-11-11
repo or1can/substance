@@ -255,7 +255,7 @@ class Alert extends \Exception implements Presentable {
         $method .= implode(
           ', ',
           array_map(
-            function( $value ) { return var_export( $value, TRUE ); },
+            function( $value ) { return (string) $value; },
             $trace['args']
           )
         );
