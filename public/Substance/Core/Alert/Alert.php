@@ -255,7 +255,13 @@ class Alert extends \Exception implements Presentable {
         $method .= implode(
           ', ',
           array_map(
-            function( $value ) { return (string) $value; },
+            function( $value ) {
+              if ( is_object( $value ) && !method_exists( $value, '__toString' ) ) {
+                return 'CLASS[' . get_class( $value ) . ']';
+              } else {
+           	    return (string) $value;
+              }
+            },
             $trace['args']
           )
         );
