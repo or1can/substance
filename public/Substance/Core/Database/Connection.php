@@ -57,6 +57,18 @@ abstract class Connection extends \PDO {
   }
 
   /**
+   * Quote the specified name for use in a query as an identifier.
+   *
+   * @param string $name the name to quote
+   * @return string the quoted name, ready for use as an identifier
+   */
+  public function quoteName( $name ) {
+    $quote_char = $this->quoteChar();
+    $double_quote_char = $quote_char . $quote_char;
+    return $quote_char . str_replace( $quote_char, $double_quote_char, $name ) . $quote_char;
+  }
+
+  /**
    * Quote the specified table name for use in a query as an identifier.
    *
    * @param string $table the table name to quote

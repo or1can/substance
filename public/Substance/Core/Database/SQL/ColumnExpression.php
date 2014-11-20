@@ -18,6 +18,7 @@
 
 namespace Substance\Core\Database\SQL;
 
+use Substance\Core\Database\Connection;
 use Substance\Core\Database\SQL\Expression;
 
 /**
@@ -46,6 +47,38 @@ class ColumnExpression implements Expression {
     $this->table = $table;
   }
 
+  public function __toString() {
+    $string = '';
+    if ( isset( $this->table ) ) {
+      $string .= $this->table;
+      $string .= '.';
+    }
+    $string .= $this->name;
+    if ( isset( $this->alias ) ) {
+      $string .= ' AS ';
+      $string .= $this->alias;
+    }
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Expression::build()
+   */
+  public function build( Connection $connection ) {
+  	$string = '';
+  	if ( isset( $this->table ) ) {
+      $string .= $connection->quoteTable( $this->table );
+  	  $string .= '.';
+  	}
+    $string .= $connection->quoteName( $this->name );
+  	if ( isset( $this->alias ) ) {
+  	  $string .= ' AS ';
+      $string .= $connection->quoteName( $this->alias );
+  	  $string .= $this->alias;
+  	}
+  	return $string;
+  }
+
   /**
    * Returns the table name.
    *
@@ -63,20 +96,6 @@ class ColumnExpression implements Expression {
    */
   public function getQuotedName() {
     // FIXME - How to quote.
-  }
-
-  public function __toString() {
-    $string = '';
-    if ( isset( $this->table ) ) {
-      $string .= $this->table;
-      $string .= '.';
-    }
-    $string .= $this->name;
-    if ( isset( $this->alias ) ) {
-      $string .= ' AS ';
-      $string .= $this->alias;
-    }
-    return $string;
   }
 
 }

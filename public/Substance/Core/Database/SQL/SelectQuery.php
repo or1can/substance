@@ -18,8 +18,8 @@
 
 namespace Substance\Core\Database\SQL;
 
-use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\Connection;
+use Substance\Core\Database\SQL\Expression;
 
 /**
  * Represents a SELECT database query in Substance.
@@ -62,6 +62,24 @@ class SelectQuery {
     $this->table = $table;
   }
 
+  public function __toString() {
+    $sql = "SELECT ";
+    foreach ( $this->select_list as $expression ) {
+      $sql .= (string) $expression;
+    }
+    $sql .= ' FROM ';
+    $sql .= $this->table;
+    if ( isset( $this->limit ) ) {
+      $sql .= ' LIMIT ';
+      $sql .= $this->limit;
+      if ( isset( $this->offset ) ) {
+        $sql .= ' OFFSET ';
+        $sql .= $this->offset;
+      }
+    }
+    return $sql;
+  }
+
   /**
    * Adds an expression to the select list
    *
@@ -78,12 +96,12 @@ class SelectQuery {
    *
    * @param Connection $connection the database connection to build the query
    * for
-   * @return string the build query as a string.
+   * @return string the built query as a string.
    */
   public function build( Connection $connection ) {
     $sql = "SELECT ";
     foreach ( $this->select_list as $expression ) {
-      $sql .= (string) $expression;
+      $sql .= $expression->build( $connection );
     }
     $sql .= ' FROM ';
     $sql .= $connection->quoteTable( $this->table );
@@ -116,24 +134,6 @@ class SelectQuery {
    */
   public function offset( $offset ) {
     $this->offset = $offset;
-  }
-
-  public function __toString() {
-    $sql = "SELECT ";
-    foreach ( $this->select_list as $expression ) {
-      $sql .= (string) $expression;
-    }
-    $sql .= ' FROM ';
-    $sql .= $this->table;
-    if ( isset( $this->limit ) ) {
-      $sql .= ' LIMIT ';
-      $sql .= $this->limit;
-      if ( isset( $this->offset ) ) {
-        $sql .= ' OFFSET ';
-        $sql .= $this->offset;
-      }
-    }
-    return $sql;
   }
 
 }
