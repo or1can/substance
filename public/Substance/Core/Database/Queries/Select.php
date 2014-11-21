@@ -16,15 +16,16 @@
 * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Substance\Core\Database\SQL;
+namespace Substance\Core\Database\Queries;
 
 use Substance\Core\Database\Connection;
-use Substance\Core\Database\SQL\Expression;
+use Substance\Core\Database\Expression;
+use Substance\Core\Database\Query;
 
 /**
- * Represents a SELECT database query in Substance.
+ * Represents a SELECT database query.
  */
-class SelectQuery {
+class Select extends Query {
 
   /**
    * The maximum number of rows that should be returned by this query.
@@ -91,12 +92,8 @@ class SelectQuery {
     return $this;
   }
 
-  /**
-   * Builds this SELECT query for the given database connection.
-   *
-   * @param Connection $connection the database connection to build the query
-   * for
-   * @return string the built query as a string.
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Query::build()
    */
   public function build( Connection $connection ) {
     $sql = "SELECT ";

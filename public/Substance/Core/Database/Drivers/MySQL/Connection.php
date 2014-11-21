@@ -16,7 +16,7 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\MySQL;
+namespace Substance\Core\Database\Drivers\MySQL;
 
 use Substance\Core\Database\Database;
 

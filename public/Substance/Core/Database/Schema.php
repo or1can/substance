@@ -19,24 +19,16 @@
 namespace Substance\Core\Database;
 
 /**
- * Represents a database schema in Substance.
+ * The Schema class is used for working with a database schema.
  */
-class Schema {
+abstract class Schema {
 
-  public function createDatabases( $name ) {
+  abstract public function createDatabases( $name );
 
-  }
+  abstract public function createTable( $name );
 
-  public function createTable( $name ) {
+  abstract public function listDatabases();
 
-  }
-
-  public function listDatabases() {
-
-  }
-
-  public function listTables() {
-
-  }
+  abstract public function listTables();
 
 }

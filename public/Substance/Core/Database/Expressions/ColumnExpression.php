@@ -16,10 +16,10 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\SQL;
+namespace Substance\Core\Database\Expressions;
 
 use Substance\Core\Database\Connection;
-use Substance\Core\Database\SQL\Expression;
+use Substance\Core\Database\Expression;
 
 /**
  * A column expression for use in a SQL query.
@@ -80,22 +80,12 @@ class ColumnExpression implements Expression {
   }
 
   /**
-   * Returns the table name.
+   * Returns the field name.
    *
-   * @return string the table name.
+   * @return string the field name.
    */
   public function getName() {
     return $this->name;
-  }
-
-  /**
-   * Returns the table name quoted according to the database in use at the time
-   * this method is called.
-   *
-   * @return string the quoted table name.
-   */
-  public function getQuotedName() {
-    // FIXME - How to quote.
   }
 
 }

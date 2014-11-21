@@ -16,37 +16,18 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\SQL;
-
-use Substance\Core\Database\Connection;
+namespace Substance\Core\Database\Schema;
 
 /**
- * Represents a select expression in a SQL query.
+ * Represents a database table in Substance.
  */
-interface Expression {
+interface Table {
 
   /**
-   * Builds this expression for the given database connection.
+   * Returns the table name.
    *
-   * @param Connection $connection the database connection to build the
-   * expression for
-   * @return string the built expression as a string.
-   */
-  public function build( Connection $connection );
-
-  /**
-   * Returns the field name.
-   *
-   * @return string the field name.
+   * @return string the table name.
    */
   public function getName();
-
-  /**
-   * Returns the field name quoted according to the database in use at the time
-   * this method is called.
-   *
-   * @return string the quoted field name.
-   */
-  public function getQuotedName();
 
 }

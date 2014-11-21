@@ -16,7 +16,7 @@
 * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Substance\Core\Database\Conditions;
+namespace Substance\Core\Database\Expressions;
 
 use Substance\Core\Condition;
 

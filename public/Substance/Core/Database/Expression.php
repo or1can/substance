@@ -18,28 +18,20 @@
 
 namespace Substance\Core\Database;
 
+use Substance\Core\Database\Connection;
+
 /**
- * A Substance module, from which all modules inherit.
+ * Represents an expression in a SQL query.
  */
-abstract class AbstractTable implements Table {
+interface Expression {
 
   /**
-   * @var string the table name.
+   * Builds this expression for the given database connection.
+   *
+   * @param Connection $connection the database connection to build the
+   * expression for
+   * @return string the built expression as a string.
    */
-  protected $name;
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Table::getName()
-   */
-  public function getName() {
-    return $this->name;
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Table::getQuotedName()
-   */
-  public function getQuotedName() {
-    // TODO
-  }
+  public function build( Connection $connection );
 
 }

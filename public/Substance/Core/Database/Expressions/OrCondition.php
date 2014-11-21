@@ -16,13 +16,27 @@
 * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Substance\Core\Database;
+namespace Substance\Core\Database\Expressions;
 
-use Substance\Core\Database\Expression;
+use Substance\Core\Condition;
 
 /**
- * Represents a database query condition.
+ * Represents a logical OR condition in a database query. One or more
+ * conditions can be combined with the OR operator, simply add each condition
+ * in sequence.
+ *
+ * SELECT * FROM table WHERE table.column1 OR table.column2
  */
-interface Condition extends Expression {
+class OrCondition implements Condition {
+
+  /**
+   * Adds the specified condition to be OR'd together with other Conditions in
+   * this Conditition
+   *
+   * @param Condition $condition the condition to OR with other conditions
+   * @return self
+   */
+  public function add( Condition $condition ) {
+  }
 
 }

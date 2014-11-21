@@ -16,27 +16,22 @@
 * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Substance\Core\Database\Conditions;
+namespace Substance\Core\Database;
 
-use Substance\Core\Condition;
+use Substance\Core\Database\Connection;
 
 /**
- * Represents a logical OR condition in a database query. One or more
- * conditions can be combined with the OR operator, simply add each condition
- * in sequence.
- *
- * SELECT * FROM table WHERE table.column1 OR table.column2
+ * Represents a database query.
  */
-class OrCondition implements Condition {
+abstract class Query {
 
   /**
-   * Adds the specified condition to be OR'd together with other Conditions in
-   * this Conditition
+   * Builds this query for the specified database connection.
    *
-   * @param Condition $condition the condition to OR with other conditions
-   * @return self
+   * @param Connection $connection the database connection to build the query
+   * for
+   * @return string the built query as a string.
    */
-  public function add( Condition $condition ) {
-  }
+  abstract public function build( Connection $connection );
 
 }

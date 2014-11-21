@@ -16,11 +16,23 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database;
+namespace Substance\Core\Database\Schema;
 
 /**
- * Represents a database table in Substance.
+ * Abstract implementation of a schema Table.
  */
-interface Table {
+abstract class AbstractTable implements Table {
+
+  /**
+   * @var string the table name.
+   */
+  protected $name;
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Table::getName()
+   */
+  public function getName() {
+    return $this->name;
+  }
 
 }

@@ -11,7 +11,7 @@ class DefaultSettings extends Settings {
     return array(
       '*' => array(
         'master' => array(
-          'driverclass' => '\Substance\Core\Database\MySQL\Connection',
+          'driverclass' => '\Substance\Core\Database\Drivers\MySQL\Connection',
           'database' => 'mydb',
           'username' => 'myuser',
           'password' => 'mypass',
@@ -20,7 +20,7 @@ class DefaultSettings extends Settings {
           'prefix' => NULL,
         ),
         'slave' => array(
-          'driverclass' => 'Substance\Core\Database\MySQL\Connection',
+          'driverclass' => 'Substance\Core\Database\Drivers\MySQL\Connection',
           'database' => 'mydb',
           'username' => 'myuser',
           'password' => 'mypass',
@@ -31,7 +31,7 @@ class DefaultSettings extends Settings {
       ),
       'named' => array(
         'master' => array(
-          'driverclass' => 'Substance\Core\Database\MySQL\Connection',
+          'driverclass' => 'Substance\Core\Database\Drivers\MySQL\Connection',
           'database' => 'mydb',
           'username' => 'myuser',
           'password' => 'mypass',
@@ -40,7 +40,7 @@ class DefaultSettings extends Settings {
           'prefix' => NULL,
         ),
         'slave' => array(
-          'driverclass' => 'Substance\Core\Database\MySQL\Connection',
+          'driverclass' => 'Substance\Core\Database\Drivers\MySQL\Connection',
           'database' => 'mydb',
           'username' => 'myuser',
           'password' => 'mypass',
