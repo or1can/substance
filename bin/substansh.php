@@ -60,45 +60,6 @@ var_export( $tablecell );
 $environment = Environment::getEnvironment();
 echo $environment->getOutputTheme()->render( $tablecell );
 
-$tablecell = TableCell::build(array(
-  '#type' => 'Substance\Core\Presentation\Elements\TableCell',
-  '#elements' => 'stuff',
-));
-
-var_export( $tablecell );
-
-$environment->outputElement( $tablecell );
-
-$tablecell = ElementBuilder::build(array(
-  '#type' => 'Substance\Core\Presentation\Elements\TableCell',
-  '#elements' => 'stuff',
-));
-
-var_export( $tablecell );
-
-$environment->outputElement( $tablecell );
-
-$tablerow = ElementBuilder::build(array(
-  '#type' => 'Substance\Core\Presentation\Elements\TableRow',
-  '#row' => array( 'stuff', 'morestuff' ),
-));
-
-var_export( $tablerow );
-
-$environment->outputElement( $tablerow );
-
-$table = ElementBuilder::build(array(
-  '#type' => 'Substance\Core\Presentation\Elements\Table',
-  '#rows' => array(
-    array( 'stuff', 'morestuff' ),
-    array( 'stuff2', 'morestuff2' )
-  ),
-));
-
-var_export( $table );
-
-$environment->outputElement( $table );
-
 $page = new Page();
 
 $environment->outputElement( $page );
