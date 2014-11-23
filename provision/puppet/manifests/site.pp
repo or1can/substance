@@ -35,9 +35,12 @@ package { 'php-pdo':
 package { 'php-pear':
 }
 
+package { 'php-xml':
+}
+
 exec { 'pear-xdebug':
   command => '/usr/bin/pecl install xdebug',
-  creates => '/usr/lib/php/modules/xdebug.so',
+  creates => '/usr/lib64/php/modules/xdebug.so',
   require => Package['php-devel', 'php-pear'],
 }
 
@@ -45,5 +48,5 @@ file { 'php-xdebug-ini':
   path => '/etc/php.d/xdebug.ini',
   ensure => 'present',
   mode => 0644,
-  content => 'zend_extension="/usr/lib/php/modules/xdebug.so"',
+  content => 'zend_extension="/usr/lib64/php/modules/xdebug.so"',
 }
