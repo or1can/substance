@@ -16,19 +16,16 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database;
+namespace Substance\Core\Database\Drivers\MySQL;
 
-use Substance\Core\Database\Schema\Table;
+use Substance\Core\Database\Expressions\AllColumnsExpression;
+use Substance\Core\Database\Schema;
+use Substance\Core\Database\Queries\Select;
 
 /**
  * The Schema class is used for working with a database schema.
  */
-abstract class Schema {
-
-  /**
-   * @var Connection the database connection we are working with.
-   */
-  protected $connection;
+class MySQLSchema extends Schema {
 
   /**
    * Construct a new schema object to work with the specified connected
@@ -37,37 +34,40 @@ abstract class Schema {
    * @param Connection $connection the database to work with
    */
   public function __construct( Connection $connection ) {
-    $this->connection = $connection;
+    parent::__construct( $connection );
   }
 
-  /**
-   * Creates a database with the specified name in the server specified in this
-   * Schema's connection.
-   *
-   * @param string $name the new database name.
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema::createDatabases()
    */
-  abstract public function createDatabases( $name );
+  public function createDatabases( $name ) {
+    // TODO
+  }
 
-  /**
-   * Creates a table with the specified name in the database specified in this
-   * Schema's connection.
-   *
-   * @param string $name the new table name.
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema::createTable()
    */
-  abstract public function createTable( $name );
+  public function createTable( $name ) {
+    // TODO
+  }
 
-  /**
-   * Lists the available databases on the server.
-   *
-   * @return Database[] associative array of database name to Database objects.
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema::listDatabases()
    */
-  abstract public function listDatabases();
+  public function listDatabases() {
+    // TODO
+  }
 
-  /**
-   * Lists the tables in the database.
-   *
-   * @return Table[] associative array of table name to Table objects.
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema::listTables()
    */
-  abstract public function listTables();
+  public function listTables() {
+    $select = new Select('information_schema.TABLES');
+    $select->addExpression( new AllColumnsExpression() );
+    // TODO - where database is connected db.
+    $sql = $select->build( $this->connection );
+    echo $sql, "\n\n";
+    return $this->connection->query( $sql );
+  }
 
 }

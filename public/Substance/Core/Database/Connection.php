@@ -19,12 +19,11 @@
 namespace Substance\Core\Database;
 
 /**
- * Represents a database connection in Substance, which is an extension of the
- * core PHP PDO class.
+ * Represents a database connection.
  */
 abstract class Connection extends \PDO {
 
-  public function __construct( $dsn, $username, $passwd, &$pdo_options = array(), &$options = array() ) {
+  public function __construct( &$options = array(), &$pdo_options = array()  ) {
     // Force error exceptions, always.
     $options[ \PDO::ATTR_ERRMODE ] = \PDO::ERRMODE_EXCEPTION;
 
@@ -37,14 +36,22 @@ abstract class Connection extends \PDO {
       \PDO::ATTR_EMULATE_PREPARES => TRUE,
     );
 
-    // Call PDO::__construct to initiate the connection
-    parent::__construct( $dsn, $username, $passwd, $pdo_options );
+    // Create the PDO connection
+    parent::__construct( $options['dsn'], $options['username'], $options['password'], $pdo_options );
 
     // Execute init commands.
     if ( !empty( $options[ Database::INIT_COMMANDS ] ) ) {
       $this->exec( implode( ';', $options[ Database::INIT_COMMANDS ] ) );
     }
+
   }
+
+  /**
+   * Gets a Schema instance for working with this databases schema.
+   *
+   * @return Schema a schema instance
+   */
+  abstract public function getSchema();
 
   /**
    * Quote the specified table name for use in a query as an identifier.

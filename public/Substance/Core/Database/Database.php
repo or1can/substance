@@ -19,10 +19,13 @@
 namespace Substance\Core\Database;
 
 use Substance\Core\Environment\Environment;
+
 /**
  * Represents a database in Substance.
  */
 class Database {
+
+  const DUMMY_CONNECTION = 'dummy_connection';
 
   const INIT_COMMANDS = 'init_commands';
 

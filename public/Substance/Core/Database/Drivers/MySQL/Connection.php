@@ -46,9 +46,16 @@ class Connection extends \Substance\Core\Database\Connection {
     $dsn[] = 'host=' . $options['host'];
     $dsn[] = 'port=' . $options['port'];
     $dsn[] = 'dbname=' . $options['database'];
-    $dsn = 'mysql:' . implode( ';', $dsn );
+    $options['dsn'] = 'mysql:' . implode( ';', $dsn );
 
-    parent::__construct( $dsn, $options['username'], $options['password'], $options, $pdo_options );
+    parent::__construct( $options, $pdo_options );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Connection::getSchema()
+   */
+  public function getSchema() {
+    return new MySQLSchema( $this );
   }
 
   /* (non-PHPdoc)

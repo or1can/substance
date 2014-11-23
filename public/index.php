@@ -28,7 +28,7 @@ require '../vendor/autoload.php';
 use Substance\Core\Alert\Alert;
 use Substance\Core\Bootstrap;
 use Substance\Core\Database\Database;
-use Substance\Core\Database\Expressions\ColumnExpression;
+use Substance\Core\Database\Expressions\AllColumnsExpression;
 use Substance\Core\Database\Queries\Select;
 use Substance\Core\Environment\Environment;
 use Substance\Core\Module;
@@ -49,11 +49,13 @@ $connection = Database::getConnection( '*', 'master' );
 var_dump( $connection->query('SELECT * FROM information_schema.TABLES LIMIT 1') );
 
 $select = new Select('information_schema.TABLES');
-$select->addExpression( new ColumnExpression( '*' ) );
+$select->addExpression( new AllColumnsExpression() );
 $select->limit( 1 );
 $select->offset( 2 );
 echo $select, "\n\n";
 echo $select->build( $connection ), "\n\n";
+
+var_dump( $connection->getSchema()->listTables() );
 
 
 throw $alert;
