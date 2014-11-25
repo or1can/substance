@@ -103,7 +103,7 @@ class Alert extends \Exception implements Presentable {
     try {
       return Environment::getEnvironment()->renderPresentable( $this );
     } catch ( \Exception $ex ) {
-      return 'INTERNAL ALERT ERROR:' . PHP_EOL . parent::__toString();
+      return 'INTERNAL ALERT ERROR:' . $ex->getMessage() . PHP_EOL . $ex->getTraceAsString() . PHP_EOL . parent::__toString();
     }
   }
 
@@ -258,6 +258,8 @@ class Alert extends \Exception implements Presentable {
             function( $value ) {
               if ( is_object( $value ) && !method_exists( $value, '__toString' ) ) {
                 return 'CLASS[' . get_class( $value ) . ']';
+              } else if ( is_array( $value ) ) {
+                return 'Array';
               } else {
            	    return (string) $value;
               }
