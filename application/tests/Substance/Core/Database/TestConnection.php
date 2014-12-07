@@ -16,31 +16,17 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\Queries;
+namespace Substance\Core\Database;
 
-use Substance\Core\Database\Expressions\AllColumnsExpression;
-use Substance\Core\Database\Queries\Select;
-use Substance\Core\Database\TestConnection;
+use Substance\Core\Database\Drivers\MySQL\Connection;
 
 /**
- * Tests select queries.
+ * Provides a dummy connection that can be used for tests.
  */
-class SelectTest extends \PHPUnit_Framework_TestCase {
+class TestConnection extends Connection {
 
-  /**
-   * Test a basic build of a SQL query.
-   */
-  public function testBuild() {
-    $connection = new TestConnection();
+  public function __construct() {
 
-    $select = new Select('information_schema.TABLES');
-    $select->addExpression( new AllColumnsExpression() );
-    $select->limit( 1 );
-    $select->offset( 2 );
-
-    $sql = $select->build( $connection );
-
-    $this->assertEquals( 'SELECT * FROM `information_schema`.`TABLES` LIMIT 1 OFFSET 2', $sql );
   }
 
 }

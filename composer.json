@@ -5,7 +5,7 @@
   "description": "Substance - a content management system and application framework",
   "autoload": {
     "psr-4": {
-      "Substance\\": "public/Substance/"
+      "Substance\\": ["public/Substance/", "application/tests/Substance"]
     }
   },
   "require": {
