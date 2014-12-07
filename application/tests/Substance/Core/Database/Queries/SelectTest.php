@@ -27,20 +27,77 @@ use Substance\Core\Database\TestConnection;
  */
 class SelectTest extends \PHPUnit_Framework_TestCase {
 
-  /**
-   * Test a basic build of a SQL query.
-   */
-  public function testBuild() {
-    $connection = new TestConnection();
+  protected $connection;
 
+  /* (non-PHPdoc)
+   * @see PHPUnit_Framework_TestCase::setUp()
+   */
+  public function setUp() {
+    $this->connection = new TestConnection();
+  }
+
+  /**
+   * Test a build with a database prefix on the table.
+   */
+  public function testBuildWithDatabaseAndTable() {
     $select = new Select('information_schema.TABLES');
+    $select->addExpression( new AllColumnsExpression() );
+
+    $sql = $select->build( $this->connection );
+
+    $this->assertEquals( 'SELECT * FROM `information_schema`.`TABLES`', $sql );
+  }
+
+  /**
+   * Test a build with no limit and no offset.
+   */
+  public function testBuildNoLimitNoOffset() {
+    $select = new Select('table');
+    $select->addExpression( new AllColumnsExpression() );
+
+    $sql = $select->build( $this->connection );
+
+    $this->assertEquals( 'SELECT * FROM `table`', $sql );
+  }
+
+  /**
+   * Test a build with no limit and an offset.
+   */
+  public function testBuildNoLimitWithOffset() {
+    $select = new Select('table');
+    $select->addExpression( new AllColumnsExpression() );
+    $select->offset( 2 );
+
+    $sql = $select->build( $this->connection );
+
+    $this->assertEquals( 'SELECT * FROM `table`', $sql );
+  }
+
+  /**
+   * Test a build with a limit and no offset.
+   */
+  public function testBuildWithLimitNoOffset() {
+    $select = new Select('table');
+    $select->addExpression( new AllColumnsExpression() );
+    $select->limit( 1 );
+
+    $sql = $select->build( $this->connection );
+
+    $this->assertEquals( 'SELECT * FROM `table` LIMIT 1', $sql );
+  }
+
+  /**
+   * Test a build with a limit and offset.
+   */
+  public function testBuildWithLimitWithOffset() {
+    $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->limit( 1 );
     $select->offset( 2 );
 
-    $sql = $select->build( $connection );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `information_schema`.`TABLES` LIMIT 1 OFFSET 2', $sql );
+    $this->assertEquals( 'SELECT * FROM `table` LIMIT 1 OFFSET 2', $sql );
   }
 
 }
