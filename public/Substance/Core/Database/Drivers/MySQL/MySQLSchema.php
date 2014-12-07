@@ -67,6 +67,9 @@ class MySQLSchema extends Schema {
     // TODO - where database is connected db.
     $sql = $select->build( $this->connection );
     echo $sql, "\n\n";
+    foreach ( $this->connection->query( $sql ) as $row ) {
+      var_export( $row );
+    }
     return $this->connection->query( $sql );
   }
 
