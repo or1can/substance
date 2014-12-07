@@ -33,7 +33,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase {
     $alert = $alert->__toString();
 
     $this->assertContains( 'Message : ahhhh', $alert );
-    $this->assertRegExp( '#Origin : .*?tests/Core/Alert/AlertTest.php\(\d+\)#', $alert );
+    $this->assertRegExp( '#Origin : .*?tests/Substance/Core/Alert/AlertTest.php\(\d+\)#', $alert );
     $this->assertContains( 'WHO : me', $alert );
   }
 
@@ -46,7 +46,7 @@ class AlertTest extends \PHPUnit_Framework_TestCase {
     $alert = $alert->__toString();
 
     $this->assertContains( '<tr><td>Message</td><td>ahhhh</td></tr>', $alert );
-    $this->assertRegExp( '#<tr><td>Origin</td><td>.*?tests/Core/Alert/AlertTest.php\(\d+\)</td></tr>#', $alert );
+    $this->assertRegExp( '#<tr><td>Origin</td><td>.*?tests/Substance/Core/Alert/AlertTest.php\(\d+\)</td></tr>#', $alert );
     $this->assertContains( '<tr><td>WHO</td><td>me</td></tr>', $alert );
   }
 
