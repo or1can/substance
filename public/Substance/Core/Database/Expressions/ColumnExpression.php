@@ -74,7 +74,6 @@ class ColumnExpression implements Expression {
   	if ( isset( $this->alias ) ) {
   	  $string .= ' AS ';
       $string .= $connection->quoteName( $this->alias );
-  	  $string .= $this->alias;
   	}
   	return $string;
   }
