@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2014 Kevin Rogers
+ * Copyright (C) 2014 - 2015 Kevin Rogers
  *
  * Substance is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,10 +67,11 @@ class MySQLSchema extends Schema {
     // TODO - where database is connected db.
     $sql = $select->build( $this->connection );
     echo $sql, "\n\n";
+    $tables = array();
     foreach ( $this->connection->query( $sql ) as $row ) {
-      var_export( $row );
+      $tables = new MySQLTable( $this->connection, $row );
     }
-    return $this->connection->query( $sql );
+    return $tables;
   }
 
 }

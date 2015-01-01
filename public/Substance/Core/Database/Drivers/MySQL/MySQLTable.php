@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2014 - 2015 Kevin Rogers
+ * Copyright (C) 2015 Kevin Rogers
  *
  * Substance is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,47 +16,28 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\Schema;
+namespace Substance\Core\Database\Drivers\MySQL;
 
-use Substance\Core\Database\Connection;
+use Substance\Core\Database\Schema\AbstractTable;
 
 /**
- * Abstract implementation of a schema Table.
+ * Concrete schema Table instance for working with a table in a MySQL database.
  */
-abstract class AbstractTable implements Table {
+class MySQLTable extends AbstractTable {
 
-  /**
-   * @var Connection the database connection we are working with.
-   */
-  protected $connection;
-
-  /**
-   * @var string the table name.
-   */
-  protected $name;
+  protected $information_schema_row;
 
   /**
    * Construct a new table object to work with the specified table in the
    * connected database.
    *
-   * @param Connection $connection the database to work with
+   * @param Connection $connection the database to work with.
+   * @param object $row the information_schema table row for this table.
    */
-  public function __construct( Connection $connection ) {
-    $this->connection = $connection;
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema\Table::getName()
-   */
-  public function getName() {
-    return $this->name;
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema\Table::setName()
-   */
-  public function setName( $name ) {
-    $this->name = $name;
+  public function __construct( $connection, $row ) {
+    parent::__construct( $connection );
+    $this->information_schema_row = $row;
+    $this->setName( $this->information_schema_row->TABLE_NAME );
   }
 
 }

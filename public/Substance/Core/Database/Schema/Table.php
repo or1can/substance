@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2014 Kevin Rogers
+ * Copyright (C) 2014 - 2015 Kevin Rogers
  *
  * Substance is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,5 +29,13 @@ interface Table {
    * @return string the table name.
    */
   public function getName();
+
+  /**
+   * Sets the table name.
+   *
+   * @param string $name the table name.
+   * @return self
+   */
+  public function setName( $name );
 
 }
