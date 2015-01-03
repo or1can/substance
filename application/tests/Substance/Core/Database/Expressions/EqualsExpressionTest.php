@@ -51,7 +51,7 @@ class EqualsExpressionTest extends \PHPUnit_Framework_TestCase {
   /**
    * Test an equals expression with an alias.
    */
-  public function testBuildWithAliasNoTable() {
+  public function testBuildWithAlias() {
     $left = new ColumnExpression('column1');
     $right = new ColumnExpression('column2');
     $equals = new EqualsExpression( $left, $right, 'alias' );
