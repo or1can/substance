@@ -53,6 +53,10 @@ class EqualsExpression implements Expression {
     $string .= $this->left;
     $string .= ' = ';
     $string .= $this->right;
+    if ( isset( $this->alias ) ) {
+      $string .= ' AS ';
+      $string .= $this->alias;
+    }
     return $string;
   }
 
