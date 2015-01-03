@@ -21,6 +21,9 @@ namespace Substance\Core\Database\Queries;
 use Substance\Core\Database\Expressions\AllColumnsExpression;
 use Substance\Core\Database\Queries\Select;
 use Substance\Core\Database\TestConnection;
+use Substance\Core\Database\Expressions\EqualsExpression;
+use Substance\Core\Database\Expressions\ColumnExpression;
+use Substance\Core\Database\Expressions\LiteralExpression;
 
 /**
  * Tests select queries.
@@ -98,6 +101,19 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     $sql = $select->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` LIMIT 1 OFFSET 2', $sql );
+  }
+
+  /**
+   * Test a build with where clause, no limit and offset.
+   */
+  public function testBuildWithWhereNoLimitNoOffset() {
+    $select = new Select('table');
+    $select->addExpression( new AllColumnsExpression() );
+    $select->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) );
+
+    $sql = $select->build( $this->connection );
+
+    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5', $sql );
   }
 
 }

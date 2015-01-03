@@ -43,7 +43,7 @@ class Select extends Query {
   protected $offset;
 
   /**
-   * @var Expression[]
+   * @var Expression[] select list expressions.
    */
   protected $select_list = array();
 
@@ -53,6 +53,11 @@ class Select extends Query {
    * @var string
    */
   protected $table;
+
+  /**
+   * @var Expression[] where clause expressions
+   */
+  protected $where = array();
 
   /**
    * Construct a new SELECT query to select data from the specified table.
@@ -102,6 +107,12 @@ class Select extends Query {
     }
     $sql .= ' FROM ';
     $sql .= $connection->quoteTable( $this->table );
+    if ( count( $this->where ) != 0 ) {
+      $sql .= ' WHERE ';
+      foreach ( $this->where as $expression ) {
+        $sql .= $expression->build( $connection );
+      }
+    }
     if ( isset( $this->limit ) ) {
       $sql .= ' LIMIT ';
       $sql .= $this->limit;
@@ -131,6 +142,17 @@ class Select extends Query {
    */
   public function offset( $offset ) {
     $this->offset = $offset;
+  }
+
+  /**
+   * Adds an expression to the where clause.
+   *
+   * @param Expression $expression the expression to add to the where clause.
+   * @return self
+   */
+  public function where( Expression $expression ) {
+    $this->where[] = $expression;
+    return $this;
   }
 
 }
