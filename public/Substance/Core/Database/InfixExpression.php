@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2014 Kevin Rogers
+ * Copyright (C) 2015 Kevin Rogers
 *
 * Substance is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,11 +18,30 @@
 
 namespace Substance\Core\Database;
 
-use Substance\Core\Database\Expression;
-
 /**
- * Represents a database query condition.
+ * Represents an infix expression.
  */
-interface Condition extends Expression {
+interface InfixExpression extends Expression {
+
+  /**
+   * Returns the expression on the left of the infix operator.
+   *
+   * @return Expression the left hand side expression.
+   */
+  public function getLeftExpression();
+
+  /**
+   * Returns the expression on the right of the infix operator.
+   *
+   * @return Expression the right hand side expression.
+   */
+  public function getRightExpression();
+
+  /**
+   * Returns the symbol for this expression.
+   *
+   * @return string this expressions symbol.
+   */
+  public function getSymbol();
 
 }

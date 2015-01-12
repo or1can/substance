@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2014 Kevin Rogers
+ * Copyright (C) 2015 Kevin Rogers
 *
 * Substance is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -16,27 +16,18 @@
 * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Substance\Core\Database\Expressions;
-
-use Substance\Core\Condition;
+namespace Substance\Core\Database;
 
 /**
- * Represents a logical AND condition in a database query. One or more
- * conditions can be combined with the AND operator, simply add each condition
- * in sequence.
- *
- * SELECT * FROM table WHERE table.column1 AND table.column2
+ * Represents a prefix expression.
  */
-class AndCondition implements Condition {
+interface PrefixExpression extends Expression {
 
   /**
-   * Adds the specified condition to be AND'd together with other Conditions in
-   * this Conditition
+   * Returns the expression on the right of the infix operator.
    *
-   * @param Condition $condition the condition to AND with other conditions
-   * @return self
+   * @return Expression the right hand side expression.
    */
-  public function add( Condition $condition ) {
-  }
+  public function getRightExpression();
 
 }
