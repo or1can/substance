@@ -35,17 +35,6 @@ class AndExpression extends AbstractInfixExpression {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Expression::build()
-   */
-  public function build( Connection $connection ) {
-    $string = '';
-    $string .= $this->left->build( $connection );
-    $string .= ' AND ';
-    $string .= $this->right->build( $connection );
-    return $string;
-  }
-
-  /* (non-PHPdoc)
    * @see \Substance\Core\Database\InfixExpression::getSymbol()
    */
   public function getSymbol() {
