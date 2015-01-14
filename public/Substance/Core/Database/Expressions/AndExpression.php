@@ -18,13 +18,11 @@
 
 namespace Substance\Core\Database\Expressions;
 
-use Substance\Core\Database\Connection;
 use Substance\Core\Database\Expression;
 
 /**
- * Represents a logical AND condition in a database query. One or more
- * conditions can be combined with the AND operator, simply add each condition
- * in sequence.
+ * Represents a logical AND condition in a database query, combining two
+ * expressions with the AND operator.
  *
  * SELECT * FROM table WHERE table.column1 AND table.column2
  */
@@ -40,4 +38,5 @@ class AndExpression extends AbstractInfixExpression {
   public function getSymbol() {
     return 'AND';
   }
+
 }
