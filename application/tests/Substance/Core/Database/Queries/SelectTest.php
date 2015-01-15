@@ -117,20 +117,6 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with two where clauses, no limit and offset.
-   */
-  public function testBuildWithTwoWhereNoLimitNoOffset() {
-    $select = new Select('table');
-    $select->addExpression( new AllColumnsExpression() );
-    $select->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) );
-    $select->where( new EqualsExpression( new ColumnExpression('column2'), new LiteralExpression('hello') ) );
-
-    $sql = $select->build( $this->connection );
-
-    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 AND `column2` = \'hello\'', $sql );
-  }
-
-  /**
    * Test a build with three where clauses, no limit and offset.
    */
   public function testBuildWithThreeWhereNoLimitNoOffset() {
@@ -144,6 +130,20 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 AND `column2` = \'hello\' AND `column3` = 7', $sql );
 //    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 AND `column2` = \'hello\' AND `column3` = 7', (string) $select );
+  }
+
+  /**
+   * Test a build with two where clauses, no limit and offset.
+   */
+  public function testBuildWithTwoWhereNoLimitNoOffset() {
+    $select = new Select('table');
+    $select->addExpression( new AllColumnsExpression() );
+    $select->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) );
+    $select->where( new EqualsExpression( new ColumnExpression('column2'), new LiteralExpression('hello') ) );
+
+    $sql = $select->build( $this->connection );
+
+    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 AND `column2` = \'hello\'', $sql );
   }
 
 }
