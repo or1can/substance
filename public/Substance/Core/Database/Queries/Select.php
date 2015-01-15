@@ -20,6 +20,7 @@ namespace Substance\Core\Database\Queries;
 
 use Substance\Core\Database\Connection;
 use Substance\Core\Database\Expression;
+use Substance\Core\Database\Expressions\AndExpression;
 use Substance\Core\Database\Query;
 
 /**
@@ -55,9 +56,9 @@ class Select extends Query {
   protected $table;
 
   /**
-   * @var Expression[] where clause expressions
+   * @var Expression where clause expression
    */
-  protected $where = array();
+  protected $where = NULL;
 
   /**
    * Construct a new SELECT query to select data from the specified table.
@@ -75,6 +76,10 @@ class Select extends Query {
     }
     $sql .= ' FROM ';
     $sql .= $this->table;
+    if ( !is_null( $this->where ) ) {
+      $sql .= ' WHERE ';
+      $sql .= (string) $this->where;
+    }
     if ( isset( $this->limit ) ) {
       $sql .= ' LIMIT ';
       $sql .= $this->limit;
@@ -107,11 +112,9 @@ class Select extends Query {
     }
     $sql .= ' FROM ';
     $sql .= $connection->quoteTable( $this->table );
-    if ( count( $this->where ) != 0 ) {
+    if ( !is_null( $this->where ) ) {
       $sql .= ' WHERE ';
-      foreach ( $this->where as $expression ) {
-        $sql .= $expression->build( $connection );
-      }
+      $sql .= $this->where->build( $connection );
     }
     if ( isset( $this->limit ) ) {
       $sql .= ' LIMIT ';
@@ -151,7 +154,13 @@ class Select extends Query {
    * @return self
    */
   public function where( Expression $expression ) {
-    $this->where[] = $expression;
+    if ( is_null( $this->where ) ) {
+      $this->where = $expression;
+    } elseif ( $this->where instanceof AbstractInfixExpression ) {
+      $this->where->addExpressionToSequence( $expression );
+    } else {
+      $this->where = new AndExpression( $this->where, $expression );
+    }
     return $this;
   }
 
