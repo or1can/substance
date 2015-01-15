@@ -22,6 +22,7 @@ use Substance\Core\Database\Connection;
 use Substance\Core\Database\Expression;
 use Substance\Core\Database\Expressions\AndExpression;
 use Substance\Core\Database\Query;
+use Substance\Core\Database\Expressions\CommaExpression;
 
 /**
  * Represents a SELECT database query.
@@ -44,9 +45,9 @@ class Select extends Query {
   protected $offset;
 
   /**
-   * @var Expression[] select list expressions.
+   * @var Expression select list expression.
    */
-  protected $select_list = array();
+  protected $select_list = NULL;
 
   /**
    * The table we are selecting data from.
@@ -71,6 +72,11 @@ class Select extends Query {
 
   public function __toString() {
     $sql = "SELECT ";
+    if ( is_null( $this->select_list ) ) {
+      $sql .= '/* No select expressions */';
+    } else {
+      $sql .= (string) $this->select_list;
+    }
     foreach ( $this->select_list as $expression ) {
       $sql .= (string) $expression;
     }
@@ -98,7 +104,13 @@ class Select extends Query {
    * @return self
    */
   public function addExpression( Expression $expression ) {
-    $this->select_list[] = $expression;
+    if ( is_null( $this->select_list ) ) {
+      $this->select_list = $expression;
+    } elseif ( $this->select_list instanceof CommaExpression ) {
+      $this->select_list->addExpressionToSequence( $expression );
+    } else {
+      $this->select_list = new CommaExpression( $this->select_list, $expression );
+    }
     return $this;
   }
 
@@ -107,8 +119,10 @@ class Select extends Query {
    */
   public function build( Connection $connection ) {
     $sql = "SELECT ";
-    foreach ( $this->select_list as $expression ) {
-      $sql .= $expression->build( $connection );
+    if ( is_null( $this->select_list ) ) {
+      $sql .= '/* No select expressions */';
+    } else {
+      $sql .= $this->select_list->build( $connection );
     }
     $sql .= ' FROM ';
     $sql .= $connection->quoteTable( $this->table );

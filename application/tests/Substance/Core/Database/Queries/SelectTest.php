@@ -106,6 +106,18 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test a build with one select expression.
+   */
+  public function testBuildWithOneSelectExprNoLimitNoOffset() {
+    $select = new Select('table');
+    $select->addExpression( new AllColumnsExpression() );
+
+    $sql = $select->build( $this->connection );
+
+    $this->assertEquals( 'SELECT * FROM `table`', $sql );
+  }
+
+  /**
    * Test a build with one where clause, no limit and offset.
    */
   public function testBuildWithOneWhereNoLimitNoOffset() {
@@ -116,6 +128,20 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     $sql = $select->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5', $sql );
+  }
+
+  /**
+   * Test a build with three select expressions.
+   */
+  public function testBuildWithThreeSelectExprNoLimitNoOffset() {
+    $select = new Select('table');
+    $select->addExpression( new ColumnExpression('column1') );
+    $select->addExpression( new ColumnExpression('column2') );
+    $select->addExpression( new ColumnExpression('column3') );
+
+    $sql = $select->build( $this->connection );
+
+    $this->assertEquals( 'SELECT `column1`, `column2`, `column3` FROM `table`', $sql );
   }
 
   /**
@@ -132,6 +158,19 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 AND `column2` = \'hello\' AND `column3` = 7', $sql );
 //    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 AND `column2` = \'hello\' AND `column3` = 7', (string) $select );
+  }
+
+  /**
+   * Test a build with two select expressions.
+   */
+  public function testBuildWithTwoSelectExprNoLimitNoOffset() {
+    $select = new Select('table');
+    $select->addExpression( new ColumnExpression('column1') );
+    $select->addExpression( new ColumnExpression('column2') );
+
+    $sql = $select->build( $this->connection );
+
+    $this->assertEquals( 'SELECT `column1`, `column2` FROM `table`', $sql );
   }
 
   /**
