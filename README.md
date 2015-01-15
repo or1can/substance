@@ -14,6 +14,7 @@ Requirements
 
 * PHP 5.3.7+ (except Redhat/CentOS where 5.3.3+)
 * mb_string extension
+* DOM/XML extension
 * composer
 
 Installation

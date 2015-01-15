@@ -10,6 +10,7 @@
   },
   "require": {
     "php": ">=5.3.3",
+    "ext-dom": "*",
     "filp/whoops": "~1.1.0",
     "liquid/liquid": "dev-master",
     "monolog/monolog": "~1.10.0",
