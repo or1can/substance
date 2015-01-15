@@ -29,6 +29,12 @@ use Substance\Core\Database\InfixExpression;
 abstract class AbstractInfixExpression implements InfixExpression {
 
   /**
+   * @var boolean TRUE if a space should appear before the symbol and FALSE
+   * otherwise.
+   */
+  protected $has_space_before = TRUE;
+
+  /**
    * @var Expression the left expression.
    */
   protected $left;
@@ -46,7 +52,9 @@ abstract class AbstractInfixExpression implements InfixExpression {
   public function __toString() {
     $string = '';
     $string .= $this->left;
-    $string .= ' ';
+    if ( $this->has_space_before ) {
+      $string .= ' ';
+    }
     $string .= $this->getSymbol();
     $string .= ' ';
     $string .= $this->right;
@@ -94,7 +102,9 @@ abstract class AbstractInfixExpression implements InfixExpression {
   public function build( Connection $connection ) {
     $string = '';
     $string .= $this->left->build( $connection );
-    $string .= ' ';
+    if ( $this->has_space_before ) {
+      $string .= ' ';
+    }
     $string .= $this->getSymbol();
     $string .= ' ';
     $string .= $this->right->build( $connection );
