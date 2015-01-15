@@ -69,6 +69,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildNoLimitWithOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
+    // Add an offset. As this makes no sense without a limit, the offset should
+    // not appear in the SQL.
     $select->offset( 2 );
 
     $sql = $select->build( $this->connection );
