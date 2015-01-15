@@ -21,6 +21,9 @@ namespace Substance\Core\Database\Drivers\MySQL;
 use Substance\Core\Database\Expressions\AllColumnsExpression;
 use Substance\Core\Database\Schema;
 use Substance\Core\Database\Queries\Select;
+use Substance\Core\Database\Expressions\EqualsExpression;
+use Substance\Core\Database\Expressions\ColumnExpression;
+use Substance\Core\Database\Expressions\LiteralExpression;
 
 /**
  * The Schema class is used for working with a database schema.
@@ -65,11 +68,13 @@ class MySQLSchema extends Schema {
     $select = new Select('information_schema.TABLES');
     $select->addExpression( new AllColumnsExpression() );
     // TODO - where database is connected db.
+    $select->where( new EqualsExpression( new ColumnExpression('TABLE_SCHEMA'), new LiteralExpression('information_schema') ) );
     $sql = $select->build( $this->connection );
     echo $sql, "\n\n";
     $tables = array();
     foreach ( $this->connection->query( $sql ) as $row ) {
-      $tables = new MySQLTable( $this->connection, $row );
+      $name = $row->TABLE_SCHEMA . '.' . $row->TABLE_NAME;
+      $tables[ $name ] = new MySQLTable( $this->connection, $row );
     }
     return $tables;
   }
