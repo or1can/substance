@@ -35,6 +35,47 @@ class AndExpressionTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test adding an expression to an and expression.
+   */
+  public function testAddExpressionToSequence() {
+    $left = new ColumnExpression('column1');
+    $right = new ColumnExpression('column2');
+    $expr = new AndExpression( $left, $right );
+    $expr->addExpressionToSequence( new ColumnExpression('column3') );
+    $sql = $expr->build( $this->connection );
+
+    $this->assertEquals( '`column1` AND `column2` AND `column3`', $sql );
+  }
+
+  /**
+   * Test adding an expression to an and expression.
+   */
+  public function testAddExpressionsToSequence() {
+    $left = new ColumnExpression('column1');
+    $right = new ColumnExpression('column2');
+    // Test adding no expressions.
+    $expr = new AndExpression( $left, $right );
+    $expr->addExpressionsToSequence();
+    $sql = $expr->build( $this->connection );
+
+    $this->assertEquals( '`column1` AND `column2`', $sql );
+
+    // Test adding one expression.
+    $expr = new AndExpression( $left, $right );
+    $expr->addExpressionsToSequence( new ColumnExpression('column3') );
+    $sql = $expr->build( $this->connection );
+
+    $this->assertEquals( '`column1` AND `column2` AND `column3`', $sql );
+
+    // Test adding multiple expressions.
+    $expr = new AndExpression( $left, $right );
+    $expr->addExpressionsToSequence( new ColumnExpression('column3'), new ColumnExpression('column4') );
+    $sql = $expr->build( $this->connection );
+
+    $this->assertEquals( '`column1` AND `column2` AND `column3` AND `column4`', $sql );
+  }
+
+  /**
    * Test an and expression.
    */
   public function testBuild() {

@@ -53,6 +53,41 @@ abstract class AbstractInfixExpression implements InfixExpression {
     return $string;
   }
 
+  /**
+   * Adds the specified element to this infix expression. The right hand
+   * expression is replaced with a new instance of this infix expression made
+   * with the existing right hand expression and the suppled one.
+   *
+   * e.g. adding z to the expression x AND y would result in x AND y AND z.
+   *
+   * @param Expression ...$element the Expression to add.
+   * @return self
+   */
+  public function addExpressionToSequence( Expression $expression ) {
+    $this->right = new static( $this->right, $expression );
+  }
+
+  /**
+   * Adds the specified element to this infix expression. The right hand
+   * expression is replaced with a new instance of this infix expression made
+   * with the existing right hand expression and the suppled one.
+   *
+   * e.g. adding z to the expression x AND y would result in x AND y AND z.
+   *
+   * @param Expression ...$expression the Expressions to add.
+   * @return self
+   */
+  public function addExpressionsToSequence() {
+    $elements = func_get_args();
+    if ( count( $elements ) != 0 ) {
+      $right = array_pop( $elements );
+      while ( $left = array_pop( $elements ) ) {
+        $right = new static( $left, $right );
+      }
+      $this->right = new static( $this->right, $right );
+    }
+  }
+
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Expression::build()
    */
