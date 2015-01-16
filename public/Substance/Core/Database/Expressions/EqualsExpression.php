@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\Expressions;
 
-use Substance\Core\Database\Connection;
+use Substance\Core\Database\Database;
 use Substance\Core\Database\Expression;
 
 /**
@@ -63,14 +63,14 @@ class EqualsExpression implements Expression {
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Expression::build()
    */
-  public function build( Connection $connection ) {
+  public function build( Database $database ) {
   	$string = '';
-    $string .= $this->left->build( $connection );
+    $string .= $this->left->build( $database );
     $string .= ' = ';
-    $string .= $this->right->build( $connection );
+    $string .= $this->right->build( $database );
   	if ( isset( $this->alias ) ) {
   	  $string .= ' AS ';
-      $string .= $connection->quoteName( $this->alias );
+      $string .= $database->quoteName( $this->alias );
   	}
   	return $string;
   }

@@ -19,12 +19,17 @@
 namespace Substance\Core\Database\Drivers\MySQL;
 
 use Substance\Core\Database\Database;
+use Substance\Core\Database\Expressions\AllColumnsExpression;
+use Substance\Core\Database\Expressions\ColumnExpression;
+use Substance\Core\Database\Expressions\EqualsExpression;
+use Substance\Core\Database\Expressions\LiteralExpression;
+use Substance\Core\Database\Queries\Select;
 
 /**
  * Represents a database connection in Substance, which is an extension of the
  * core PHP PDO class.
  */
-class Connection extends \Substance\Core\Database\Connection {
+class MySQLDatabase extends Database {
 
   public function __construct( &$options = array(), &$pdo_options = array() ) {
     // Set default MySQL options
@@ -54,21 +59,51 @@ class Connection extends \Substance\Core\Database\Connection {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Connection::getSchema()
+   * @see \Substance\Core\Database\Database::createDatabases()
    */
-  public function getSchema() {
-    return new MySQLSchema( $this );
+  public function createDatabases( $name ) {
+    // TODO
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Connection::quoteChar()
+   * @see \Substance\Core\Database\Database::createTable()
+   */
+  public function createTable( $name ) {
+    // TODO
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Database::listDatabases()
+   */
+  public function listDatabases() {
+    // TODO
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Database::listTables()
+   */
+  public function listTables() {
+    $select = new Select('information_schema.TABLES');
+    $select->addExpression( new AllColumnsExpression() );
+    $select->where( new EqualsExpression( new ColumnExpression('TABLE_SCHEMA'), new LiteralExpression( $this->getDatabaseName() ) ) );
+    $sql = $select->build( $this );
+    echo $sql, "\n\n";
+    $tables = array();
+    foreach ( $this->query( $sql ) as $row ) {
+      $tables[ $row->TABLE_NAME ] = new MySQLTable( $this, $row );
+    }
+    return $tables;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Database::quoteChar()
    */
   public function quoteChar() {
     return '`';
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Connection::quoteTable()
+   * @see \Substance\Core\Database\Database::quoteTable()
    */
   public function quoteTable( $table ) {
     $quote_char = $this->quoteChar();

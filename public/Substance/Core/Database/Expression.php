@@ -18,8 +18,6 @@
 
 namespace Substance\Core\Database;
 
-use Substance\Core\Database\Connection;
-
 /**
  * Represents an expression in a SQL query.
  */
@@ -28,10 +26,10 @@ interface Expression {
   /**
    * Builds this expression for the given database connection.
    *
-   * @param Connection $connection the database connection to build the
-   * expression for
+   * @param Database $database the database connection to build the expression
+   * for
    * @return string the built expression as a string.
    */
-  public function build( Connection $connection );
+  public function build( Database $database );
 
 }

@@ -20,7 +20,7 @@ namespace Substance\Core\Database\Expressions;
 
 use Substance\Core\Database\Expressions\AllColumnsExpression;
 use Substance\Core\Database\Queries\Select;
-use Substance\Core\Database\TestConnection;
+use Substance\Core\Database\TestDatabase;
 
 /**
  * Tests the column expression.
@@ -33,7 +33,7 @@ class ColumnExpressionTest extends \PHPUnit_Framework_TestCase {
    * @see PHPUnit_Framework_TestCase::setUp()
    */
   public function setUp() {
-    $this->connection = new TestConnection();
+    $this->connection = new TestDatabase();
   }
 
   /**

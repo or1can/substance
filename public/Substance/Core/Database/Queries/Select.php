@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\Queries;
 
-use Substance\Core\Database\Connection;
+use Substance\Core\Database\Database;
 use Substance\Core\Database\Expression;
 use Substance\Core\Database\Expressions\AndExpression;
 use Substance\Core\Database\Query;
@@ -117,18 +117,18 @@ class Select extends Query {
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Query::build()
    */
-  public function build( Connection $connection ) {
+  public function build( Database $database ) {
     $sql = "SELECT ";
     if ( is_null( $this->select_list ) ) {
       $sql .= '/* No select expressions */';
     } else {
-      $sql .= $this->select_list->build( $connection );
+      $sql .= $this->select_list->build( $database );
     }
     $sql .= ' FROM ';
-    $sql .= $connection->quoteTable( $this->table );
+    $sql .= $database->quoteTable( $this->table );
     if ( !is_null( $this->where ) ) {
       $sql .= ' WHERE ';
-      $sql .= $this->where->build( $connection );
+      $sql .= $this->where->build( $database );
     }
     if ( isset( $this->limit ) ) {
       $sql .= ' LIMIT ';

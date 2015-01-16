@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\Expressions;
 
-use Substance\Core\Database\Connection;
+use Substance\Core\Database\Database;
 use Substance\Core\Database\Expression;
 use Substance\Core\Database\InfixExpression;
 
@@ -99,15 +99,15 @@ abstract class AbstractInfixExpression implements InfixExpression {
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Expression::build()
    */
-  public function build( Connection $connection ) {
+  public function build( Database $database ) {
     $string = '';
-    $string .= $this->left->build( $connection );
+    $string .= $this->left->build( $database );
     if ( $this->has_space_before ) {
       $string .= ' ';
     }
     $string .= $this->getSymbol();
     $string .= ' ';
-    $string .= $this->right->build( $connection );
+    $string .= $this->right->build( $database );
     return $string;
   }
 

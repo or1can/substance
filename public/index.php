@@ -55,7 +55,7 @@ $select->offset( 2 );
 echo $select, "\n\n";
 echo $select->build( $connection ), "\n\n";
 
-var_dump( $connection->getSchema()->listTables() );
+var_dump( $connection->listTables() );
 
 
 throw $alert;

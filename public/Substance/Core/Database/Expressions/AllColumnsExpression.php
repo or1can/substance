@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\Expressions;
 
-use Substance\Core\Database\Connection;
+use Substance\Core\Database\Database;
 use Substance\Core\Database\Expression;
 
 /**
@@ -33,7 +33,7 @@ class AllColumnsExpression implements Expression {
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Expression::build()
    */
-  public function build( Connection $connection ) {
+  public function build( Database $database ) {
   	return '*';
   }
 

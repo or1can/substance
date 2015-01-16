@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\Expressions;
 
-use Substance\Core\Database\Connection;
+use Substance\Core\Database\Database;
 use Substance\Core\Database\Expression;
 use Substance\Core\Alert\Alert;
 
@@ -69,12 +69,12 @@ class LiteralExpression implements Expression {
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Expression::build()
    */
-  public function build( Connection $connection ) {
+  public function build( Database $database ) {
   	$string = '';
     if ( is_bool( $this->value ) ) {
       $string = $this->value ? 'TRUE' : 'FALSE';
     } elseif ( is_string( $this->value ) ) {
-      $string = $connection->quoteString( $this->value );
+      $string = $database->quoteString( $this->value );
     } elseif ( is_int( $this->value ) ) {
       $string = $this->value;
     } elseif ( is_float( $this->value ) ) {
@@ -82,7 +82,7 @@ class LiteralExpression implements Expression {
     }
     if ( isset( $this->alias ) ) {
       $string .= ' AS ';
-      $string .= $connection->quoteName( $this->alias );
+      $string .= $database->quoteName( $this->alias );
     }
     return $string;
   }

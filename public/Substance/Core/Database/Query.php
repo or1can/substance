@@ -18,8 +18,6 @@
 
 namespace Substance\Core\Database;
 
-use Substance\Core\Database\Connection;
-
 /**
  * Represents a database query.
  */
@@ -28,10 +26,10 @@ abstract class Query {
   /**
    * Builds this query for the specified database connection.
    *
-   * @param Connection $connection the database connection to build the query
+   * @param Database $database the database connection to build the query
    * for
    * @return string the built query as a string.
    */
-  abstract public function build( Connection $connection );
+  abstract public function build( Database $database );
 
 }

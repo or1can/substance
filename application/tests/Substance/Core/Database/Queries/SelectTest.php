@@ -20,7 +20,7 @@ namespace Substance\Core\Database\Queries;
 
 use Substance\Core\Database\Expressions\AllColumnsExpression;
 use Substance\Core\Database\Queries\Select;
-use Substance\Core\Database\TestConnection;
+use Substance\Core\Database\TestDatabase;
 use Substance\Core\Database\Expressions\EqualsExpression;
 use Substance\Core\Database\Expressions\ColumnExpression;
 use Substance\Core\Database\Expressions\LiteralExpression;
@@ -36,7 +36,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    * @see PHPUnit_Framework_TestCase::setUp()
    */
   public function setUp() {
-    $this->connection = new TestConnection();
+    $this->connection = new TestDatabase();
   }
 
   /**

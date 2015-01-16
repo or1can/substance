@@ -18,12 +18,12 @@
 
 namespace Substance\Core\Database;
 
-use Substance\Core\Database\Drivers\MySQL\Connection;
+use Substance\Core\Database\Drivers\MySQL\MySQLDatabase;
 
 /**
  * Provides a dummy connection that can be used for tests.
  */
-class TestConnection extends Connection {
+class TestDatabase extends MySQLDatabase {
 
   public function __construct() {
 

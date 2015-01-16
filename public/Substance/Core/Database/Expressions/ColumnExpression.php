@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\Expressions;
 
-use Substance\Core\Database\Connection;
+use Substance\Core\Database\Database;
 use Substance\Core\Database\Expression;
 
 /**
@@ -64,16 +64,16 @@ class ColumnExpression implements Expression {
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Expression::build()
    */
-  public function build( Connection $connection ) {
+  public function build( Database $database ) {
   	$string = '';
   	if ( isset( $this->table ) ) {
-      $string .= $connection->quoteTable( $this->table );
+      $string .= $database->quoteTable( $this->table );
   	  $string .= '.';
   	}
-    $string .= $connection->quoteName( $this->name );
+    $string .= $database->quoteName( $this->name );
   	if ( isset( $this->alias ) ) {
   	  $string .= ' AS ';
-      $string .= $connection->quoteName( $this->alias );
+      $string .= $database->quoteName( $this->alias );
   	}
   	return $string;
   }

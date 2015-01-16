@@ -18,7 +18,6 @@
 
 namespace Substance\Core;
 
-use Substance\Core\Database\Connection;
 use Substance\Core\Database\Database;
 use Substance\Core\Environment\Environment;
 
@@ -42,7 +41,7 @@ abstract class Settings {
    * example:
    * @code
    * array(
-   *   'driverclass' => 'Substance\Core\Database\MySQL\Connection',
+   *   'driverclass' => 'Substance\Core\Database\MySQL\MySQLDatabase',
    *   'database' => 'mydb',
    *   'username' => 'myuser',
    *   'password' => 'mypass',
@@ -100,7 +99,7 @@ abstract class Settings {
    * $databases = array(
    *   '*' => array(
    *     'master' => array(
-   *       'driverclass' => 'Substance\Core\Database\MySQL\Connection',
+   *       'driverclass' => 'Substance\Core\Database\MySQL\MySQLDatabase',
    *       'database' => 'mydb',
    *       'username' => 'myuser',
    *       'password' => 'mypass',
