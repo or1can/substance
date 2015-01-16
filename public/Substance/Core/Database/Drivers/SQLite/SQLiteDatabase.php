@@ -18,17 +18,17 @@
 
 namespace Substance\Core\Database\Drivers\SQLite;
 
+use Substance\Core\Database\Database;
 use Substance\Core\Database\Expressions\AllColumnsExpression;
-use Substance\Core\Database\Schema;
-use Substance\Core\Database\Queries\Select;
-use Substance\Core\Database\Expressions\EqualsExpression;
 use Substance\Core\Database\Expressions\ColumnExpression;
+use Substance\Core\Database\Expressions\EqualsExpression;
 use Substance\Core\Database\Expressions\LiteralExpression;
+use Substance\Core\Database\Queries\Select;
 
 /**
  * Concrete instance of the Schema class for working with SQLite databases.
  */
-class SQLiteSchema extends Schema {
+class SQLiteDatabase extends Database {
 
   /**
    * Construct a new schema object to work with the specified connected
@@ -67,14 +67,14 @@ class SQLiteSchema extends Schema {
   public function listTables() {
     // SQLite stores schema information in a hidden sqlite_master table in each
     // database. The first database in a connection has the name "main".
-    $select = new Select( $this->connection->getDatabaseName() . '.sqlite_master' );
+    $select = new Select( $this->getDatabaseName() . '.sqlite_master' );
     $select->addExpression( new ColumnExpression('name') );
     $select->where( new EqualsExpression( new ColumnExpression('type'), new ColumnExpression('table') ) );
-    $sql = $select->build( $this->connection );
+    $sql = $select->build( $this );
     echo $sql, "\n\n";
     $tables = array();
-    foreach ( $this->connection->query( $sql ) as $row ) {
-      $tables[ $row->name ] = new MySQLTable( $this->connection, $row->name );
+    foreach ( $this->query( $sql ) as $row ) {
+      $tables[ $row->name ] = new MySQLTable( $this, $row->name );
     }
     return $tables;
   }
