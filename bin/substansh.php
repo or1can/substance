@@ -29,14 +29,10 @@ require dirname( __DIR__ ) . '/vendor/autoload.php';
 use Substance\Core\Alert\Alert;
 use Substance\Core\Bootstrap;
 use Substance\Core\Database\Database;
+use Substance\Core\Database\Expressions\AllColumnsExpression;
+use Substance\Core\Database\Queries\Select;
 use Substance\Core\Environment\Environment;
 use Substance\Core\Module;
-use Substance\Core\Presentation\Element;
-use Substance\Core\Presentation\ElementBuilder;
-use Substance\Core\Presentation\Elements\Page;
-use Substance\Core\Presentation\Elements\TableCell;
-use Substance\Themes\HTML\HTMLTheme;
-use Substance\Themes\Text\TextTheme;
 
 // Bootstap the system.
 Bootstrap::initialise();
@@ -53,15 +49,14 @@ $connection = Database::getConnection( '*', 'master' );
 
 var_dump( $connection->query('SELECT * FROM information_schema.TABLES LIMIT 1') );
 
-$tablecell = TableCell::build('Origin');
+$select = new Select('information_schema.TABLES');
+$select->addExpression( new AllColumnsExpression() );
+$select->limit( 1 );
+$select->offset( 2 );
+echo $select, "\n\n";
+echo $select->build( $connection ), "\n\n";
 
-var_export( $tablecell );
+var_dump( $connection->listTables() );
 
-$environment = Environment::getEnvironment();
-echo $environment->getOutputTheme()->render( $tablecell );
-
-$page = new Page();
-
-$environment->outputElement( $page );
 
 throw $alert;
