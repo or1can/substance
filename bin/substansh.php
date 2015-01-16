@@ -24,7 +24,7 @@
 // Report all errors.
 error_reporting(E_ALL | E_STRICT);
 
-require '../vendor/autoload.php';
+require dirname( __DIR__ ) . '/vendor/autoload.php';
 
 use Substance\Core\Alert\Alert;
 use Substance\Core\Bootstrap;
