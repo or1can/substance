@@ -67,14 +67,12 @@ class MySQLSchema extends Schema {
   public function listTables() {
     $select = new Select('information_schema.TABLES');
     $select->addExpression( new AllColumnsExpression() );
-    // TODO - where database is connected db.
-    $select->where( new EqualsExpression( new ColumnExpression('TABLE_SCHEMA'), new LiteralExpression('information_schema') ) );
+    $select->where( new EqualsExpression( new ColumnExpression('TABLE_SCHEMA'), new LiteralExpression( $this->connection->getDatabaseName() ) ) );
     $sql = $select->build( $this->connection );
     echo $sql, "\n\n";
     $tables = array();
     foreach ( $this->connection->query( $sql ) as $row ) {
-      $name = $row->TABLE_SCHEMA . '.' . $row->TABLE_NAME;
-      $tables[ $name ] = new MySQLTable( $this->connection, $row );
+      $tables[ $row->TABLE_NAME ] = new MySQLTable( $this->connection, $row );
     }
     return $tables;
   }

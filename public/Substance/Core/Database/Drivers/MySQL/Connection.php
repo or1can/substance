@@ -49,6 +49,8 @@ class Connection extends \Substance\Core\Database\Connection {
     $options['dsn'] = 'mysql:' . implode( ';', $dsn );
 
     parent::__construct( $options, $pdo_options );
+
+    $this->setDatabaseName( $options['database'] );
   }
 
   /* (non-PHPdoc)

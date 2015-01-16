@@ -23,6 +23,11 @@ namespace Substance\Core\Database;
  */
 abstract class Connection extends \PDO {
 
+  /**
+   * @var string the database name.
+   */
+  protected $database_name;
+
   public function __construct( &$options = array(), &$pdo_options = array()  ) {
     // Force error exceptions, always.
     $options[ \PDO::ATTR_ERRMODE ] = \PDO::ERRMODE_EXCEPTION;
@@ -44,6 +49,17 @@ abstract class Connection extends \PDO {
       $this->exec( implode( ';', $options[ Database::INIT_COMMANDS ] ) );
     }
 
+  }
+
+  /**
+   * Returns the database name for this connection. If the underlying database
+   * does not allow access to multiple databases through a single connection,
+   * this will return NULL.
+   *
+   * @return string the database name or NULL if not applicable
+   */
+  public function getDatabaseName() {
+    return $this->database_name;
   }
 
   /**
@@ -96,6 +112,17 @@ abstract class Connection extends \PDO {
     $quote_char = $this->quoteChar();
     $double_quote_char = $quote_char . $quote_char;
     return $quote_char . str_replace( $quote_char, $double_quote_char, $table ) . $quote_char;
+  }
+
+  /**
+   * Sets the database name for this connection.
+   *
+   * @param string $name the database name.
+   * @return self
+   */
+  protected function setDatabaseName( $name ) {
+    $this->database_name = $name;
+    return $this;
   }
 
 }

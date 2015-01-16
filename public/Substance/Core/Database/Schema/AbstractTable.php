@@ -45,6 +45,10 @@ abstract class AbstractTable implements Table {
     $this->connection = $connection;
   }
 
+  public function __toString() {
+    return 'TABLE<' . $this->name . '>';
+  }
+
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\Table::getName()
    */
