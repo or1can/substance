@@ -40,20 +40,9 @@ var_dump( Module::findModules() );
 
 $alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
 
-var_export( $alert->present() );
-
 echo $alert;
 
 $connection = Database::getConnection( '*', 'master' );
-
-var_dump( $connection->query('SELECT * FROM information_schema.TABLES LIMIT 1') );
-
-$select = new Select('information_schema.TABLES');
-$select->addExpression( new AllColumnsExpression() );
-$select->limit( 1 );
-$select->offset( 2 );
-echo $select, "\n\n";
-echo $select->build( $connection ), "\n\n";
 
 var_dump( $connection->listTables() );
 

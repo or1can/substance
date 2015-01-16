@@ -87,7 +87,6 @@ class MySQLDatabase extends Database {
     $select->addExpression( new AllColumnsExpression() );
     $select->where( new EqualsExpression( new ColumnExpression('TABLE_SCHEMA'), new LiteralExpression( $this->getDatabaseName() ) ) );
     $sql = $select->build( $this );
-    echo $sql, "\n\n";
     $tables = array();
     foreach ( $this->query( $sql ) as $row ) {
       $tables[ $row->TABLE_NAME ] = new MySQLTable( $this, $row );
