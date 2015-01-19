@@ -71,6 +71,38 @@ interface Record {
   public function deleteAll();
 
   /**
+   * Returns the first record with specified conditions.
+   *
+   * SELECT * FROM table WHERE ($conditions match) LIMIT 1
+   *
+   * @param array $conditions associative array of column-value pairs for the
+   * record to find.
+   * @return self
+   */
+  public function find( array $conditions );
+
+  /**
+   * Returns a PDO statment for all records matching the specified conditions.
+   *
+   * SELECT * FROM table WHERE ($conditions match)
+   *
+   * @param array $conditions associative array of column-value pairs for the
+   * records to find.
+   * @return \PDOStatement
+   */
+  public function findAll( array $conditions );
+
+  /**
+   * Returns the record with the specified primary key.
+   *
+   * SELECT * FROM table WHERE table.primary_key = $id
+   *
+   * @param unknown $id Primary key of record to find.
+   * @return self
+   */
+  public function findByPrimaryKey( $id );
+
+  /**
    * Returns the first record ordered by primary key.
    *
    * SELECT * FROM table ORDER BY table.primary_key ASC LIMIT 1

@@ -141,6 +141,48 @@ class Select extends Query {
     return $sql;
   }
 
+  public function groupBy( $column ) {
+    // TODO
+  }
+
+  public function having( Condition $condition ) {
+    // TODO
+  }
+
+  public function innerJoin() {
+    // TODO
+  }
+
+  /**
+   * Adds a condition checking if the specified column is NULL.
+   *
+   * Shorthand for
+   *
+   * Select->where( NullCondition::isNull( $column ) );
+   *
+   * @param string $column the column to check for a NULL value.
+   */
+  public function isNull( $column );
+
+  /**
+   * Adds a condition checking if the specified column is NOT NULL.
+   *
+   * Shorthand for
+   *
+   * Select->where( NullCondition::isNotNull( $column ) );
+   *
+   * @param string $column the column to check for a NOT NULL value.
+   */
+  public function isNotNull( $column );
+
+  public function join() {
+    // TODO
+  }
+
+  public function leftJoin() {
+    // TODO
+  }
+
   /**
    * Sets the limit on the number of rows this query will return.
    *
@@ -159,6 +201,10 @@ class Select extends Query {
    */
   public function offset( $offset ) {
     $this->offset = $offset;
+  }
+
+  public function orderBy( $column, $direction = 'ASC' ) {
+    // TODO
   }
 
   /**
