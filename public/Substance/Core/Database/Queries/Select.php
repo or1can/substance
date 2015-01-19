@@ -30,6 +30,16 @@ use Substance\Core\Database\Expressions\CommaExpression;
 class Select extends Query {
 
   /**
+   * @var Expression group by expression.
+   */
+  protected $group_by = NULL;
+
+  /**
+   * @var Expression having expression.
+   */
+  protected $having = NULL;
+
+  /**
    * The maximum number of rows that should be returned by this query.
    *
    * @var integer
@@ -86,6 +96,14 @@ class Select extends Query {
       $sql .= ' WHERE ';
       $sql .= (string) $this->where;
     }
+    if ( !is_null( $this->group_by ) ) {
+      $sql .= ' GROUP BY ';
+      $sql .= (string) $this->group_by;
+      if ( !is_null( $this->having ) ) {
+        $sql .= ' HAVING ';
+        $sql .= (string) $this->having;
+      }
+    }
     if ( isset( $this->limit ) ) {
       $sql .= ' LIMIT ';
       $sql .= $this->limit;
@@ -130,6 +148,14 @@ class Select extends Query {
       $sql .= ' WHERE ';
       $sql .= $this->where->build( $database );
     }
+    if ( !is_null( $this->group_by ) ) {
+      $sql .= ' GROUP BY ';
+      $sql .= $this->group_by->build( $database );
+      if ( !is_null( $this->having ) ) {
+        $sql .= ' HAVING ';
+        $sql .= $this->having->build( $database );
+      }
+    }
     if ( isset( $this->limit ) ) {
       $sql .= ' LIMIT ';
       $sql .= $this->limit;
@@ -141,12 +167,40 @@ class Select extends Query {
     return $sql;
   }
 
-  public function groupBy( $column ) {
-    // TODO
+  /**
+   * Adds an expression to the group by clause.
+   *
+   * @param Expression $expression the expression to add to the group by
+   * clause.
+   * @return self
+   */
+  public function groupBy( Expression $expression ) {
+    if ( is_null( $this->group_by ) ) {
+      $this->group_by = $expression;
+    } elseif ( $this->group_by instanceof CommaExpression ) {
+      $this->group_by->addExpressionToSequence( $expression );
+    } else {
+      $this->group_by = new CommaExpression( $this->group_by, $expression );
+    }
+    return $this;
   }
 
-  public function having( Condition $condition ) {
-    // TODO
+  /**
+   * Adds an expression to the having clause.
+   *
+   * @param Expression $expression the expression to add to the having clause.
+   * @return self
+   */
+  public function having( Expression $expression ) {
+    if ( is_null( $this->having ) ) {
+      $this->having = $expression;
+    } elseif ( $this->having instanceof AbstractInfixExpression ) {
+      $this->having->addExpressionToSequence( $expression );
+    } else {
+      // TODO - Allow choice of AND or OR.
+      $this->having = new AndExpression( $this->having, $expression );
+    }
+    return $this;
   }
 
   public function innerJoin() {
@@ -162,7 +216,9 @@ class Select extends Query {
    *
    * @param string $column the column to check for a NULL value.
    */
-  public function isNull( $column );
+  public function isNull( $column ) {
+    // TODO
+  }
 
   /**
    * Adds a condition checking if the specified column is NOT NULL.
@@ -173,7 +229,9 @@ class Select extends Query {
    *
    * @param string $column the column to check for a NOT NULL value.
    */
-  public function isNotNull( $column );
+  public function isNotNull( $column ) {
+    // TODO
+  }
 
   public function join() {
     // TODO
@@ -203,7 +261,13 @@ class Select extends Query {
     $this->offset = $offset;
   }
 
-  public function orderBy( $column, $direction = 'ASC' ) {
+  /**
+   * Adds an expression to the order by clause.
+   *
+   * @param Expression $expression the expression to sort by
+   * @param string $direction the sort direction for this expression
+   */
+  public function orderBy( Expression $expression, $direction = 'ASC' ) {
     // TODO
   }
 
@@ -219,6 +283,7 @@ class Select extends Query {
     } elseif ( $this->where instanceof AbstractInfixExpression ) {
       $this->where->addExpressionToSequence( $expression );
     } else {
+      // TODO - Allow choice of AND or OR.
       $this->where = new AndExpression( $this->where, $expression );
     }
     return $this;
