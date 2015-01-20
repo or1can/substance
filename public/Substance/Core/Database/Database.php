@@ -117,7 +117,8 @@ abstract class Database extends \PDO {
   }
 
   /**
-   * Lists the available databases on the server.
+   * Lists the available databases on the server that this connections user has
+   * access to.
    *
    * @return Database[] associative array of database name to Database objects.
    */
