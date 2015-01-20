@@ -125,6 +125,21 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test a build with one column, no where, one group, no having, one limit
+   * and no offset.
+   */
+  public function testBuildOneColumnNoWhereOneGroupNoHavingOneLimitNoOffset() {
+    $select = new Select('table');
+    $select->addExpression( new AllColumnsExpression() );
+    $select->groupBy( new ColumnExpression('column1') );
+    $select->limit( 1 );
+
+    $sql = $select->build( $this->connection );
+
+    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` LIMIT 1', $sql );
+  }
+
+  /**
    * Test a build with one column, no where, one group, one having, no limit
    * and no offset.
    */
@@ -142,6 +157,22 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test a build with one column, no where, one group, one having, one limit
+   * and no offset.
+   */
+  public function testBuildOneColumnNoWhereOneGroupOneHavingOneLimitNoOffset() {
+    $select = new Select('table');
+    $select->addExpression( new AllColumnsExpression() );
+    $select->groupBy( new ColumnExpression('column1') );
+    $select->having( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) );
+    $select->limit( 1 );
+
+    $sql = $select->build( $this->connection );
+
+    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = 5 LIMIT 1', $sql );
+  }
+
+  /**
    * Test a build with one column, no where, one group, two having, no limit
    * and no offset.
    */
@@ -156,37 +187,6 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     $sql = $select->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = 5 AND `column2` = \'hello\'', $sql );
-  }
-
-  /**
-   * Test a build with one column, no where, one group, no having, one limit
-   * and no offset.
-   */
-  public function testBuildOneColumnNoWhereOneGroupNoHavingOneLimitNoOffset() {
-    $select = new Select('table');
-    $select->addExpression( new AllColumnsExpression() );
-    $select->groupBy( new ColumnExpression('column1') );
-    $select->limit( 1 );
-
-    $sql = $select->build( $this->connection );
-
-    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` LIMIT 1', $sql );
-  }
-
-  /**
-   * Test a build with one column, no where, one group, one having, one limit
-   * and no offset.
-   */
-  public function testBuildOneColumnNoWhereOneGroupOneHavingOneLimitNoOffset() {
-    $select = new Select('table');
-    $select->addExpression( new AllColumnsExpression() );
-    $select->groupBy( new ColumnExpression('column1') );
-    $select->having( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) );
-    $select->limit( 1 );
-
-    $sql = $select->build( $this->connection );
-
-    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = 5 LIMIT 1', $sql );
   }
 
   /**
