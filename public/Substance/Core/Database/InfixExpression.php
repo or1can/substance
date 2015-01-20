@@ -44,4 +44,32 @@ interface InfixExpression extends Expression {
    */
   public function getSymbol();
 
+  /**
+   * Returns the sequence of expressions in this infix sequence.
+   *
+   * For example, the following simple AND expression:
+   *
+   *     $expr = new AndExpression( $left, $right );
+   *
+   * would convert to the following array:
+   *
+   *     array( $left, $right )
+   *
+   * while the (slightly) more complex AND expression:
+   *
+   *     $expr = new AndExpression( $left, $right );
+   *     $expr->addExpressionToSequence( $third );
+   *     $expr->addExpressionToSequence( $fourth );
+   *
+   * would convert to the following array:
+   *
+   *     array( $left, $right, $third, $fourth )
+   *
+   * The main purpose of this method is to allow easy iteration over the
+   * expressions in an infix sequence.
+   *
+   * @return array an array of expressions in this infix sequence.
+   */
+  public function toArray();
+
 }

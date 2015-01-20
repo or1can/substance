@@ -125,4 +125,33 @@ abstract class AbstractInfixExpression implements InfixExpression {
     return $this->right;
   }
 
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\InfixExpression::toArray()
+   */
+  public function toArray() {
+    $result = array();
+    $this->toArrayRecurse( $result );
+    return $result;
+  }
+
+  /**
+   * This method supports the toArray method by recursing over the entire infix
+   * sequence, adding each expression to the specified array.
+   *
+   * @param array $result the array to add each expression in this infix
+   * sequence to.
+   */
+  protected function toArrayRecurse( array &$result ) {
+    if ( $this->left instanceof self ) {
+      $this->left->toArrayRecurse( $result );
+    } else {
+      $result[] = $this->left;
+    }
+    if ( $this->right instanceof self ) {
+      $this->right->toArrayRecurse( $result );
+    } else {
+      $result[] = $this->right;
+    }
+  }
+
 }

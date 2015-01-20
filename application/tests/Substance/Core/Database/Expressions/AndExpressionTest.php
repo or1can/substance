@@ -87,4 +87,26 @@ class AndExpressionTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals( '`column1` AND `column2`', $sql );
   }
 
+  /**
+   * Test converting to an array.
+   */
+  public function testToArray() {
+    $left = new ColumnExpression('column1');
+    $right = new ColumnExpression('column2');
+    $equals = new AndExpression( $left, $right );
+
+    // Test with a simple two expression sequence.
+    $this->assertEquals( array( $left, $right ), $equals->toArray() );
+
+    // Add another expression to the sequence.
+    $third = new ColumnExpression('column3');
+    $equals->addExpressionToSequence( $third );
+    $this->assertEquals( array( $left, $right, $third ), $equals->toArray() );
+
+    // Add the second expression to the sequence again.
+    $third = new ColumnExpression('column3');
+    $equals->addExpressionToSequence( $right );
+    $this->assertEquals( array( $left, $right, $third, $right ), $equals->toArray() );
+  }
+
 }

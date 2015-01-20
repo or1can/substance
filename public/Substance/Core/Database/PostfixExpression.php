@@ -24,10 +24,17 @@ namespace Substance\Core\Database;
 interface PostfixExpression extends Expression {
 
   /**
-   * Returns the expression on the left of the infix operator.
+   * Returns the expression on the left of the postfix operator.
    *
    * @return Expression the left hand side expression.
    */
   public function getLeftExpression();
+
+  /**
+   * Returns the symbol for this expression.
+   *
+   * @return string this expressions symbol.
+   */
+  public function getSymbol();
 
 }

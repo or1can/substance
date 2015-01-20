@@ -23,6 +23,7 @@ use Substance\Core\Database\Expression;
 use Substance\Core\Database\Expressions\AndExpression;
 use Substance\Core\Database\Query;
 use Substance\Core\Database\Expressions\CommaExpression;
+use Substance\Core\Database\Expressions\OrderByExpression;
 
 /**
  * Represents a SELECT database query.
@@ -53,6 +54,11 @@ class Select extends Query {
    * @var integer
    */
   protected $offset;
+
+  /**
+   * @var Expression order by expression.
+   */
+  protected $order_by = NULL;
 
   /**
    * @var Expression select list expression.
@@ -103,6 +109,10 @@ class Select extends Query {
         $sql .= ' HAVING ';
         $sql .= (string) $this->having;
       }
+    }
+    if ( !is_null( $this->order_by ) ) {
+      $sql .= ' ORDER BY ';
+      $sql .= (string) $this->order_by;
     }
     if ( isset( $this->limit ) ) {
       $sql .= ' LIMIT ';
@@ -155,6 +165,10 @@ class Select extends Query {
         $sql .= ' HAVING ';
         $sql .= $this->having->build( $database );
       }
+    }
+    if ( !is_null( $this->order_by ) ) {
+      $sql .= ' ORDER BY ';
+      $sql .= $this->order_by->build( $database );
     }
     if ( isset( $this->limit ) ) {
       $sql .= ' LIMIT ';
@@ -264,11 +278,79 @@ class Select extends Query {
   /**
    * Adds an expression to the order by clause.
    *
-   * @param Expression $expression the expression to sort by
+   * If the expression is an OrderByExpression, it will be added ignoring the
+   * direction parameter, e.g.
+   *     $select = new Select(...);
+   *     $order_by = new OrderByExpression( new ColumnExpression('col1'), 'DESC' );
+   *     $select->orderBy( $order_by, 'ASC' );
+   * would generate the following SQL:
+   *     SELECT ... ORDER BY col1 DESC
+   *
+   * If the expression is a CommaExpression, it will be expanded and each
+   * expression in its sequence will be added to the order by clause by
+   * recursively calling this method, e.g.
+   *     $select = new Select(...);
+   *     $order_by = new CommaExpression(
+   *         new ColumnExpression('col1'),
+   *         new OrderByExpression( new ColumnExpression('col2'), 'DESC' )
+   *     );
+   *     $order_by->addExpressionToSequence(
+   *         new ColumnExpression('col3'),
+   *     );
+   *     $select->orderBy( $order_by, 'ASC' );
+   * would generate the following SQL:
+   *     SELECT ... ORDER BY col1 ASC, col2 DESC, col3 ASC
+   *
+   * If the expression is any other kind of Expression, it will be added as is
+   * using the specified direction., e.g.
+   *     $select = new Select(...);
+   *     $select->orderBy( new ColumnExpression('col1'), 'ASC' );
+   *     $select->orderBy( new ColumnExpression('col2'), 'DESC' );
+   * would generate the following SQL:
+   *     SELECT ... ORDER BY col1 ASC, col2 DESC
+   *
+   * @param Expression $expression the expression to sort by. If this is a
+   * OrderByExpression, it will be added to the order by clause using the
+   * direction in the OrderByExpression and ignoring the direction parameter
+   * below. If this is a CommaExpression, it will be expanded into it's
+   * sequence of expressions and each one will be added by calling this method
+   * using the direction parameter below. If this is any other kind of
+   * expression, it will be added as is using the direction parameter below.
    * @param string $direction the sort direction for this expression
    */
   public function orderBy( Expression $expression, $direction = 'ASC' ) {
-    // TODO
+    if ( $expression instanceof OrderByExpression ) {
+      // The supplied expression is an order expression, so ignore any supplied
+      // direction and add to the list.
+      $this->orderByAddExpression( $expression );
+    } elseif ( $expression instanceof CommaExpression ) {
+      // The supplied expression is a comma expression, so we should add each
+      // one in turn to the order.
+      foreach ( $expression->toArray() as $expression ) {
+        $this->orderBy( $expression, $direction );
+      }
+    } else {
+      // It's some other expression, so just wrap it in an order by expression
+      // and add it to the list.
+      $this->orderByAddExpression( new OrderByExpression( $expression, $direction ) );
+    }
+    return $this;
+  }
+
+  /**
+   * Adds an OrderByExpression to the order by clause. This is a convenience
+   * function used to internally to avoid code duplication.
+   *
+   * @param OrderByExpression $expression the order by expression to sort by
+   */
+  protected function orderByAddExpression( OrderByExpression $expression ) {
+    if ( is_null( $this->order_by ) ) {
+      $this->order_by = $expression;
+    } elseif ( $this->order_by instanceof CommaExpression ) {
+      $this->order_by->addExpressionToSequence( $expression );
+    } else {
+      $this->order_by = new CommaExpression( $this->order_by, $expression );
+    }
   }
 
   /**
