@@ -76,7 +76,20 @@ class MySQLDatabase extends Database {
    * @see \Substance\Core\Database\Database::listDatabases()
    */
   public function listDatabases() {
-    // TODO
+    $databases = array();
+    // We would use SHOW DATABASES LIKE or SHOW DATABASES WHERE here, but for
+    // some reason, $this->query() returns false for either, so we must do the
+    // same in PHP instead.
+    foreach ( $this->query('SHOW DATABASES') as $row ) {
+      if ( $row->Database != 'information_schema' ) {
+        // TODO - We need to associate the database name with a Database
+        // instance, but I'd rather create them lazily if possible to avoid
+        // the overhead of establishing a database connection unless it is
+        // necessary.
+        $databases[ $row->Database ] = NULL;
+      }
+    }
+    return $databases;
   }
 
   /* (non-PHPdoc)

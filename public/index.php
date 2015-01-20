@@ -46,5 +46,7 @@ $connection = Database::getConnection( '*', 'master' );
 
 var_dump( $connection->listTables() );
 
+var_dump( $connection->listDatabases() );
+
 
 throw $alert;
