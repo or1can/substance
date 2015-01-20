@@ -18,26 +18,35 @@
 
 namespace Substance\Core\Database\Expressions;
 
+use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Expression;
 
 /**
  * Represents a column or expression in an ORDER BY section of a database
  * query.
  *
- * SELECT * FROM table ORDER BY table.column1 ASC
+ * e.g. the
+ *     ORDER BY table.column1 ASC
+ * part of:
+ *     SELECT * FROM table ORDER BY table.column1 ASC
  */
 class OrderByExpression extends AbstractPostfixExpression {
 
   protected $direction;
 
   public function __construct( Expression $left, $direction ) {
+    if ( $left instanceof OrderByExpression ) {
+      // TODO - Would an Illegal argument alert be useful?
+      throw Alert::alert( 'Illegal argument', 'Cannot ORDER BY an OrderByExpression' )
+        ->culprit( 'left', $left );
+    }
     parent::__construct( $left );
-    $this->direction = $direction;
     if ( !in_array( $direction, array( 'ASC', 'DESC' ) ) ) {
       // TODO - Would an Illegal argument alert be useful?
       throw Alert::alert( 'Illegal argument', 'Only ASC or DESC are allowed in ORDER BY' )
         ->culprit( 'order', $direction );
     }
+    $this->direction = $direction;
   }
 
   /* (non-PHPdoc)
