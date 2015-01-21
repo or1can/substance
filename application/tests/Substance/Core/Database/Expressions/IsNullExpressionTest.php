@@ -59,6 +59,11 @@ class IsNullExpressionTest extends \PHPUnit_Framework_TestCase {
     $expr = new IsNullExpression( $left, FALSE );
     $sql = $expr->build( $this->connection );
     $this->assertEquals( '`column1` IS NULL', $sql );
+
+    // Test building with the shorthand function.
+    $expr = IsNullExpression::isNull( $left );
+    $sql = $expr->build( $this->connection );
+    $this->assertEquals( '`column1` IS NULL', $sql );
   }
 
   /**
@@ -66,7 +71,13 @@ class IsNullExpressionTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildIsNotNull() {
     $left = new ColumnExpression('column1');
+    // Test building with the constructor.
     $expr = new IsNullExpression( $left, TRUE );
+    $sql = $expr->build( $this->connection );
+    $this->assertEquals( '`column1` IS NOT NULL', $sql );
+
+    // Test building with the shorthand function.
+    $expr = IsNullExpression::isNotNull( $left );
     $sql = $expr->build( $this->connection );
     $this->assertEquals( '`column1` IS NOT NULL', $sql );
   }

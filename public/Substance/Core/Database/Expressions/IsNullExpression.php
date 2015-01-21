@@ -54,27 +54,25 @@ class IsNullExpression extends AbstractPostfixExpression {
   }
 
   /**
-   * Returns a Conditition object representing an IS NOT NULL check on the
-   * specified column.
+   * Shorthand for building an IS NOT NULL check on the specified expression.
    *
-   * @param string $column the column to check for a not NULL value.
-   * @return NullCondition a NullCondition for an IS NOT NULL check on the
-   * specified column.
+   * @param Expression $expression the expression to test
+   * @return IsNullExpression an IsNullExpression for an IS NOT NULL test on
+   * the specified expression.
    */
-  public static function isNotNull( $column ) {
-
+  public static function isNotNull( Expression $expression ) {
+    return new IsNullExpression( $expression, TRUE );
   }
 
   /**
-   * Returns a Conditition object representing an IS NULL check on the
-   * specified column.
+   * Shorthand for building an IS NULL check on the specified expression.
    *
-   * @param string $column the column to check for a NULL value.
-   * @return NullCondition a NullCondition for an IS NULL check on the
-   * specified column.
+   * @param Expression $expression the expression to test
+   * @return IsNullExpression an IsNullExpression for an IS NULL test on the
+   * specified expression.
    */
-  public static function isNull( $column ) {
-
+  public static function isNull( Expression $expression ) {
+    return new IsNullExpression( $expression, FALSE );
   }
 
   /* (non-PHPdoc)
