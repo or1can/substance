@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2014 Kevin Rogers
+ * Copyright (C) 2014 - 2015 Kevin Rogers
 *
 * Substance is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,25 +18,25 @@
 
 namespace Substance\Core\Database\Expressions;
 
-use Substance\Core\Condition;
+use Substance\Core\Database\Expression;
 
 /**
- * Represents a logical OR condition in a database query. One or more
- * conditions can be combined with the OR operator, simply add each condition
- * in sequence.
+ * Represents a logical OR condition in a database query, combining two
+ * expressions with the OR operator.
  *
  * SELECT * FROM table WHERE table.column1 OR table.column2
  */
-class OrCondition implements Condition {
+class OrExpression extends AbstractInfixExpression {
 
-  /**
-   * Adds the specified condition to be OR'd together with other Conditions in
-   * this Conditition
-   *
-   * @param Condition $condition the condition to OR with other conditions
-   * @return self
+  public function __construct( Expression $left, Expression $right ) {
+    parent::__construct( $left, $right );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\InfixExpression::getSymbol()
    */
-  public function add( Condition $condition ) {
+  public function getSymbol() {
+    return 'OR';
   }
 
 }
