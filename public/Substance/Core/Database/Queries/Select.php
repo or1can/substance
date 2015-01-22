@@ -285,9 +285,11 @@ class Select extends Query {
    * Sets the limit on the number of rows this query will return.
    *
    * @param integer $limit the maximum number of rows that should be returned.
+   * @return self
    */
   public function limit( $limit ) {
     $this->limit = $limit;
+    return $this;
   }
 
   /**
@@ -296,9 +298,11 @@ class Select extends Query {
    *
    * @param integer $offset the number of rows to omit from the start of the
    * result set.
+   * @return self
    */
   public function offset( $offset ) {
     $this->offset = $offset;
+    return $this;
   }
 
   /**
@@ -343,6 +347,7 @@ class Select extends Query {
    * using the direction parameter below. If this is any other kind of
    * expression, it will be added as is using the direction parameter below.
    * @param string $direction the sort direction for this expression
+   * @return self
    */
   public function orderBy( Expression $expression, $direction = 'ASC' ) {
     if ( $expression instanceof OrderByExpression ) {
