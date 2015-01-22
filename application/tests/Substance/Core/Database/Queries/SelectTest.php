@@ -42,23 +42,28 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, no group, no having, no limit, no
-   * order and no offset.
+   * Test a build all, with one column, no where, no group, no having, no limit,
+   * no order and no offset.
    */
-  public function testBuildOneColumnNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
-
     $sql = $select->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table`', $sql );
 
+    // Try explicitly stating it's not a distinct query.
+    $select = new Select('table');
+    $select->distinct( FALSE );
+    $select->addExpression( new AllColumnsExpression() );
+    $sql = $select->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table`', $sql );
   }
 
   /**
-   * Test a build with one column, no where, no group, no having, no limit, no
-   * order and no offset from a table with a database specified.
+   * Test a build all, with one column, no where, no group, no having, no limit,
+   * no order and no offset from a table with a database specified.
    */
-  public function testBuildOneColumnNoWhereNoGroupNoHavingNoOrderNoLimitNoOffsetWithDatabase() {
+  public function testBuildAllOneColumnNoWhereNoGroupNoHavingNoOrderNoLimitNoOffsetWithDatabase() {
     $select = new Select('information_schema.TABLES');
     $select->addExpression( new AllColumnsExpression() );
 
@@ -68,10 +73,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, no group, no having, no limit, no
-   * order and an offset.
+   * Test a build all, with one column, no where, no group, no having, no limit,
+   * no order and an offset.
    */
-  public function testBuildOneColumnNoWhereNoGroupNoHavingNoOrderNoLimitOneOffset() {
+  public function testBuildAllOneColumnNoWhereNoGroupNoHavingNoOrderNoLimitOneOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     // Add an offset. As this makes no sense without a limit, the offset should
@@ -84,10 +89,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, no group, no having, one limit, no
-   * order and no offset.
+   * Test a build all, with one column, no where, no group, no having, one
+   * limit, no order and no offset.
    */
-  public function testBuildOneColumnNoWhereNoGroupNoHavingNoOrderOneLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereNoGroupNoHavingNoOrderOneLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->limit( 1 );
@@ -98,10 +103,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, no group, no having, one limit, no
-   * order and offset.
+   * Test a build all, with one column, no where, no group, no having, one
+   * limit, no order and offset.
    */
-  public function testBuildOneColumnNoWhereNoGroupNoHavingNoOrderOneLimitOneOffset() {
+  public function testBuildAllOneColumnNoWhereNoGroupNoHavingNoOrderOneLimitOneOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->limit( 1 );
@@ -113,10 +118,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, no group, no having, no limit, one
-   * order and no offset.
+   * Test a build all, with one column, no where, no group, no having, no limit,
+   * one order and no offset.
    */
-  public function testBuildOneColumnNoWhereNoGroupNoHavingOneOrderNoLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereNoGroupNoHavingOneOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->orderBy( new ColumnExpression('column1') );
@@ -127,10 +132,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, no group, no having, one limit,
-   * one order and no offset.
+   * Test a build all, with one column, no where, no group, no having, one
+   * limit, one order and no offset.
    */
-  public function testBuildOneColumnNoWhereNoGroupNoHavingOneOrderOneLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereNoGroupNoHavingOneOrderOneLimitNoOffset() {
     // Try an order using the default direction.
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
@@ -155,7 +160,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     $sql = $select->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` DESC LIMIT 1', $sql );
 
-    // Try an order using an explicit order by expression with ascending direction.
+    // Try an order using an explicit order by expression with ascending
+    // direction.
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->orderBy( new OrderByExpression( new ColumnExpression('column1'), 'ASC' ) );
@@ -163,7 +169,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     $sql = $select->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` ASC LIMIT 1', $sql );
 
-    // Try an order using an explicit order by expression with descending direction.
+    // Try an order using an explicit order by expression with descending
+    // direction.
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->orderBy( new OrderByExpression( new ColumnExpression('column1'), 'DESC' ) );
@@ -173,10 +180,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, no group, no having, no limit, two
-   * order and no offset.
+   * Test a build all, with one column, no where, no group, no having, no limit,
+   * two order and no offset.
    */
-  public function testBuildOneColumnNoWhereNoGroupNoHavingTwoOrderNoLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereNoGroupNoHavingTwoOrderNoLimitNoOffset() {
     // Try two order expressions using the default direction.
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
@@ -209,7 +216,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     $sql = $select->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` DESC, `column2` DESC', $sql );
 
-    // Try two order expressions using explicit order by expressions with ascending direction
+    // Try two order expressions using explicit order by expressions with
+    // ascending direction
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->orderBy( new OrderByExpression( new ColumnExpression('column1'), 'ASC' ) );
@@ -329,10 +337,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, no group, no having, one limit,
-   * two order and no offset.
+   * Test a build all, with one column, no where, no group, no having, one
+   * limit, two order and no offset.
    */
-  public function testBuildOneColumnNoWhereNoGroupNoHavingTwoOrderOneLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereNoGroupNoHavingTwoOrderOneLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->orderBy( new ColumnExpression('column1') );
@@ -345,10 +353,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, one group, no having, no limit, no
-   * order and no offset.
+   * Test a build all, with one column, no where, one group, no having, no
+   * limit, no order and no offset.
    */
-  public function testBuildOneColumnNoWhereOneGroupNoHavingNoOrderNoLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereOneGroupNoHavingNoOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->groupBy( new ColumnExpression('column1') );
@@ -359,10 +367,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, one group, no having, one limit,
-   * no order and no offset.
+   * Test a build all, with one column, no where, one group, no having, one
+   * limit, no order and no offset.
    */
-  public function testBuildOneColumnNoWhereOneGroupNoHavingNoOrderOneLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereOneGroupNoHavingNoOrderOneLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->groupBy( new ColumnExpression('column1') );
@@ -374,10 +382,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, one group, no having, no limit,
-   * one order and no offset.
+   * Test a build all, with one column, no where, one group, no having, no
+   * limit, one order and no offset.
    */
-  public function testBuildOneColumnNoWhereOneGroupNoHavingOneOrderNoLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereOneGroupNoHavingOneOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->groupBy( new ColumnExpression('column1') );
@@ -389,10 +397,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, one group, no having, one limit,
-   * one order and no offset.
+   * Test a build all, with one column, no where, one group, no having, one
+   * limit, one order and no offset.
    */
-  public function testBuildOneColumnNoWhereOneGroupNoHavingOneOrderOneLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereOneGroupNoHavingOneOrderOneLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->groupBy( new ColumnExpression('column1') );
@@ -405,10 +413,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, one group, one having, no limit,
-   * no order and no offset.
+   * Test a build all, with one column, no where, one group, one having, no
+   * limit, no order and no offset.
    */
-  public function testBuildOneColumnNoWhereOneGroupOneHavingNoOrderNoLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereOneGroupOneHavingNoOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->groupBy( new ColumnExpression('column1') );
@@ -420,10 +428,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, one group, one having, one limit,
-   * no order and no offset.
+   * Test a build all, with one column, no where, one group, one having, one
+   * limit, no order and no offset.
    */
-  public function testBuildOneColumnNoWhereOneGroupOneHavingNoOrderOneLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereOneGroupOneHavingNoOrderOneLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->groupBy( new ColumnExpression('column1') );
@@ -436,10 +444,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, one group, one having, no limit,
-   * one order and no offset.
+   * Test a build all, with one column, no where, one group, one having, no
+   * limit, one order and no offset.
    */
-  public function testBuildOneColumnNoWhereOneGroupOneHavingOneOrderNoLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereOneGroupOneHavingOneOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->groupBy( new ColumnExpression('column1') );
@@ -452,10 +460,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, one group, one having, one limit,
-   * one order and no offset.
+   * Test a build all, with one column, no where, one group, one having, one
+   * limit, one order and no offset.
    */
-  public function testBuildOneColumnNoWhereOneGroupOneHavingOneOrderOneLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereOneGroupOneHavingOneOrderOneLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->groupBy( new ColumnExpression('column1') );
@@ -469,10 +477,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, one group, two having, no limit,
-   * no order and no offset.
+   * Test a build all, with one column, no where, one group, two having, no
+   * limit, no order and no offset.
    */
-  public function testBuildOneColumnNoWhereOneGroupTwoHavingNoOrderNoLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereOneGroupTwoHavingNoOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->groupBy( new ColumnExpression('column1') );
@@ -486,10 +494,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, one group, two having, one limit,
-   * no order and no offset.
+   * Test a build all, with one column, no where, one group, two having, one
+   * limit, no order and no offset.
    */
-  public function testBuildOneColumnNoWhereOneGroupTwoHavingNoOrderOneLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereOneGroupTwoHavingNoOrderOneLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->groupBy( new ColumnExpression('column1') );
@@ -503,10 +511,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, no where, two group, no having, one limit,
-   * no order and no offset.
+   * Test a build all, with one column, no where, two group, no having, one
+   * limit, no order and no offset.
    */
-  public function testBuildOneColumnNoWhereTwoGroupNoHavingNoOrderOneLimitNoOffset() {
+  public function testBuildAllOneColumnNoWhereTwoGroupNoHavingNoOrderOneLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->groupBy( new ColumnExpression('column1') );
@@ -519,10 +527,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, one where clause, no group, no having, no
-   * limit, no order and offset.
+   * Test a build all, with one column, one where clause, no group, no having,
+   * no limit, no order and offset.
    */
-  public function testBuildOneColumnOneWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
+  public function testBuildAllOneColumnOneWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) );
@@ -533,10 +541,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, one where clause, no group, no having, no
-   * limit, one order and offset.
+   * Test a build all, with one column, one where clause, no group, no having,
+   * no limit, one order and offset.
    */
-  public function testBuildOneColumnOneWhereNoGroupNoHavingOneOrderNoLimitNoOffset() {
+  public function testBuildAllOneColumnOneWhereNoGroupNoHavingOneOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) );
@@ -548,10 +556,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, one where, one group, no having, one limit,
-   * no order and no offset.
+   * Test a build all, with one column, one where, one group, no having, one
+   * limit, no order and no offset.
    */
-  public function testBuildOneColumnOneWhereOneGroupNoHavingNoOrderNoLimitNoOffset() {
+  public function testBuildAllOneColumnOneWhereOneGroupNoHavingNoOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) );
@@ -563,10 +571,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, one where, one group, no having, one limit,
-   * no order and no offset.
+   * Test a build all, with one column, one where, one group, no having, one
+   * limit, no order and no offset.
    */
-  public function testBuildOneColumnOneWhereOneGroupNoHavingNoOrderOneLimitNoOffset() {
+  public function testBuildAllOneColumnOneWhereOneGroupNoHavingNoOrderOneLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) );
@@ -579,10 +587,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, one where, one group, no having, one limit,
-   * one order and no offset.
+   * Test a build all, with one column, one where, one group, no having, one
+   * limit, one order and no offset.
    */
-  public function testBuildOneColumnOneWhereOneGroupNoHavingOneOrderNoLimitNoOffset() {
+  public function testBuildAllOneColumnOneWhereOneGroupNoHavingOneOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) );
@@ -595,10 +603,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, one where, one group, no having, one limit,
-   * one order and no offset.
+   * Test a build all, with one column, one where, one group, no having, one
+   * limit, one order and no offset.
    */
-  public function testBuildOneColumnOneWhereOneGroupNoHavingOneOrderOneLimitNoOffset() {
+  public function testBuildAllOneColumnOneWhereOneGroupNoHavingOneOrderOneLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) );
@@ -612,10 +620,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, three where, no group, no having, no limit,
-   * no order and offset.
+   * Test a build all, with one column, three where, no group, no having, no
+   * limit, no order and offset.
    */
-  public function testBuildOneColumnThreeWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
+  public function testBuildAllOneColumnThreeWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) );
@@ -629,10 +637,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, three where, no group, no having, no limit,
-   * one order and offset.
+   * Test a build all, with one column, three where, no group, no having, no
+   * limit, one order and offset.
    */
-  public function testBuildOneColumnThreeWhereNoGroupNoHavingOneOrderNoLimitNoOffset() {
+  public function testBuildAllOneColumnThreeWhereNoGroupNoHavingOneOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) );
@@ -647,10 +655,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with one column, two where, no group, no having, no limit, no
-   * order and offset.
+   * Test a build all, with one column, two where, no group, no having, no
+   * limit, no order and offset.
    */
-  public function testBuildOneColumnTwoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
+  public function testBuildAllOneColumnTwoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new AllColumnsExpression() );
     $select->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) );
@@ -662,10 +670,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with three columns, no where, no group, no having, no limit,
-   * no order and no offset.
+   * Test a build all, with three columns, no where, no group, no having, no
+   * limit, no order and no offset.
    */
-  public function testBuildThreeColumnsNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
+  public function testBuildAllThreeColumnsNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new ColumnExpression('column1') );
     $select->addExpression( new ColumnExpression('column2') );
@@ -677,10 +685,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a build with two columns, no where, no group, no having, no limit, no
-   * order and no offset.
+   * Test a build all, with two columns, no where, no group, no having, no
+   * limit, no order and no offset.
    */
-  public function testBuildTwoColumnNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
+  public function testBuildAllTwoColumnNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $select = new Select('table');
     $select->addExpression( new ColumnExpression('column1') );
     $select->addExpression( new ColumnExpression('column2') );
@@ -688,6 +696,46 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     $sql = $select->build( $this->connection );
 
     $this->assertEquals( 'SELECT `column1`, `column2` FROM `table`', $sql );
+  }
+
+  /**
+   * Test a build distinct, with one column, no where, no group, no having, no
+   * limit, no order and no offset.
+   */
+  public function testBuildDistinctOneColumnNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
+    $select = new Select('table');
+    $select->distinct();
+    $select->addExpression( new AllColumnsExpression() );
+    $sql = $select->build( $this->connection );
+    $this->assertEquals( 'SELECT DISTINCT * FROM `table`', $sql );
+
+    // Try explicitly stating it's a distinct query.
+    $select = new Select('table');
+    $select->distinct( TRUE );
+    $select->addExpression( new AllColumnsExpression() );
+    $sql = $select->build( $this->connection );
+    $this->assertEquals( 'SELECT DISTINCT * FROM `table`', $sql );
+  }
+
+  /**
+   * Test a build distinct, with two columns, no where, no group, no having, no
+   * limit, no order and no offset.
+   */
+  public function testBuildDistinctTwoColumnNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
+    $select = new Select('table');
+    $select->distinct();
+    $select->addExpression( new ColumnExpression('column1') );
+    $select->addExpression( new ColumnExpression('column2') );
+    $sql = $select->build( $this->connection );
+    $this->assertEquals( 'SELECT DISTINCT `column1`, `column2` FROM `table`', $sql );
+
+    // Try explicitly stating it's a distinct query.
+    $select = new Select('table');
+    $select->distinct( TRUE );
+    $select->addExpression( new ColumnExpression('column1') );
+    $select->addExpression( new ColumnExpression('column2') );
+    $sql = $select->build( $this->connection );
+    $this->assertEquals( 'SELECT DISTINCT `column1`, `column2` FROM `table`', $sql );
   }
 
 }

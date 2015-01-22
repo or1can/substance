@@ -31,6 +31,12 @@ use Substance\Core\Database\Expressions\OrderByExpression;
 class Select extends Query {
 
   /**
+   * @var boolean Indicates if this is a DISTINCT query, TRUE for DISTINCT and
+   * FALSE for ALL.
+   */
+  protected $distinct = FALSE;
+
+  /**
    * @var Expression group by expression.
    */
   protected $group_by = NULL;
@@ -147,6 +153,9 @@ class Select extends Query {
    */
   public function build( Database $database ) {
     $sql = "SELECT ";
+    if ( $this->distinct ) {
+      $sql .= 'DISTINCT ';
+    }
     if ( is_null( $this->select_list ) ) {
       $sql .= '/* No select expressions */';
     } else {
@@ -179,6 +188,23 @@ class Select extends Query {
       }
     }
     return $sql;
+  }
+
+  /**
+   * Used to make this select return distinct rows only.
+   *
+   * This controls the use of DISTINCT or ALL in the SELECT query. When set to
+   * TRUE, a SELECT DISTINCT query will be generated and when set to FALSE a
+   * SELECT ALL query will be generated.
+   *
+   * @param boolean $distinct TRUE to return distinct rows only and FALSE to
+   * return all rows.
+   * @return self
+   * @see Select::all()
+   */
+  public function distinct( $distinct = TRUE ) {
+    $this->distinct = $distinct;
+    return $this;
   }
 
   /**

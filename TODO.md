@@ -10,7 +10,6 @@ TODO
     * Joins (Inner, Left, Right) [HIGH]
     * Alterations [HIGH]
     * Extensions [HIGH]
-    * Distinct [HIGH]
     * Use prepared statements for static and dynamic data [HIGH]
     * Expressions
       * Functions [HIGH]
