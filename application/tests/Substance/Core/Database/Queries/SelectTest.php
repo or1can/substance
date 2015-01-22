@@ -26,6 +26,7 @@ use Substance\Core\Database\Expressions\LiteralExpression;
 use Substance\Core\Database\Expressions\OrderByExpression;
 use Substance\Core\Database\Queries\Select;
 use Substance\Core\Database\TestDatabase;
+use Substance\Core\Database\Expressions\ColumnAliasExpression;
 
 /**
  * Tests select queries.
@@ -57,6 +58,20 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
       ->addExpression( new AllColumnsExpression() )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table`', $sql );
+
+    // Try a query with an explicitly stated column.
+    $sql = Select::select('table')
+      ->distinct( FALSE )
+      ->addExpression( new ColumnExpression('column1') )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT `column1` FROM `table`', $sql );
+
+    // Try a query with an explicitly stated column and alias.
+    $select = Select::select('table');
+    $sql = $select->distinct( FALSE )
+      ->addExpression( new ColumnAliasExpression( $select, new ColumnExpression('column1'), 'col' ) )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT `column1` AS `col` FROM `table`', $sql );
   }
 
   /**

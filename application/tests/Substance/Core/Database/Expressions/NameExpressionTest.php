@@ -23,9 +23,9 @@ use Substance\Core\Database\Queries\Select;
 use Substance\Core\Database\TestDatabase;
 
 /**
- * Tests the column expression.
+ * Tests the name expression.
  */
-class ColumnExpressionTest extends \PHPUnit_Framework_TestCase {
+class NameExpressionTest extends \PHPUnit_Framework_TestCase {
 
   protected $connection;
 
@@ -37,23 +37,33 @@ class ColumnExpressionTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a column expression with no table.
+   * Test a name expression.
    */
-  public function testBuildNoTable() {
-    $expression = new ColumnExpression('column');
+  public function testBuild() {
+    // Test a simple name.
+    $expression = new NameExpression('column');
     $sql = $expression->build( $this->connection );
-
     $this->assertEquals( '`column`', $sql );
-  }
 
-  /**
-   * Test a column expression with no alias and with a table.
-   */
-  public function testBuildNoAliasWithTable() {
-    $expression = new ColumnExpression( 'column', 'table' );
+    // Test a name with a period.
+    $expression = new NameExpression('column.column');
     $sql = $expression->build( $this->connection );
+    $this->assertEquals( '`column.column`', $sql );
 
-    $this->assertEquals( '`table`.`column`', $sql );
+    // Test a name with a hyphen.
+    $expression = new NameExpression('column-column');
+    $sql = $expression->build( $this->connection );
+    $this->assertEquals( '`column-column`', $sql );
+
+    // Test a name with a quote.
+    $expression = new NameExpression('column\'column');
+    $sql = $expression->build( $this->connection );
+    $this->assertEquals( '`column\'column`', $sql );
+
+    // Test a name with a backtick.
+    $expression = new NameExpression('column`column');
+    $sql = $expression->build( $this->connection );
+    $this->assertEquals( '`column``column`', $sql );
   }
 
 }
