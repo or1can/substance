@@ -18,6 +18,7 @@
 
 namespace Substance\Core\Database;
 
+use Substance\Core\Database\Queries\Select;
 /**
  * Represents a database query.
  */
@@ -31,5 +32,14 @@ abstract class Query {
    * @return string the built query as a string.
    */
   abstract public function build( Database $database );
+
+  /**
+   * Creates a new SELECT query to select data from the specified table.
+   *
+   * @return \Substance\Core\Database\Queries\Select
+   */
+  public static function select( $table ) {
+    return new Select( $table );
+  }
 
 }
