@@ -18,36 +18,25 @@
 
 namespace Substance\Core\Database\Expressions;
 
-use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Expression;
 use Substance\Core\Database\Query;
 use Substance\Core\Database\QueryLocation;
 
 /**
- * Represents a table alias in a query, e.g.
+ * Represents an alias in a query, e.g.
  *
  * e.g. the
  *     table.column1 AS col
  * part of:
- *     SELECT table.column1 AS col FROM table AS tab
+ *     SELECT table.column1 AS col FROM table
  */
-class ColumnAliasExpression extends AbstractAliasExpression {
-
-  public function __construct( Query $query, Expression $left, $alias ) {
-    parent::__construct( $query, $left, $alias );
-  }
+abstract class AbstractExpression implements Expression {
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Expression::aboutToAddQuery()
    */
   public function aboutToAddQuery( Query $query, QueryLocation $location ) {
-    if ( $location instanceof SelectListExpression ) {
-      $query->defineColumnAlias( $this );
-    } else {
-      throw Alert::alert( 'Invalid location for column alias', 'Column aliases can only be used in select lists' )
-        ->culprit( 'query location', $location )
-        ->culprit( 'query', $query );
-    }
+    // No-op
   }
 
 }

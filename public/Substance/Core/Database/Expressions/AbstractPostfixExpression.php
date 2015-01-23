@@ -25,7 +25,7 @@ use Substance\Core\Database\PostfixExpression;
 /**
  * An asbtract postfix expression, for easily building simple postifx expressions.
  */
-abstract class AbstractPostfixExpression implements PostfixExpression {
+abstract class AbstractPostfixExpression extends AbstractExpression implements PostfixExpression {
 
   /**
    * @var Expression the left expression.

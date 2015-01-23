@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2014 - 2015 Kevin Rogers
+ * Copyright (C) 2015 Kevin Rogers
  *
  * Substance is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,14 +36,20 @@ class TableAliasExpressionTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a table alias for a simple column expression.
+   * Test a table alias for a simple table expression.
    */
-  public function testBuildOnColumn() {
+  public function testBuildOnTable() {
     $query = Select::select('table');
-    $expression = new TableAliasExpression( $query, new ColumnExpression('column'), 'col' );
+    $expression = new TableAliasExpression( $query, new ColumnExpression('table'), 'tab' );
     $sql = $expression->build( $this->connection );
 
-    $this->assertEquals( '`column` AS `col`', $sql );
+    $this->assertEquals( '`table` AS `tab`', $sql );
+
+    $sql = Select::select('information_schema.TABLES')
+      ->addExpression( new AllColumnsExpression() )
+      ->build( $this->connection );
+
+    $this->assertEquals( 'SELECT * FROM `information_schema`.`TABLES`', $sql );
   }
 
   /**
@@ -51,33 +57,51 @@ class TableAliasExpressionTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildOnInfixExpression() {
     $query = Select::select('table');
-    $infix = new AndExpression( new ColumnExpression('column1'), new ColumnExpression('column2') );
-    $expression = new TableAliasExpression( $query, $infix, 'col' );
+    $infix = new AndExpression( new ColumnExpression('table1'), new ColumnExpression('table2') );
+    $expression = new TableAliasExpression( $query, $infix, 'tab' );
     $sql = $expression->build( $this->connection );
 
-    $this->assertEquals( '`column1` AND `column2` AS `col`', $sql );
+    $this->assertEquals( '`table1` AND `table2` AS `tab`', $sql );
   }
 
   /**
-   * Test that multiple table aliases with the same alias are not allowed.
-   *
-   * @expectedException Substance\Core\Alert\Alert
-   */
-  public function testBuildDuplicateColumn() {
-    $query = Select::select('table');
-    $expression = new TableAliasExpression( $query, new ColumnExpression('column1'), 'col' );
-    $expression = new TableAliasExpression( $query, new ColumnExpression('column2'), 'col' );
-  }
-
-  /**
-   * Test a table alias and table alias, both using the same alias name.
+   * Test that constructing a table alias and column alias with the same alias
+   * is allowed.
    */
   public function testBuildOneColumnOneTable() {
     $query = Select::select('table');
-    $expression = new ColumnAliasExpression( $query, new ColumnExpression('column1'), 'col' );
-    $expression = new TableAliasExpression( $query, new ColumnExpression('column2'), 'col' );
+    $expression = new ColumnAliasExpression( $query, new ColumnExpression('column1'), 'tab' );
+    $expression = new TableAliasExpression( $query, new ColumnExpression('table1'), 'tab' );
+    // If we get to this point, the test is passed as otherwise an exception
+    // would be thrown
+  }
 
-    // FIXME - Need an assertion here.
+  /**
+   * Test that constructing multiple table aliases with the same alias is
+   * allowed.
+   */
+  public function testConstructDuplicateTable() {
+    $query = Select::select('table');
+    $expression = new TableAliasExpression( $query, new ColumnExpression('table1'), 'tab' );
+    $expression = new TableAliasExpression( $query, new ColumnExpression('table2'), 'tab' );
+    // If we get to this point, the test is passed as otherwise an exception
+    // would be thrown
+  }
+
+  /**
+   * Test that multiple table aliases with the same alias in a single query is
+   * not allowed.
+   *
+   * @expectedException Substance\Core\Alert\Alert
+   */
+  public function testSelectWithDuplicateTableAlias() {
+    $query = Select::select('table');
+    $expression = new TableAliasExpression( $query, new ColumnExpression('table1'), 'tab' );
+    // FIXME - This is wrong as adding a table alias to a select list should
+    // not be allowed.
+    $query->addExpression( $expression );
+    $expression = new TableAliasExpression( $query, new ColumnExpression('table2'), 'tab' );
+    $query->addExpression( $expression );
   }
 
 }

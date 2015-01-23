@@ -42,15 +42,7 @@ abstract class AbstractAliasExpression extends AbstractInfixExpression {
         ->culprit( 'left', $left );
     }
     parent::__construct( $left, new NameExpression( $alias ) );
-
-    // Define this alias in the parent query.
-    $this->define( $query );
   }
-
-  /**
-   * Defines this alias in the parent query.
-   */
-  protected abstract function define( Query $query );
 
   /**
    * Returns the alias name.

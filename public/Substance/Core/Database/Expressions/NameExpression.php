@@ -19,12 +19,11 @@
 namespace Substance\Core\Database\Expressions;
 
 use Substance\Core\Database\Database;
-use Substance\Core\Database\Expression;
 
 /**
  * A name expression for use in a SQL query.
  */
-class NameExpression implements Expression {
+class NameExpression extends AbstractExpression {
 
   /**
    * @var string the column name.

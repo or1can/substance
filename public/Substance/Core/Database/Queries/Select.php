@@ -21,9 +21,10 @@ namespace Substance\Core\Database\Queries;
 use Substance\Core\Database\Database;
 use Substance\Core\Database\Expression;
 use Substance\Core\Database\Expressions\AndExpression;
-use Substance\Core\Database\Query;
 use Substance\Core\Database\Expressions\CommaExpression;
 use Substance\Core\Database\Expressions\OrderByExpression;
+use Substance\Core\Database\Expressions\SelectListExpression;
+use Substance\Core\Database\Query;
 
 /**
  * Represents a SELECT database query.
@@ -67,9 +68,9 @@ class Select extends Query {
   protected $order_by = NULL;
 
   /**
-   * @var Expression select list expression.
+   * @var SelectListExpression select list expression.
    */
-  protected $select_list = NULL;
+  protected $select_list;
 
   /**
    * The table we are selecting data from.
@@ -89,19 +90,16 @@ class Select extends Query {
    * @param string $table the table to select data from.
    */
   public function __construct( $table ) {
+    $this->select_list = new SelectListExpression();
     $this->table = $table;
   }
 
   public function __toString() {
-    $sql = "SELECT ";
-    if ( is_null( $this->select_list ) ) {
-      $sql .= '/* No select expressions */';
-    } else {
-      $sql .= (string) $this->select_list;
+    $sql = 'SELECT ';
+    if ( $this->distinct ) {
+      $sql .= 'DISTINCT ';
     }
-    foreach ( $this->select_list as $expression ) {
-      $sql .= (string) $expression;
-    }
+    $sql .= (string) $this->select_list;
     $sql .= ' FROM ';
     $sql .= $this->table;
     if ( !is_null( $this->where ) ) {
@@ -138,13 +136,7 @@ class Select extends Query {
    * @return self
    */
   public function addExpression( Expression $expression ) {
-    if ( is_null( $this->select_list ) ) {
-      $this->select_list = $expression;
-    } elseif ( $this->select_list instanceof CommaExpression ) {
-      $this->select_list->addExpressionToSequence( $expression );
-    } else {
-      $this->select_list = new CommaExpression( $this->select_list, $expression );
-    }
+    $this->select_list->add( $this, $expression );
     return $this;
   }
 
@@ -156,11 +148,7 @@ class Select extends Query {
     if ( $this->distinct ) {
       $sql .= 'DISTINCT ';
     }
-    if ( is_null( $this->select_list ) ) {
-      $sql .= '/* No select expressions */';
-    } else {
-      $sql .= $this->select_list->build( $database );
-    }
+    $sql .= $this->select_list->build( $database );
     $sql .= ' FROM ';
     $sql .= $database->quoteTable( $this->table );
     if ( !is_null( $this->where ) ) {

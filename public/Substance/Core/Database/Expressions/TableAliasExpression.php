@@ -21,6 +21,7 @@ namespace Substance\Core\Database\Expressions;
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Expression;
 use Substance\Core\Database\Query;
+use Substance\Core\Database\QueryLocation;
 
 /**
  * Represents a table alias in a query, e.g.
@@ -33,19 +34,22 @@ use Substance\Core\Database\Query;
 class TableAliasExpression extends AbstractAliasExpression {
 
   public function __construct( Query $query, Expression $left, $alias ) {
-    if ( $left instanceof AliasExpression ) {
-      // TODO - Would an Illegal argument alert be useful?
-      throw Alert::alert( 'Illegal argument', 'Cannot alias an AliasExpression' )
-        ->culprit( 'left', $left );
-    }
     parent::__construct( $query, $left, $alias );
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Expressions\AbstractAliasExpression::define()
+   * @see \Substance\Core\Database\Expression::aboutToAddQuery()
    */
-  protected function define( Query $query ) {
-    $query->defineTableAlias( $this );
+  public function aboutToAddQuery( Query $query, QueryLocation $location ) {
+    // FIXME - This is wrong, as a table alias cannot be added to a select
+    // list...
+    if ( $location instanceof SelectListExpression ) {
+      $query->defineTableAlias( $this );
+    } else {
+      throw Alert::alert( 'Invalid location for table alias', 'Table aliases can only be used in [FIXME]' )
+        ->culprit( 'query location', $location )
+        ->culprit( 'query', $query );
+    }
   }
 
 }

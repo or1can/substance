@@ -25,7 +25,7 @@ use Substance\Core\Database\Expression;
  * A equals expression, representing an equality test of a left and right
  * expression.
  */
-class EqualsExpression implements Expression {
+class EqualsExpression extends AbstractExpression {
 
   /**
    * @var string the expression alias.

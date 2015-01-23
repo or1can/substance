@@ -19,12 +19,11 @@
 namespace Substance\Core\Database\Expressions;
 
 use Substance\Core\Database\Database;
-use Substance\Core\Database\Expression;
 
 /**
  * A column expression for use in a SQL query.
  */
-class AllColumnsExpression implements Expression {
+class AllColumnsExpression extends AbstractExpression {
 
   public function __toString() {
     return '*';

@@ -18,14 +18,13 @@
 
 namespace Substance\Core\Database\Expressions;
 
-use Substance\Core\Database\Database;
-use Substance\Core\Database\Expression;
 use Substance\Core\Alert\Alert;
+use Substance\Core\Database\Database;
 
 /**
  * A literal expression for strings, numbers and booleans in a SQL query.
  */
-class LiteralExpression implements Expression {
+class LiteralExpression extends AbstractExpression {
 
   /**
    * @var string the column alias.

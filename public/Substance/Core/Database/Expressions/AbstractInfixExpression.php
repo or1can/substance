@@ -26,7 +26,7 @@ use Substance\Core\Database\InfixExpression;
  * A equals expression, representing an equality test of a left and right
  * expression.
  */
-abstract class AbstractInfixExpression implements InfixExpression {
+abstract class AbstractInfixExpression extends AbstractExpression implements InfixExpression {
 
   /**
    * @var boolean TRUE if a space should appear before the symbol and FALSE

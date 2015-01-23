@@ -19,6 +19,7 @@
 namespace Substance\Core\Database\Queries;
 
 use Substance\Core\Database\Expressions\AllColumnsExpression;
+use Substance\Core\Database\Expressions\ColumnAliasExpression;
 use Substance\Core\Database\Expressions\ColumnExpression;
 use Substance\Core\Database\Expressions\CommaExpression;
 use Substance\Core\Database\Expressions\EqualsExpression;
@@ -26,7 +27,6 @@ use Substance\Core\Database\Expressions\LiteralExpression;
 use Substance\Core\Database\Expressions\OrderByExpression;
 use Substance\Core\Database\Queries\Select;
 use Substance\Core\Database\TestDatabase;
-use Substance\Core\Database\Expressions\ColumnAliasExpression;
 
 /**
  * Tests select queries.

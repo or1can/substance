@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2014 - 2015 Kevin Rogers
+ * Copyright (C) 2015 Kevin Rogers
  *
  * Substance is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,29 +18,18 @@
 
 namespace Substance\Core\Database;
 
-use Substance\Core\Database\Queries\Select;
+use Substance\Core\Alert\Alert;
 
 /**
- * Represents an expression in a SQL query.
+ * Marker iterface for representing locations within a database query.
+ *
+ * Queries have various locations, which are represented by different classes.
+ * Hence, this marker interface can be used to identify those locations in
+ * simple way and adapt expression appropriately.
+ *
+ * For example, handling adding expressions to a select list may require
+ * processing beforehand.
  */
-interface Expression {
-
-  /**
-   * Should be called before this expression is added to a query at the
-   * specified location.
-   *
-   * @param Query $query the query this expression is about to be added to
-   * @param QueryLocation $location the location within the query
-   */
-  public function aboutToAddQuery( Query $query, QueryLocation $location );
-
-  /**
-   * Builds this expression for the given database connection.
-   *
-   * @param Database $database the database connection to build the expression
-   * for
-   * @return string the built expression as a string.
-   */
-  public function build( Database $database );
+interface QueryLocation {
 
 }

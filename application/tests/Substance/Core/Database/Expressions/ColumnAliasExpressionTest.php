@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2014 - 2015 Kevin Rogers
+ * Copyright (C) 2015 Kevin Rogers
  *
  * Substance is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,25 +59,41 @@ class ColumnAliasExpressionTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test that multiple column aliases with the same alias are not allowed.
-   *
-   * @expectedException Substance\Core\Alert\Alert
-   */
-  public function testBuildDuplicateColumn() {
-    $query = Select::select('table');
-    $expression = new ColumnAliasExpression( $query, new ColumnExpression('column1'), 'col' );
-    $expression = new ColumnAliasExpression( $query, new ColumnExpression('column2'), 'col' );
-  }
-
-  /**
-   * Test a column alias and table alias, both using the same alias name.
+   * Test that constructing a column alias and table alias with the same alias
+   * is allowed.
    */
   public function testBuildOneColumnOneTable() {
     $query = Select::select('table');
     $expression = new ColumnAliasExpression( $query, new ColumnExpression('column1'), 'col' );
     $expression = new TableAliasExpression( $query, new ColumnExpression('column2'), 'col' );
+    // If we get to this point, the test is passed as otherwise an exception
+    // would be thrown
+  }
 
-    // FIXME - Need an assertion here.
+  /**
+   * Test that constructing multiple column aliases with the same alias is
+   * allowed.
+   */
+  public function testConstructDuplicateColumn() {
+    $query = Select::select('table');
+    $expression = new ColumnAliasExpression( $query, new ColumnExpression('column1'), 'col' );
+    $expression = new ColumnAliasExpression( $query, new ColumnExpression('column2'), 'col' );
+    // If we get to this point, the test is passed as otherwise an exception
+    // would be thrown
+  }
+
+  /**
+   * Test that multiple column aliases with the same alias in a single query is
+   * not allowed.
+   *
+   * @expectedException Substance\Core\Alert\Alert
+   */
+  public function testSelectWithDuplicateColumnAlias() {
+    $query = Select::select('table');
+    $expression = new ColumnAliasExpression( $query, new ColumnExpression('column1'), 'col' );
+    $query->addExpression( $expression );
+    $expression = new ColumnAliasExpression( $query, new ColumnExpression('column2'), 'col' );
+    $query->addExpression( $expression );
   }
 
 }
