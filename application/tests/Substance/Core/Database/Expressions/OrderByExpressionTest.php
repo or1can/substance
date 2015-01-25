@@ -40,7 +40,7 @@ class OrderByExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test an ascending order by expression.
    */
   public function testBuildAscendingOrder() {
-    $left = new ColumnExpression('column1');
+    $left = new ColumnNameExpression('column1');
     $expr = new OrderByExpression( $left, 'ASC' );
     $sql = $expr->build( $this->connection );
 
@@ -51,7 +51,7 @@ class OrderByExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test a descending order by expression.
    */
   public function testBuildDescendingOrder() {
-    $left = new ColumnExpression('column1');
+    $left = new ColumnNameExpression('column1');
     $expr = new OrderByExpression( $left, 'DESC' );
     $sql = $expr->build( $this->connection );
 
@@ -64,7 +64,7 @@ class OrderByExpressionTest extends \PHPUnit_Framework_TestCase {
    * @expectedException Substance\Core\Alert\Alert
    */
   public function testInvalidDirection() {
-    $left = new ColumnExpression('column1');
+    $left = new ColumnNameExpression('column1');
     $expr = new OrderByExpression( $left, 'ALLOWED' );
   }
 
@@ -75,7 +75,7 @@ class OrderByExpressionTest extends \PHPUnit_Framework_TestCase {
    * @expectedException Substance\Core\Alert\Alert
    */
   public function testNoOrderByOrderByExpression() {
-    $left = new OrderByExpression( new ColumnExpression('column1'), 'DESC' );
+    $left = new OrderByExpression( new ColumnNameExpression('column1'), 'DESC' );
     $expr = new OrderByExpression( $left, 'DESC' );
   }
 

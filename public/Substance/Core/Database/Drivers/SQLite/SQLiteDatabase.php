@@ -20,7 +20,7 @@ namespace Substance\Core\Database\Drivers\SQLite;
 
 use Substance\Core\Database\Database;
 use Substance\Core\Database\Expressions\AllColumnsExpression;
-use Substance\Core\Database\Expressions\ColumnExpression;
+use Substance\Core\Database\Expressions\ColumnNameExpression;
 use Substance\Core\Database\Expressions\EqualsExpression;
 use Substance\Core\Database\Expressions\LiteralExpression;
 use Substance\Core\Database\Queries\Select;
@@ -68,8 +68,8 @@ class SQLiteDatabase extends Database {
     // SQLite stores schema information in a hidden sqlite_master table in each
     // database. The first database in a connection has the name "main".
     $select = new Select( $this->getDatabaseName() . '.sqlite_master' );
-    $select->addExpression( new ColumnExpression('name') );
-    $select->where( new EqualsExpression( new ColumnExpression('type'), new ColumnExpression('table') ) );
+    $select->addExpression( new ColumnNameExpression('name') );
+    $select->where( new EqualsExpression( new ColumnNameExpression('type'), new ColumnNameExpression('table') ) );
     $sql = $select->build( $this );
     echo $sql, "\n\n";
     $tables = array();

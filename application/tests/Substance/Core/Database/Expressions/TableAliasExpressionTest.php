@@ -40,7 +40,7 @@ class TableAliasExpressionTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildOnTable() {
     $query = Select::select('table');
-    $expression = new TableAliasExpression( $query, new ColumnExpression('table'), 'tab' );
+    $expression = new TableAliasExpression( $query, new ColumnNameExpression('table'), 'tab' );
     $sql = $expression->build( $this->connection );
 
     $this->assertEquals( '`table` AS `tab`', $sql );
@@ -57,7 +57,7 @@ class TableAliasExpressionTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildOnInfixExpression() {
     $query = Select::select('table');
-    $infix = new AndExpression( new ColumnExpression('table1'), new ColumnExpression('table2') );
+    $infix = new AndExpression( new ColumnNameExpression('table1'), new ColumnNameExpression('table2') );
     $expression = new TableAliasExpression( $query, $infix, 'tab' );
     $sql = $expression->build( $this->connection );
 
@@ -70,8 +70,8 @@ class TableAliasExpressionTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildOneColumnOneTable() {
     $query = Select::select('table');
-    $expression = new ColumnAliasExpression( $query, new ColumnExpression('column1'), 'tab' );
-    $expression = new TableAliasExpression( $query, new ColumnExpression('table1'), 'tab' );
+    $expression = new ColumnAliasExpression( $query, new ColumnNameExpression('column1'), 'tab' );
+    $expression = new TableAliasExpression( $query, new ColumnNameExpression('table1'), 'tab' );
     // If we get to this point, the test is passed as otherwise an exception
     // would be thrown
   }
@@ -82,8 +82,8 @@ class TableAliasExpressionTest extends \PHPUnit_Framework_TestCase {
    */
   public function testConstructDuplicateTable() {
     $query = Select::select('table');
-    $expression = new TableAliasExpression( $query, new ColumnExpression('table1'), 'tab' );
-    $expression = new TableAliasExpression( $query, new ColumnExpression('table2'), 'tab' );
+    $expression = new TableAliasExpression( $query, new ColumnNameExpression('table1'), 'tab' );
+    $expression = new TableAliasExpression( $query, new ColumnNameExpression('table2'), 'tab' );
     // If we get to this point, the test is passed as otherwise an exception
     // would be thrown
   }
@@ -96,11 +96,11 @@ class TableAliasExpressionTest extends \PHPUnit_Framework_TestCase {
    */
   public function testSelectWithDuplicateTableAlias() {
     $query = Select::select('table');
-    $expression = new TableAliasExpression( $query, new ColumnExpression('table1'), 'tab' );
+    $expression = new TableAliasExpression( $query, new ColumnNameExpression('table1'), 'tab' );
     // FIXME - This is wrong as adding a table alias to a select list should
     // not be allowed.
     $query->addExpression( $expression );
-    $expression = new TableAliasExpression( $query, new ColumnExpression('table2'), 'tab' );
+    $expression = new TableAliasExpression( $query, new ColumnNameExpression('table2'), 'tab' );
     $query->addExpression( $expression );
   }
 

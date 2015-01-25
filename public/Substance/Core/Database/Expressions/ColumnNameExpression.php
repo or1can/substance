@@ -21,37 +21,48 @@ namespace Substance\Core\Database\Expressions;
 use Substance\Core\Database\Database;
 
 /**
- * A name expression for use in a SQL query.
+ * A column name expression for use in a SQL query.
  */
-class NameExpression extends AbstractExpression {
+class ColumnNameExpression extends NameExpression {
 
   /**
-   * @var string the name.
+   * @var TableNameExpression the table name.
    */
-  protected $name;
+  protected $table_name;
 
-  public function __construct( $name ) {
-    $this->name = $name;
+  /**
+   * Constructs a new column name expression for the specified column in the
+   * optionally specified table name.
+   *
+   * @param string $name the column name
+   * @param TableNameExpression $table_name the table name
+   */
+  public function __construct( $name, TableNameExpression $table_name = NULL ) {
+    parent::__construct( $name );
+    $this->table_name = $table_name;
   }
 
   public function __toString() {
-    return $this->name;
+    $string = '';
+    if ( isset( $this->table_name ) ) {
+      $string .= (string) $this->table_name;
+      $string .= '.';
+    }
+    $string .= (string) parent::__toString();
+    return $string;
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Expression::build()
    */
   public function build( Database $database ) {
-    return $database->quoteName( $this->name );
-  }
-
-  /**
-   * Returns the name.
-   *
-   * @return string the name.
-   */
-  public function getName() {
-    return $this->name;
+  	$string = '';
+  	if ( isset( $this->table_name ) ) {
+      $string .= $this->table_name->build( $database );
+  	  $string .= '.';
+  	}
+    $string .= parent::build( $database );
+  	return $string;
   }
 
 }

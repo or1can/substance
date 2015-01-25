@@ -299,7 +299,7 @@ class Select extends Query {
    * If the expression is an OrderByExpression, it will be added ignoring the
    * direction parameter, e.g.
    *     $select = new Select(...);
-   *     $order_by = new OrderByExpression( new ColumnExpression('col1'), 'DESC' );
+   *     $order_by = new OrderByExpression( new ColumnNameExpression('col1'), 'DESC' );
    *     $select->orderBy( $order_by, 'ASC' );
    * would generate the following SQL:
    *     SELECT ... ORDER BY col1 DESC
@@ -309,11 +309,11 @@ class Select extends Query {
    * recursively calling this method, e.g.
    *     $select = new Select(...);
    *     $order_by = new CommaExpression(
-   *         new ColumnExpression('col1'),
-   *         new OrderByExpression( new ColumnExpression('col2'), 'DESC' )
+   *         new ColumnNameExpression('col1'),
+   *         new OrderByExpression( new ColumnNameExpression('col2'), 'DESC' )
    *     );
    *     $order_by->addExpressionToSequence(
-   *         new ColumnExpression('col3'),
+   *         new ColumnNameExpression('col3'),
    *     );
    *     $select->orderBy( $order_by, 'ASC' );
    * would generate the following SQL:
@@ -322,8 +322,8 @@ class Select extends Query {
    * If the expression is any other kind of Expression, it will be added as is
    * using the specified direction., e.g.
    *     $select = new Select(...);
-   *     $select->orderBy( new ColumnExpression('col1'), 'ASC' );
-   *     $select->orderBy( new ColumnExpression('col2'), 'DESC' );
+   *     $select->orderBy( new ColumnNameExpression('col1'), 'ASC' );
+   *     $select->orderBy( new ColumnNameExpression('col2'), 'DESC' );
    * would generate the following SQL:
    *     SELECT ... ORDER BY col1 ASC, col2 DESC
    *

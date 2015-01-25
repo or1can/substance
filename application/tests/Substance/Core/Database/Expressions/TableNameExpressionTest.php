@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2014 - 2015 Kevin Rogers
+ * Copyright (C) 2015 Kevin Rogers
  *
  * Substance is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +18,13 @@
 
 namespace Substance\Core\Database\Expressions;
 
-use Substance\Core\Database\Expressions\AllColumnsExpression;
 use Substance\Core\Database\Queries\Select;
 use Substance\Core\Database\TestDatabase;
 
 /**
- * Tests the column expression.
+ * Tests the table name expression.
  */
-class ColumnNameExpressionTest extends \PHPUnit_Framework_TestCase {
+class TableNameExpressionTest extends \PHPUnit_Framework_TestCase {
 
   protected $connection;
 
@@ -37,23 +36,23 @@ class ColumnNameExpressionTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a column expression with no table.
+   * Test a table expression with no database.
    */
-  public function testBuildNoTable() {
-    $expression = new ColumnNameExpression('column');
+  public function testBuildNoDatabase() {
+    $expression = new TableNameExpression('table');
     $sql = $expression->build( $this->connection );
 
-    $this->assertEquals( '`column`', $sql );
+    $this->assertEquals( '`table`', $sql );
   }
 
   /**
-   * Test a column expression with no alias and with a table.
+   * Test a table expression with a database.
    */
-  public function testBuildNoAliasWithTable() {
-    $expression = new ColumnNameExpression( 'column', new TableNameExpression('table') );
+  public function testBuildWithDatabse() {
+    $expression = new TableNameExpression('schema.table');
     $sql = $expression->build( $this->connection );
 
-    $this->assertEquals( '`table`.`column`', $sql );
+    $this->assertEquals( '`schema`.`table`', $sql );
   }
 
 }

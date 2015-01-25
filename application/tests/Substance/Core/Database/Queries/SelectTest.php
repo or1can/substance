@@ -20,7 +20,7 @@ namespace Substance\Core\Database\Queries;
 
 use Substance\Core\Database\Expressions\AllColumnsExpression;
 use Substance\Core\Database\Expressions\ColumnAliasExpression;
-use Substance\Core\Database\Expressions\ColumnExpression;
+use Substance\Core\Database\Expressions\ColumnNameExpression;
 use Substance\Core\Database\Expressions\CommaExpression;
 use Substance\Core\Database\Expressions\EqualsExpression;
 use Substance\Core\Database\Expressions\LiteralExpression;
@@ -62,14 +62,14 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try a query with an explicitly stated column.
     $sql = Select::select('table')
       ->distinct( FALSE )
-      ->addExpression( new ColumnExpression('column1') )
+      ->addExpression( new ColumnNameExpression('column1') )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT `column1` FROM `table`', $sql );
 
     // Try a query with an explicitly stated column and alias.
     $select = Select::select('table');
     $sql = $select->distinct( FALSE )
-      ->addExpression( new ColumnAliasExpression( $select, new ColumnExpression('column1'), 'col' ) )
+      ->addExpression( new ColumnAliasExpression( $select, new ColumnNameExpression('column1'), 'col' ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT `column1` AS `col` FROM `table`', $sql );
   }
@@ -135,7 +135,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnNoWhereNoGroupNoHavingOneOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->orderBy( new ColumnExpression('column1') )
+      ->orderBy( new ColumnNameExpression('column1') )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` ASC', $sql );
@@ -149,7 +149,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try an order using the default direction.
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->orderBy( new ColumnExpression('column1') )
+      ->orderBy( new ColumnNameExpression('column1') )
       ->limit( 1 )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` ASC LIMIT 1', $sql );
@@ -157,7 +157,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try the same with specifying the ascending sort direction explicitly.
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->orderBy( new ColumnExpression('column1'), 'ASC' )
+      ->orderBy( new ColumnNameExpression('column1'), 'ASC' )
       ->limit( 1 )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` ASC LIMIT 1', $sql );
@@ -165,7 +165,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // And again, with a descending sort direction.
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->orderBy( new ColumnExpression('column1'), 'DESC' )
+      ->orderBy( new ColumnNameExpression('column1'), 'DESC' )
       ->limit( 1 )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` DESC LIMIT 1', $sql );
@@ -174,7 +174,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // direction.
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->orderBy( new OrderByExpression( new ColumnExpression('column1'), 'ASC' ) )
+      ->orderBy( new OrderByExpression( new ColumnNameExpression('column1'), 'ASC' ) )
       ->limit( 1 )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` ASC LIMIT 1', $sql );
@@ -183,7 +183,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // direction.
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->orderBy( new OrderByExpression( new ColumnExpression('column1'), 'DESC' ) )
+      ->orderBy( new OrderByExpression( new ColumnNameExpression('column1'), 'DESC' ) )
       ->limit( 1 )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` DESC LIMIT 1', $sql );
@@ -197,32 +197,32 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try two order expressions using the default direction.
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->orderBy( new ColumnExpression('column1') )
-      ->orderBy( new ColumnExpression('column2') )
+      ->orderBy( new ColumnNameExpression('column1') )
+      ->orderBy( new ColumnNameExpression('column2') )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` ASC, `column2` ASC', $sql );
 
     // Try two order expressions using the different directions.
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->orderBy( new ColumnExpression('column1'), 'ASC' )
-      ->orderBy( new ColumnExpression('column2'), 'DESC' )
+      ->orderBy( new ColumnNameExpression('column1'), 'ASC' )
+      ->orderBy( new ColumnNameExpression('column2'), 'DESC' )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` ASC, `column2` DESC', $sql );
 
     // Try two order expressions using the opposite directions.
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->orderBy( new ColumnExpression('column1'), 'DESC' )
-      ->orderBy( new ColumnExpression('column2'), 'ASC' )
+      ->orderBy( new ColumnNameExpression('column1'), 'DESC' )
+      ->orderBy( new ColumnNameExpression('column2'), 'ASC' )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` DESC, `column2` ASC', $sql );
 
     // Try two order expressions with both using the descending directions.
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->orderBy( new ColumnExpression('column1'), 'DESC' )
-      ->orderBy( new ColumnExpression('column2'), 'DESC' )
+      ->orderBy( new ColumnNameExpression('column1'), 'DESC' )
+      ->orderBy( new ColumnNameExpression('column2'), 'DESC' )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` DESC, `column2` DESC', $sql );
 
@@ -230,8 +230,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // ascending direction
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->orderBy( new OrderByExpression( new ColumnExpression('column1'), 'ASC' ) )
-      ->orderBy( new OrderByExpression( new ColumnExpression('column2'), 'ASC' ) )
+      ->orderBy( new OrderByExpression( new ColumnNameExpression('column1'), 'ASC' ) )
+      ->orderBy( new OrderByExpression( new ColumnNameExpression('column2'), 'ASC' ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` ASC, `column2` ASC', $sql );
 
@@ -239,8 +239,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // different directions.
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->orderBy( new OrderByExpression( new ColumnExpression('column1'), 'ASC' ) )
-      ->orderBy( new OrderByExpression( new ColumnExpression('column2'), 'DESC' ) )
+      ->orderBy( new OrderByExpression( new ColumnNameExpression('column1'), 'ASC' ) )
+      ->orderBy( new OrderByExpression( new ColumnNameExpression('column2'), 'DESC' ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` ASC, `column2` DESC', $sql );
 
@@ -248,16 +248,16 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // opposite directions.
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->orderBy( new OrderByExpression( new ColumnExpression('column1'), 'DESC' ) )
-      ->orderBy( new OrderByExpression( new ColumnExpression('column2'), 'ASC' ) )
+      ->orderBy( new OrderByExpression( new ColumnNameExpression('column1'), 'DESC' ) )
+      ->orderBy( new OrderByExpression( new ColumnNameExpression('column2'), 'ASC' ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` DESC, `column2` ASC', $sql );
 
     // Try two order expressions with both using the descending directions.
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->orderBy( new OrderByExpression( new ColumnExpression('column1'), 'DESC' ) )
-      ->orderBy( new OrderByExpression( new ColumnExpression('column2'), 'DESC' ) )
+      ->orderBy( new OrderByExpression( new ColumnNameExpression('column1'), 'DESC' ) )
+      ->orderBy( new OrderByExpression( new ColumnNameExpression('column2'), 'DESC' ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` DESC, `column2` DESC', $sql );
 
@@ -266,8 +266,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     $select = Select::select('table')
       ->addExpression( new AllColumnsExpression() );
     $order_by = new CommaExpression(
-      new OrderByExpression( new ColumnExpression('column1'), 'ASC' ),
-      new OrderByExpression( new ColumnExpression('column2'), 'ASC' )
+      new OrderByExpression( new ColumnNameExpression('column1'), 'ASC' ),
+      new OrderByExpression( new ColumnNameExpression('column2'), 'ASC' )
     );
     $sql = $select->orderBy( $order_by )
       ->build( $this->connection );
@@ -278,8 +278,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     $select = Select::select('table')
       ->addExpression( new AllColumnsExpression() );
     $order_by = new CommaExpression(
-      new OrderByExpression( new ColumnExpression('column1'), 'ASC' ),
-      new OrderByExpression( new ColumnExpression('column2'), 'DESC' )
+      new OrderByExpression( new ColumnNameExpression('column1'), 'ASC' ),
+      new OrderByExpression( new ColumnNameExpression('column2'), 'DESC' )
     );
     $sql = $select->orderBy( $order_by )
       ->build( $this->connection );
@@ -290,8 +290,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     $select = Select::select('table')
       ->addExpression( new AllColumnsExpression() );
     $order_by = new CommaExpression(
-      new OrderByExpression( new ColumnExpression('column1'), 'DESC' ),
-      new OrderByExpression( new ColumnExpression('column2'), 'ASC' )
+      new OrderByExpression( new ColumnNameExpression('column1'), 'DESC' ),
+      new OrderByExpression( new ColumnNameExpression('column2'), 'ASC' )
     );
     $sql = $select->orderBy( $order_by )
       ->build( $this->connection );
@@ -302,8 +302,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     $select = Select::select('table')
       ->addExpression( new AllColumnsExpression() );
     $order_by = new CommaExpression(
-      new OrderByExpression( new ColumnExpression('column1'), 'DESC' ),
-      new OrderByExpression( new ColumnExpression('column2'), 'DESC' )
+      new OrderByExpression( new ColumnNameExpression('column1'), 'DESC' ),
+      new OrderByExpression( new ColumnNameExpression('column2'), 'DESC' )
     );
     $sql = $select->orderBy( $order_by )
       ->build( $this->connection );
@@ -314,8 +314,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     $select = Select::select('table')
       ->addExpression( new AllColumnsExpression() );
     $order_by = new CommaExpression(
-      new ColumnExpression('column1'),
-      new ColumnExpression('column2')
+      new ColumnNameExpression('column1'),
+      new ColumnNameExpression('column2')
     );
     $sql = $select->orderBy( $order_by )
       ->build( $this->connection );
@@ -326,8 +326,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     $select = Select::select('table')
       ->addExpression( new AllColumnsExpression() );
     $order_by = new CommaExpression(
-      new ColumnExpression('column1'),
-      new ColumnExpression('column2')
+      new ColumnNameExpression('column1'),
+      new ColumnNameExpression('column2')
     );
     $sql = $select->orderBy( $order_by, 'ASC' )
       ->build( $this->connection );
@@ -338,8 +338,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     $select = Select::select('table')
       ->addExpression( new AllColumnsExpression() );
     $order_by = new CommaExpression(
-      new ColumnExpression('column1'),
-      new ColumnExpression('column2')
+      new ColumnNameExpression('column1'),
+      new ColumnNameExpression('column2')
     );
     $sql = $select->orderBy( $order_by, 'DESC' )
       ->build( $this->connection );
@@ -353,8 +353,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnNoWhereNoGroupNoHavingTwoOrderOneLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->orderBy( new ColumnExpression('column1') )
-      ->orderBy( new ColumnExpression('column2') )
+      ->orderBy( new ColumnNameExpression('column1') )
+      ->orderBy( new ColumnNameExpression('column2') )
       ->limit( 1 )
       ->build( $this->connection );
 
@@ -368,7 +368,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnNoWhereOneGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->groupBy( new ColumnExpression('column1') )
+      ->groupBy( new ColumnNameExpression('column1') )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1`', $sql );
@@ -381,7 +381,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnNoWhereOneGroupNoHavingNoOrderOneLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->groupBy( new ColumnExpression('column1') )
+      ->groupBy( new ColumnNameExpression('column1') )
       ->limit( 1 )
       ->build( $this->connection );
 
@@ -395,8 +395,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnNoWhereOneGroupNoHavingOneOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->groupBy( new ColumnExpression('column1') )
-      ->orderBy( new ColumnExpression('column1') )
+      ->groupBy( new ColumnNameExpression('column1') )
+      ->orderBy( new ColumnNameExpression('column1') )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` ORDER BY `column1` ASC', $sql );
@@ -409,8 +409,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnNoWhereOneGroupNoHavingOneOrderOneLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->groupBy( new ColumnExpression('column1') )
-      ->orderBy( new ColumnExpression('column1') )
+      ->groupBy( new ColumnNameExpression('column1') )
+      ->orderBy( new ColumnNameExpression('column1') )
       ->limit( 1 )
       ->build( $this->connection );
 
@@ -424,8 +424,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnNoWhereOneGroupOneHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->groupBy( new ColumnExpression('column1') )
-      ->having( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->groupBy( new ColumnNameExpression('column1') )
+      ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = 5', $sql );
@@ -438,8 +438,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnNoWhereOneGroupOneHavingNoOrderOneLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->groupBy( new ColumnExpression('column1') )
-      ->having( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->groupBy( new ColumnNameExpression('column1') )
+      ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->limit( 1 )
       ->build( $this->connection );
 
@@ -453,9 +453,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnNoWhereOneGroupOneHavingOneOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->groupBy( new ColumnExpression('column1') )
-      ->having( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->orderBy( new ColumnExpression('column1') )
+      ->groupBy( new ColumnNameExpression('column1') )
+      ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->orderBy( new ColumnNameExpression('column1') )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = 5 ORDER BY `column1` ASC', $sql );
@@ -468,9 +468,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnNoWhereOneGroupOneHavingOneOrderOneLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->groupBy( new ColumnExpression('column1') )
-      ->having( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->orderBy( new ColumnExpression('column1') )
+      ->groupBy( new ColumnNameExpression('column1') )
+      ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->orderBy( new ColumnNameExpression('column1') )
       ->limit( 1 )
       ->build( $this->connection );
 
@@ -484,9 +484,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnNoWhereOneGroupTwoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->groupBy( new ColumnExpression('column1') )
-      ->having( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->having( new EqualsExpression( new ColumnExpression('column2'), new LiteralExpression('hello') ) )
+      ->groupBy( new ColumnNameExpression('column1') )
+      ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->having( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = 5 AND `column2` = \'hello\'', $sql );
@@ -499,9 +499,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnNoWhereOneGroupTwoHavingNoOrderOneLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->groupBy( new ColumnExpression('column1') )
-      ->having( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->having( new EqualsExpression( new ColumnExpression('column2'), new LiteralExpression('hello') ) )
+      ->groupBy( new ColumnNameExpression('column1') )
+      ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->having( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) )
       ->limit( 1 )
       ->build( $this->connection );
 
@@ -515,8 +515,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnNoWhereTwoGroupNoHavingNoOrderOneLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->groupBy( new ColumnExpression('column1') )
-      ->groupBy( new ColumnExpression('column2') )
+      ->groupBy( new ColumnNameExpression('column1') )
+      ->groupBy( new ColumnNameExpression('column2') )
       ->limit( 1 )
       ->build( $this->connection );
 
@@ -530,7 +530,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnOneWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5', $sql );
@@ -543,8 +543,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnOneWhereNoGroupNoHavingOneOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->orderBy( new ColumnExpression('column1') )
+      ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->orderBy( new ColumnNameExpression('column1') )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 ORDER BY `column1` ASC', $sql );
@@ -557,8 +557,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnOneWhereOneGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->groupBy( new ColumnExpression('column1') )
+      ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->groupBy( new ColumnNameExpression('column1') )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 GROUP BY `column1`', $sql );
@@ -571,8 +571,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnOneWhereOneGroupNoHavingNoOrderOneLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->groupBy( new ColumnExpression('column1') )
+      ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->groupBy( new ColumnNameExpression('column1') )
       ->limit( 1 )
       ->build( $this->connection );
 
@@ -586,9 +586,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnOneWhereOneGroupNoHavingOneOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->groupBy( new ColumnExpression('column1') )
-      ->orderBy( new ColumnExpression('column1') )
+      ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->groupBy( new ColumnNameExpression('column1') )
+      ->orderBy( new ColumnNameExpression('column1') )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 GROUP BY `column1` ORDER BY `column1` ASC', $sql );
@@ -601,9 +601,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnOneWhereOneGroupNoHavingOneOrderOneLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->groupBy( new ColumnExpression('column1') )
-      ->orderBy( new ColumnExpression('column1') )
+      ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->groupBy( new ColumnNameExpression('column1') )
+      ->orderBy( new ColumnNameExpression('column1') )
       ->limit( 1 )
       ->build( $this->connection );
 
@@ -617,9 +617,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnThreeWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->where( new EqualsExpression( new ColumnExpression('column2'), new LiteralExpression('hello') ) )
-      ->where( new EqualsExpression( new ColumnExpression('column3'), new LiteralExpression( 7 ) ) )
+      ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->where( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) )
+      ->where( new EqualsExpression( new ColumnNameExpression('column3'), new LiteralExpression( 7 ) ) )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 AND `column2` = \'hello\' AND `column3` = 7', $sql );
@@ -633,10 +633,10 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnThreeWhereNoGroupNoHavingOneOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->where( new EqualsExpression( new ColumnExpression('column2'), new LiteralExpression('hello') ) )
-      ->where( new EqualsExpression( new ColumnExpression('column3'), new LiteralExpression( 7 ) ) )
-      ->orderBy( new ColumnExpression('column1') )
+      ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->where( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) )
+      ->where( new EqualsExpression( new ColumnNameExpression('column3'), new LiteralExpression( 7 ) ) )
+      ->orderBy( new ColumnNameExpression('column1') )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 AND `column2` = \'hello\' AND `column3` = 7 ORDER BY `column1` ASC', $sql );
@@ -650,8 +650,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnTwoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->addExpression( new AllColumnsExpression() )
-      ->where( new EqualsExpression( new ColumnExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->where( new EqualsExpression( new ColumnExpression('column2'), new LiteralExpression('hello') ) )
+      ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->where( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 AND `column2` = \'hello\'', $sql );
@@ -663,9 +663,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllThreeColumnsNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new ColumnExpression('column1') )
-      ->addExpression( new ColumnExpression('column2') )
-      ->addExpression( new ColumnExpression('column3') )
+      ->addExpression( new ColumnNameExpression('column1') )
+      ->addExpression( new ColumnNameExpression('column2') )
+      ->addExpression( new ColumnNameExpression('column3') )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT `column1`, `column2`, `column3` FROM `table`', $sql );
@@ -677,8 +677,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllTwoColumnNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new ColumnExpression('column1') )
-      ->addExpression( new ColumnExpression('column2') )
+      ->addExpression( new ColumnNameExpression('column1') )
+      ->addExpression( new ColumnNameExpression('column2') )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT `column1`, `column2` FROM `table`', $sql );
@@ -710,16 +710,16 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildDistinctTwoColumnNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->distinct()
-      ->addExpression( new ColumnExpression('column1') )
-      ->addExpression( new ColumnExpression('column2') )
+      ->addExpression( new ColumnNameExpression('column1') )
+      ->addExpression( new ColumnNameExpression('column2') )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT DISTINCT `column1`, `column2` FROM `table`', $sql );
 
     // Try explicitly stating it's a distinct query.
     $sql = Select::select('table')
       ->distinct( TRUE )
-      ->addExpression( new ColumnExpression('column1') )
-      ->addExpression( new ColumnExpression('column2') )
+      ->addExpression( new ColumnNameExpression('column1') )
+      ->addExpression( new ColumnNameExpression('column2') )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT DISTINCT `column1`, `column2` FROM `table`', $sql );
   }

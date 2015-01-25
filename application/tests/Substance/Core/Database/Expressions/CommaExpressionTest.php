@@ -38,10 +38,10 @@ class CommaExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test adding an expression to a comma expression.
    */
   public function testAddExpressionToSequence() {
-    $left = new ColumnExpression('column1');
-    $right = new ColumnExpression('column2');
+    $left = new ColumnNameExpression('column1');
+    $right = new ColumnNameExpression('column2');
     $expr = new CommaExpression( $left, $right );
-    $expr->addExpressionToSequence( new ColumnExpression('column3') );
+    $expr->addExpressionToSequence( new ColumnNameExpression('column3') );
     $sql = $expr->build( $this->connection );
 
     $this->assertEquals( '`column1`, `column2`, `column3`', $sql );
@@ -51,8 +51,8 @@ class CommaExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test adding expressions to a comma expression.
    */
   public function testAddExpressionsToSequence() {
-    $left = new ColumnExpression('column1');
-    $right = new ColumnExpression('column2');
+    $left = new ColumnNameExpression('column1');
+    $right = new ColumnNameExpression('column2');
     // Test adding no expressions.
     $expr = new CommaExpression( $left, $right );
     $expr->addExpressionsToSequence();
@@ -62,14 +62,14 @@ class CommaExpressionTest extends \PHPUnit_Framework_TestCase {
 
     // Test adding one expression.
     $expr = new CommaExpression( $left, $right );
-    $expr->addExpressionsToSequence( new ColumnExpression('column3') );
+    $expr->addExpressionsToSequence( new ColumnNameExpression('column3') );
     $sql = $expr->build( $this->connection );
 
     $this->assertEquals( '`column1`, `column2`, `column3`', $sql );
 
     // Test adding multiple expressions.
     $expr = new CommaExpression( $left, $right );
-    $expr->addExpressionsToSequence( new ColumnExpression('column3'), new ColumnExpression('column4') );
+    $expr->addExpressionsToSequence( new ColumnNameExpression('column3'), new ColumnNameExpression('column4') );
     $sql = $expr->build( $this->connection );
 
     $this->assertEquals( '`column1`, `column2`, `column3`, `column4`', $sql );
@@ -79,8 +79,8 @@ class CommaExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test an and expression.
    */
   public function testBuild() {
-    $left = new ColumnExpression('column1');
-    $right = new ColumnExpression('column2');
+    $left = new ColumnNameExpression('column1');
+    $right = new ColumnNameExpression('column2');
     $equals = new CommaExpression( $left, $right );
     $sql = $equals->build( $this->connection );
 
@@ -91,20 +91,20 @@ class CommaExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test converting to an array.
    */
   public function testToArray() {
-    $left = new ColumnExpression('column1');
-    $right = new ColumnExpression('column2');
+    $left = new ColumnNameExpression('column1');
+    $right = new ColumnNameExpression('column2');
     $equals = new CommaExpression( $left, $right );
 
     // Test with a simple two expression sequence.
     $this->assertEquals( array( $left, $right ), $equals->toArray() );
 
     // Add another expression to the sequence.
-    $third = new ColumnExpression('column3');
+    $third = new ColumnNameExpression('column3');
     $equals->addExpressionToSequence( $third );
     $this->assertEquals( array( $left, $right, $third ), $equals->toArray() );
 
     // Add the second expression to the sequence again.
-    $third = new ColumnExpression('column3');
+    $third = new ColumnNameExpression('column3');
     $equals->addExpressionToSequence( $right );
     $this->assertEquals( array( $left, $right, $third, $right ), $equals->toArray() );
   }

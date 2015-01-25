@@ -40,8 +40,8 @@ class EqualsExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test an equals expression with no alias.
    */
   public function testBuildNoAlias() {
-    $left = new ColumnExpression('column1');
-    $right = new ColumnExpression('column2');
+    $left = new ColumnNameExpression('column1');
+    $right = new ColumnNameExpression('column2');
     $equals = new EqualsExpression( $left, $right );
     $sql = $equals->build( $this->connection );
 
@@ -52,8 +52,8 @@ class EqualsExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test an equals expression with an alias.
    */
   public function testBuildWithAlias() {
-    $left = new ColumnExpression('column1');
-    $right = new ColumnExpression('column2');
+    $left = new ColumnNameExpression('column1');
+    $right = new ColumnNameExpression('column2');
     $equals = new EqualsExpression( $left, $right, 'alias' );
     $sql = $equals->build( $this->connection );
 

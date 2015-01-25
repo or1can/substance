@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2014 - 2015 Kevin Rogers
+ * Copyright (C) 2015 Kevin Rogers
  *
  * Substance is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,55 +21,24 @@ namespace Substance\Core\Database\Expressions;
 use Substance\Core\Database\Database;
 
 /**
- * A column expression for use in a SQL query.
+ * A table name expression for use in a SQL query.
  */
-class ColumnExpression extends AbstractExpression {
+class TableNameExpression extends NameExpression {
 
   /**
-   * @var string the column name.
+   * Constructs a new table name expression for the specified table name.
+   *
+   * @param string $table_name the table name
    */
-  protected $name;
-
-  /**
-   * @var string the table name.
-   */
-  protected $table;
-
-  public function __construct( $name, $table = NULL ) {
-    $this->name = $name;
-    $this->table = $table;
-  }
-
-  public function __toString() {
-    $string = '';
-    if ( isset( $this->table ) ) {
-      $string .= $this->table;
-      $string .= '.';
-    }
-    $string .= $this->name;
-    return $string;
+  public function __construct( $table_name ) {
+    parent::__construct( $table_name );
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Expression::build()
    */
   public function build( Database $database ) {
-  	$string = '';
-  	if ( isset( $this->table ) ) {
-      $string .= $database->quoteTable( $this->table );
-  	  $string .= '.';
-  	}
-    $string .= $database->quoteName( $this->name );
-  	return $string;
-  }
-
-  /**
-   * Returns the field name.
-   *
-   * @return string the field name.
-   */
-  public function getName() {
-    return $this->name;
+    return $database->quoteTable( $this->name );
   }
 
 }

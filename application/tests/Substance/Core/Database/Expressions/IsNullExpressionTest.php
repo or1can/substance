@@ -40,7 +40,7 @@ class IsNullExpressionTest extends \PHPUnit_Framework_TestCase {
    * @expectedException Substance\Core\Alert\Alert
    */
   public function testConstructIllegalNotArgument() {
-    $left = new ColumnExpression('column1');
+    $left = new ColumnNameExpression('column1');
     // not must be a boolean
     $expr = new IsNullExpression( $left, 5 );
   }
@@ -49,7 +49,7 @@ class IsNullExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test an is null expression.
    */
   public function testBuildIsNull() {
-    $left = new ColumnExpression('column1');
+    $left = new ColumnNameExpression('column1');
     // Test building with the default $not.
     $expr = new IsNullExpression( $left );
     $sql = $expr->build( $this->connection );
@@ -70,7 +70,7 @@ class IsNullExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test an is not null expression.
    */
   public function testBuildIsNotNull() {
-    $left = new ColumnExpression('column1');
+    $left = new ColumnNameExpression('column1');
     // Test building with the constructor.
     $expr = new IsNullExpression( $left, TRUE );
     $sql = $expr->build( $this->connection );
