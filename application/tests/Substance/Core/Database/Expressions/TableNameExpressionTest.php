@@ -36,9 +36,9 @@ class TableNameExpressionTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a table expression with no database.
+   * Test a table expression with no database and no alias.
    */
-  public function testBuildNoDatabase() {
+  public function testBuildNoDatabaseNoAlias() {
     $expression = new TableNameExpression('table');
     $sql = $expression->build( $this->connection );
 
@@ -46,13 +46,71 @@ class TableNameExpressionTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a table expression with a database.
+   * Test a table expression with no database and an alias.
    */
-  public function testBuildWithDatabse() {
+  public function testBuildNoDatabaseWithAlias() {
+    $expression = new TableNameExpression( 'table', 'alias' );
+    $sql = $expression->build( $this->connection );
+
+    $this->assertEquals( '`table` AS `alias`', $sql );
+  }
+
+  /**
+   * Test that constructing a column alias and table alias with the same alias
+   * is allowed.
+   */
+  public function testBuildOneColumnOneTable() {
+    $expression = new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' );
+    $expression = new TableNameExpression( 'table', 'col' );
+    // If we get to this point, the test is passed as otherwise an exception
+    // would be thrown
+  }
+
+  /**
+   * Test a table expression with a database and no alias.
+   */
+  public function testBuildWithDatabseNoAlias() {
     $expression = new TableNameExpression('schema.table');
     $sql = $expression->build( $this->connection );
 
     $this->assertEquals( '`schema`.`table`', $sql );
+  }
+
+  /**
+   * Test a table expression with a database and an alias.
+   */
+  public function testBuildWithDatabseWithAlias() {
+    $expression = new TableNameExpression( 'schema.table', 'alias' );
+    $sql = $expression->build( $this->connection );
+
+    $this->assertEquals( '`schema`.`table` AS `alias`', $sql );
+  }
+
+  /**
+   * Test that constructing multiple table aliases with the same alias is
+   * allowed.
+   */
+  public function testConstructDuplicateTable() {
+    $expression = new TableNameExpression( 'table1', 'alias' );
+    $expression = new TableNameExpression( 'table2', 'alias' );
+    // If we get to this point, the test is passed as otherwise an exception
+    // would be thrown
+  }
+
+  /**
+   * Test that multiple table aliases with the same alias in a single query is
+   * not allowed.
+   *
+   * @expectedException Substance\Core\Alert\Alert
+   */
+  public function testSelectWithDuplicateTableAlias() {
+    $query = Select::select('table');
+    $expression = new TableNameExpression( 'table1', 'tab' );
+    // FIXME - This is wrong as adding a table alias to a select list should
+    // not be allowed.
+    $query->addExpression( $expression );
+    $expression = new TableAliasExpression( new ColumnNameExpression('table2'), 'tab' );
+    $query->addExpression( $expression );
   }
 
 }

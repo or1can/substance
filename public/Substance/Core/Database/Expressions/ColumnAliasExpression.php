@@ -24,17 +24,25 @@ use Substance\Core\Database\Query;
 use Substance\Core\Database\QueryLocation;
 
 /**
- * Represents a table alias in a query, e.g.
+ * Represents a column alias in a query, e.g.
  *
  * e.g. the
  *     table.column1 AS col
  * part of:
  *     SELECT table.column1 AS col FROM table AS tab
  */
-class ColumnAliasExpression extends AbstractAliasExpression {
+class ColumnAliasExpression extends AbstractInfixExpression {
 
   public function __construct( Expression $left, $alias ) {
-    parent::__construct( $left, $alias );
+    // FIXME - We need to distinguish between chainable and non-chainable infix
+    // expressions, as an alias expression cannot be chained, but an AND or OR
+    // expression could be.
+    if ( $left instanceof ColumnAliasExpression ) {
+      // TODO - Would an Illegal argument alert be useful?
+      throw Alert::alert( 'Illegal argument', 'Cannot alias a ColumnAliasExpression' )
+        ->culprit( 'left', $left );
+    }
+    parent::__construct( $left, new NameExpression( $alias ) );
   }
 
   /* (non-PHPdoc)
@@ -48,6 +56,22 @@ class ColumnAliasExpression extends AbstractAliasExpression {
         ->culprit( 'query location', $location )
         ->culprit( 'query', $query );
     }
+  }
+
+  /**
+   * Returns the alias name.
+   *
+   * @return string the alias name.
+   */
+  public function getAlias() {
+    return $this->right->getName();
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\PostfixExpression::getSymbol()
+   */
+  public function getSymbol() {
+    return 'AS';
   }
 
 }

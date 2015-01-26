@@ -62,7 +62,7 @@ class ColumnAliasExpressionTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildOneColumnOneTable() {
     $expression = new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' );
-    $expression = new TableAliasExpression( new ColumnNameExpression('column2'), 'col' );
+    $expression = new TableNameExpression( 'table', 'col' );
     // If we get to this point, the test is passed as otherwise an exception
     // would be thrown
   }

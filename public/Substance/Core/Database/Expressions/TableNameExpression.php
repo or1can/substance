@@ -19,26 +19,94 @@
 namespace Substance\Core\Database\Expressions;
 
 use Substance\Core\Database\Database;
+use Substance\Core\Database\Query;
+use Substance\Core\Database\QueryLocation;
 
 /**
  * A table name expression for use in a SQL query.
+ *
+ * e.g. the
+ *     table AS tab
+ * part of:
+ *     SELECT table.column1 AS col FROM table AS tab
  */
-class TableNameExpression extends NameExpression {
+class TableNameExpression extends AbstractExpression {
+
+  /**
+   * @var string the table alias.
+   */
+  protected $alias;
+
+  /**
+   * @var string the table name.
+   */
+  protected $name;
 
   /**
    * Constructs a new table name expression for the specified table name.
    *
-   * @param string $table_name the table name
+   * @param string $name the table name
+   * @param string $alias the table name alias
    */
-  public function __construct( $table_name ) {
-    parent::__construct( $table_name );
+  public function __construct( $name, $alias = NULL ) {
+    $this->name = $name;
+    $this->alias = $alias;
+  }
+
+  public function __toString() {
+    $string = '';
+    $string .= $this->name;
+    if ( isset( $this->alias ) ) {
+      $string .= ' AS ';
+      $string .= $this->alias;
+    }
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Expression::aboutToAddQuery()
+   */
+  public function aboutToAddQuery( Query $query, QueryLocation $location ) {
+    // FIXME - This is wrong, as a table alias cannot be added to a select
+    // list...
+    if ( $location instanceof SelectListExpression ) {
+      $query->defineTableAlias( $this );
+    } else {
+      throw Alert::alert( 'Invalid location for table alias', 'Table aliases can only be used in [FIXME]' )
+        ->culprit( 'query location', $location )
+        ->culprit( 'query', $query );
+    }
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Expression::build()
    */
   public function build( Database $database ) {
-    return $database->quoteTable( $this->name );
+    $string = '';
+    $string .= $database->quoteTable( $this->name );
+    if ( isset( $this->alias ) ) {
+      $string .= ' AS ';
+      $string .= $database->quoteName( $this->alias );
+    }
+    return $string;
+  }
+
+  /**
+   * Returns the table alias.
+   *
+   * @return string the table alias.
+   */
+  public function getAlias() {
+    return $this->alias;
+  }
+
+  /**
+   * Returns the table name.
+   *
+   * @return string the table name.
+   */
+  public function getName() {
+    return $this->name;
   }
 
 }
