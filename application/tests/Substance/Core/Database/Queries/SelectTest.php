@@ -67,11 +67,19 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals( 'SELECT `column1` FROM `table`', $sql );
 
     // Try a query with an explicitly stated column and alias.
-    $select = Select::select('table');
-    $sql = $select->distinct( FALSE )
+    $sql = Select::select('table')
+      ->distinct( FALSE )
       ->addExpression( new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT `column1` AS `col` FROM `table`', $sql );
+
+    // Try a query with an explicitly stated column and alias from a table with
+    // an alias.
+    $sql = Select::select( 'table', 't' )
+      ->distinct( FALSE )
+      ->addExpression( new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' ) )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT `column1` AS `col` FROM `table` AS `t`', $sql );
   }
 
   /**

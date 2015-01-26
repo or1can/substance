@@ -24,6 +24,7 @@ use Substance\Core\Database\Expressions\AndExpression;
 use Substance\Core\Database\Expressions\CommaExpression;
 use Substance\Core\Database\Expressions\OrderByExpression;
 use Substance\Core\Database\Expressions\SelectListExpression;
+use Substance\Core\Database\Expressions\TableNameExpression;
 use Substance\Core\Database\Query;
 
 /**
@@ -88,10 +89,15 @@ class Select extends Query {
    * Construct a new SELECT query to select data from the specified table.
    *
    * @param string $table the table to select data from.
+   * @param string $alias the alias for the table being selected from
    */
-  public function __construct( $table ) {
+  public function __construct( $table, $alias = NULL ) {
     $this->select_list = new SelectListExpression();
-    $this->table = $table;
+    $table_expr = new TableNameExpression( $table, $alias );
+    // FIXME - This is wrong, as we shouldn't be about to add the table
+    // expression to the select list.
+    $table_expr->aboutToAddQuery( $this, $this->select_list );
+    $this->table = $table_expr;
   }
 
   public function __toString() {
@@ -101,7 +107,7 @@ class Select extends Query {
     }
     $sql .= (string) $this->select_list;
     $sql .= ' FROM ';
-    $sql .= $this->table;
+    $sql .= (string) $this->table;
     if ( !is_null( $this->where ) ) {
       $sql .= ' WHERE ';
       $sql .= (string) $this->where;
@@ -150,7 +156,7 @@ class Select extends Query {
     }
     $sql .= $this->select_list->build( $database );
     $sql .= ' FROM ';
-    $sql .= $database->quoteTable( $this->table );
+    $sql .= $this->table->build( $database );
     if ( !is_null( $this->where ) ) {
       $sql .= ' WHERE ';
       $sql .= $this->where->build( $database );

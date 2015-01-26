@@ -40,22 +40,22 @@ class TableNameExpression extends AbstractExpression {
   /**
    * @var string the table name.
    */
-  protected $name;
+  protected $table;
 
   /**
    * Constructs a new table name expression for the specified table name.
    *
-   * @param string $name the table name
+   * @param string $table the table name
    * @param string $alias the table name alias
    */
-  public function __construct( $name, $alias = NULL ) {
-    $this->name = $name;
+  public function __construct( $table, $alias = NULL ) {
+    $this->table = $table;
     $this->alias = $alias;
   }
 
   public function __toString() {
     $string = '';
-    $string .= $this->name;
+    $string .= $this->table;
     if ( isset( $this->alias ) ) {
       $string .= ' AS ';
       $string .= $this->alias;
@@ -70,7 +70,7 @@ class TableNameExpression extends AbstractExpression {
     // FIXME - This is wrong, as a table alias cannot be added to a select
     // list...
     if ( $location instanceof SelectListExpression ) {
-      $query->defineTableAlias( $this );
+      $query->defineTableName( $this );
     } else {
       throw Alert::alert( 'Invalid location for table alias', 'Table aliases can only be used in [FIXME]' )
         ->culprit( 'query location', $location )
@@ -83,7 +83,7 @@ class TableNameExpression extends AbstractExpression {
    */
   public function build( Database $database ) {
     $string = '';
-    $string .= $database->quoteTable( $this->name );
+    $string .= $database->quoteTable( $this->table );
     if ( isset( $this->alias ) ) {
       $string .= ' AS ';
       $string .= $database->quoteName( $this->alias );
@@ -106,7 +106,7 @@ class TableNameExpression extends AbstractExpression {
    * @return string the table name.
    */
   public function getName() {
-    return $this->name;
+    return $this->table;
   }
 
 }

@@ -20,18 +20,19 @@ namespace Substance\Core\Database;
 
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Queries\Select;
-use Substance\Core\Database\Expressions\AbstractAliasExpression;
 use Substance\Core\Database\Expressions\ColumnAliasExpression;
-use Substance\Core\Database\Expressions\TableAliasExpression;
+use Substance\Core\Database\Expressions\TableNameExpression;
 
 /**
  * Represents a database query.
  */
 abstract class Query {
 
-  protected $alias_column = array();
+  protected $aliases_column = array();
 
-  protected $alias_table = array();
+  protected $aliases_table = array();
+
+  protected $tables = array();
 
   /**
    * Builds this query for the specified database connection.
@@ -53,22 +54,34 @@ abstract class Query {
       throw Alert::alert( 'Duplicate column alias', 'You can only define a column alias once in a query' )
         ->culprit( 'column alias', $expression->getAlias() );
     } else {
-      $this->alias_column[ $expression->getAlias() ] = $expression;
+      $this->aliases_column[ $expression->getAlias() ] = $expression;
     }
   }
 
   /**
-   * Defines the specifed table alias for this query.
+   * Defines the specifed table name for this query.
    *
-   * @param TableAliasExpression $expression the new table alias.
+   * @param TableNameExpression $expression the new table name.
    */
-  public function defineTableAlias( TableAliasExpression $expression ) {
-    if ( $this->hasTableAlias( $expression->getAlias() ) ) {
-      // TODO - Would an Illegal argument alert be useful?
-      throw Alert::alert( 'Duplicate table alias', 'You can only define a table alias once in a query' )
-        ->culprit( 'table alias', $expression->getAlias() );
+  public function defineTableName( TableNameExpression $expression ) {
+    if ( is_null( $expression->getAlias() ) ) {
+      // Table has no alias, so check we don't have the table name twice.
+        if ( $this->hasTable( $expression->getName() ) ) {
+        // TODO - Would an Illegal argument alert be useful?
+        throw Alert::alert( 'Duplicate table', 'You can only define a table once in a query' )
+          ->culprit( 'table name', $expression->getName() );
+      } else {
+        $this->tables[ $expression->getName() ] = $expression;
+      }
     } else {
-      $this->alias_table[ $expression->getAlias() ] = $expression;
+      // Table has an alias, so check we don't have the alias twice.
+      if ( $this->hasTableAlias( $expression->getAlias() ) ) {
+        // TODO - Would an Illegal argument alert be useful?
+        throw Alert::alert( 'Duplicate table alias', 'You can only define a table alias once in a query' )
+          ->culprit( 'table alias', $expression->getAlias() );
+      } else {
+        $this->aliases_table[ $expression->getAlias() ] = $expression;
+      }
     }
   }
 
@@ -79,7 +92,7 @@ abstract class Query {
    * @return boolean TRUE if the alias already exists and FALSE otherwise.
    */
   public function hasColumnAlias( $alias ) {
-    return array_key_exists( $alias, $this->alias_column );
+    return array_key_exists( $alias, $this->aliases_column );
   }
 
   /**
@@ -89,16 +102,28 @@ abstract class Query {
    * @return boolean TRUE if the alias already exists and FALSE otherwise.
    */
   public function hasTableAlias( $alias ) {
-    return array_key_exists( $alias, $this->alias_table );
+    return array_key_exists( $alias, $this->aliases_table );
+  }
+
+  /**
+   * Checks if the specified table has been defined for this query.
+   *
+   * @param string $alias the table to check.
+   * @return boolean TRUE if the table already exists and FALSE otherwise.
+   */
+  public function hasTable( $table ) {
+    return array_key_exists( $table, $this->tables );
   }
 
   /**
    * Creates a new SELECT query to select data from the specified table.
    *
+   * @param string $table the table to select data from
+   * @param string $alias the alias for the table being selected from
    * @return \Substance\Core\Database\Queries\Select
    */
-  public static function select( $table ) {
-    return new Select( $table );
+  public static function select( $table, $alias = NULL ) {
+    return new Select( $table, $alias );
   }
 
 }
