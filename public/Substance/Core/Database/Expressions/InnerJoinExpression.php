@@ -22,6 +22,7 @@ use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Expression;
 use Substance\Core\Database\Query;
 use Substance\Core\Database\QueryLocation;
+use Substance\Core\Database\TableReference;
 
 /**
  * Represents an inner join in a query, e.g.
@@ -31,7 +32,7 @@ use Substance\Core\Database\QueryLocation;
  * part of:
  *     SELECT * FROM table INNER JOIN table2 USING ( column1 )
  */
-class InnerJoinExpression extends AbstractInfixExpression {
+class InnerJoinExpression extends AbstractInfixExpression implements TableReference {
 
   /**
    * Construct a new inner join expression, to join the two specified tables

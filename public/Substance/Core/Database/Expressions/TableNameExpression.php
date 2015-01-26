@@ -21,6 +21,7 @@ namespace Substance\Core\Database\Expressions;
 use Substance\Core\Database\Database;
 use Substance\Core\Database\Query;
 use Substance\Core\Database\QueryLocation;
+use Substance\Core\Database\TableReference;
 
 /**
  * A table name expression for use in a SQL query.
@@ -30,7 +31,7 @@ use Substance\Core\Database\QueryLocation;
  * part of:
  *     SELECT table.column1 AS col FROM table AS tab
  */
-class TableNameExpression extends AbstractExpression {
+class TableNameExpression extends AbstractExpression implements TableReference {
 
   /**
    * @var string the table alias.

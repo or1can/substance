@@ -26,6 +26,7 @@ use Substance\Core\Database\Expressions\OrderByExpression;
 use Substance\Core\Database\Expressions\SelectListExpression;
 use Substance\Core\Database\Expressions\TableNameExpression;
 use Substance\Core\Database\Query;
+use Substance\Core\Database\TableReference;
 
 /**
  * Represents a SELECT database query.
@@ -74,9 +75,7 @@ class Select extends Query {
   protected $select_list;
 
   /**
-   * The table we are selecting data from.
-   *
-   * @var string
+   * @var TableReference The source we are selecting data from
    */
   protected $table;
 
