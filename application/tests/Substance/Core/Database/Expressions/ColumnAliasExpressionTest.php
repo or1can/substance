@@ -39,8 +39,7 @@ class ColumnAliasExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test a column alias for a simple column expression.
    */
   public function testBuildOnColumn() {
-    $query = Select::select('table');
-    $expression = new ColumnAliasExpression( $query, new ColumnNameExpression('column'), 'col' );
+    $expression = new ColumnAliasExpression( new ColumnNameExpression('column'), 'col' );
     $sql = $expression->build( $this->connection );
 
     $this->assertEquals( '`column` AS `col`', $sql );
@@ -50,9 +49,8 @@ class ColumnAliasExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test a column alias for an infix expression.
    */
   public function testBuildOnInfixExpression() {
-    $query = Select::select('table');
     $infix = new AndExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') );
-    $expression = new ColumnAliasExpression( $query, $infix, 'col' );
+    $expression = new ColumnAliasExpression( $infix, 'col' );
     $sql = $expression->build( $this->connection );
 
     $this->assertEquals( '`column1` AND `column2` AS `col`', $sql );
@@ -63,9 +61,8 @@ class ColumnAliasExpressionTest extends \PHPUnit_Framework_TestCase {
    * is allowed.
    */
   public function testBuildOneColumnOneTable() {
-    $query = Select::select('table');
-    $expression = new ColumnAliasExpression( $query, new ColumnNameExpression('column1'), 'col' );
-    $expression = new TableAliasExpression( $query, new ColumnNameExpression('column2'), 'col' );
+    $expression = new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' );
+    $expression = new TableAliasExpression( new ColumnNameExpression('column2'), 'col' );
     // If we get to this point, the test is passed as otherwise an exception
     // would be thrown
   }
@@ -75,9 +72,8 @@ class ColumnAliasExpressionTest extends \PHPUnit_Framework_TestCase {
    * allowed.
    */
   public function testConstructDuplicateColumn() {
-    $query = Select::select('table');
-    $expression = new ColumnAliasExpression( $query, new ColumnNameExpression('column1'), 'col' );
-    $expression = new ColumnAliasExpression( $query, new ColumnNameExpression('column2'), 'col' );
+    $expression = new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' );
+    $expression = new ColumnAliasExpression( new ColumnNameExpression('column2'), 'col' );
     // If we get to this point, the test is passed as otherwise an exception
     // would be thrown
   }
@@ -90,9 +86,9 @@ class ColumnAliasExpressionTest extends \PHPUnit_Framework_TestCase {
    */
   public function testSelectWithDuplicateColumnAlias() {
     $query = Select::select('table');
-    $expression = new ColumnAliasExpression( $query, new ColumnNameExpression('column1'), 'col' );
+    $expression = new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' );
     $query->addExpression( $expression );
-    $expression = new ColumnAliasExpression( $query, new ColumnNameExpression('column2'), 'col' );
+    $expression = new ColumnAliasExpression( new ColumnNameExpression('column2'), 'col' );
     $query->addExpression( $expression );
   }
 

@@ -69,7 +69,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try a query with an explicitly stated column and alias.
     $select = Select::select('table');
     $sql = $select->distinct( FALSE )
-      ->addExpression( new ColumnAliasExpression( $select, new ColumnNameExpression('column1'), 'col' ) )
+      ->addExpression( new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT `column1` AS `col` FROM `table`', $sql );
   }

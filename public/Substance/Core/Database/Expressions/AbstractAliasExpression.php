@@ -20,7 +20,6 @@ namespace Substance\Core\Database\Expressions;
 
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Expression;
-use Substance\Core\Database\Query;
 
 /**
  * Represents an alias in a query, e.g.
@@ -32,7 +31,7 @@ use Substance\Core\Database\Query;
  */
 abstract class AbstractAliasExpression extends AbstractInfixExpression {
 
-  public function __construct( Query $query, Expression $left, $alias ) {
+  public function __construct( Expression $left, $alias ) {
     // FIXME - We need to distinguish between chainable and non-chainable infix
     // expressions, as an alias expression cannot be chained, but an AND or OR
     // expression could be.

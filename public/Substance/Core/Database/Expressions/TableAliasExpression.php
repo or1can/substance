@@ -33,8 +33,8 @@ use Substance\Core\Database\QueryLocation;
  */
 class TableAliasExpression extends AbstractAliasExpression {
 
-  public function __construct( Query $query, Expression $left, $alias ) {
-    parent::__construct( $query, $left, $alias );
+  public function __construct( Expression $left, $alias ) {
+    parent::__construct( $left, $alias );
   }
 
   /* (non-PHPdoc)
