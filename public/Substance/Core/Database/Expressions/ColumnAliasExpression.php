@@ -68,7 +68,7 @@ class ColumnAliasExpression extends AbstractInfixExpression {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\PostfixExpression::getSymbol()
+   * @see \Substance\Core\Database\InfixExpression::getSymbol()
    */
   public function getSymbol() {
     return 'AS';
