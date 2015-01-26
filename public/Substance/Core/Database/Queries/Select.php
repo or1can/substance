@@ -93,11 +93,10 @@ class Select extends Query {
    */
   public function __construct( $table, $alias = NULL ) {
     $this->select_list = new SelectListExpression();
-    $table_expr = new TableNameExpression( $table, $alias );
-    // FIXME - This is wrong, as we shouldn't be about to add the table
-    // expression to the select list.
-    $table_expr->aboutToAddQuery( $this, $this->select_list );
-    $this->table = $table_expr;
+    $this->table = new TableNameExpression( $table, $alias );
+    // Manually define this table in the query, so other joins do not clash with
+    // it.
+    $this->defineTableName( $this->table );
   }
 
   public function __toString() {
