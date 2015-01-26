@@ -22,7 +22,6 @@ use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Queries\Select;
 use Substance\Core\Database\Expressions\AbstractAliasExpression;
 use Substance\Core\Database\Expressions\ColumnAliasExpression;
-use Substance\Core\Database\Expressions\NameExpression;
 use Substance\Core\Database\Expressions\TableAliasExpression;
 
 /**
