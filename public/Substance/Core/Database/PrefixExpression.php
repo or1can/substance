@@ -30,4 +30,11 @@ interface PrefixExpression extends Expression {
    */
   public function getRightExpression();
 
+  /**
+   * Returns the symbol for this expression.
+   *
+   * @return string this expressions symbol.
+   */
+  public function getSymbol();
+
 }
