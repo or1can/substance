@@ -58,6 +58,16 @@ class UsingTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Test the static builder with no columns.
+   *
+   * @expectedException Substance\Core\Alert\Alert
+   */
+  public function testStaticConstructWithNoColumns() {
+    // Test a using condition with no columns.
+    $expr = Using::using();
+  }
+
+  /**
    * Test the static builder with one column.
    */
   public function testStaticConstructWithOneColumn() {
