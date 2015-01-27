@@ -66,7 +66,7 @@ class LiteralExpression extends AbstractExpression {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Expression::build()
+   * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
   	$string = '';

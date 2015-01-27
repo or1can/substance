@@ -21,10 +21,10 @@ namespace Substance\Core\Database\SQL;
 use Substance\Core\Alert\Alert;
 
 /**
- * Marker iterface for table references.
+ * Represents table references in queries.
  *
  * Table references are used in the FROM clause and associated JOINS.
  */
-interface TableReference {
+interface TableReference extends Component {
 
 }

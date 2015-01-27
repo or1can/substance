@@ -20,6 +20,7 @@ namespace Substance\Core\Database\SQL\Expressions;
 
 use Substance\Core\Database\SQL\Expressions\AllColumnsExpression;
 use Substance\Core\Database\SQL\Queries\Select;
+use Substance\Core\Database\SQL\TableReferences\TableName;
 use Substance\Core\Database\TestDatabase;
 
 /**
@@ -50,7 +51,7 @@ class ColumnNameExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test a column expression with no alias and with a table.
    */
   public function testBuildNoAliasWithTable() {
-    $expression = new ColumnNameExpression( 'column', new TableNameExpression('table') );
+    $expression = new ColumnNameExpression( 'column', new TableName('table') );
     $sql = $expression->build( $this->connection );
 
     $this->assertEquals( '`table`.`column`', $sql );

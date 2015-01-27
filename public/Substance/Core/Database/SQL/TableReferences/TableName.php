@@ -16,22 +16,20 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\SQL\Expressions;
+namespace Substance\Core\Database\SQL\TableReferences;
 
 use Substance\Core\Database\Database;
-use Substance\Core\Database\SQL\Query;
-use Substance\Core\Database\SQL\QueryLocation;
 use Substance\Core\Database\SQL\TableReference;
 
 /**
- * A table name expression for use in a SQL query.
+ * Represents a simple table name reference in a query, e.g.
  *
  * e.g. the
  *     table AS tab
  * part of:
  *     SELECT table.column1 AS col FROM table AS tab
  */
-class TableNameExpression extends AbstractExpression implements TableReference {
+class TableName extends AbstractTableReference {
 
   /**
    * @var string the table alias.
@@ -65,16 +63,7 @@ class TableNameExpression extends AbstractExpression implements TableReference {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Expression::aboutToAddQuery()
-   */
-  public function aboutToAddQuery( Query $query, QueryLocation $location ) {
-    // A table name expression can only be used in a FROM or JOIN clause, so we
-    // simply need to define the table in the query.
-    $query->defineTableName( $this );
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Expression::build()
+   * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
     $string = '';

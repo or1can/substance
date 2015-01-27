@@ -67,7 +67,7 @@ class SelectListExpression extends AbstractExpression implements QueryLocation {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Expression::build()
+   * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
     $string = '';

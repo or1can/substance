@@ -16,15 +16,17 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\SQL\Expressions;
+namespace Substance\Core\Database\SQL\TableReferences;
 
+use Substance\Core\Database\SQL\Expressions\ColumnAliasExpression;
+use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Database\TestDatabase;
 
 /**
- * Tests the table name expression.
+ * Tests the table name table reference.
  */
-class TableNameExpressionTest extends \PHPUnit_Framework_TestCase {
+class TableNameTest extends \PHPUnit_Framework_TestCase {
 
   protected $connection;
 
@@ -39,7 +41,7 @@ class TableNameExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test a table expression with no database and no alias.
    */
   public function testBuildNoDatabaseNoAlias() {
-    $expression = new TableNameExpression('table');
+    $expression = new TableName('table');
     $sql = $expression->build( $this->connection );
 
     $this->assertEquals( '`table`', $sql );
@@ -49,7 +51,7 @@ class TableNameExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test a table expression with no database and an alias.
    */
   public function testBuildNoDatabaseWithAlias() {
-    $expression = new TableNameExpression( 'table', 'alias' );
+    $expression = new TableName( 'table', 'alias' );
     $sql = $expression->build( $this->connection );
 
     $this->assertEquals( '`table` AS `alias`', $sql );
@@ -61,7 +63,7 @@ class TableNameExpressionTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildOneColumnOneTable() {
     $expression = new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' );
-    $expression = new TableNameExpression( 'table', 'col' );
+    $expression = new TableName( 'table', 'col' );
     // If we get to this point, the test is passed as otherwise an exception
     // would be thrown
   }
@@ -70,7 +72,7 @@ class TableNameExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test a table expression with a database and no alias.
    */
   public function testBuildWithDatabseNoAlias() {
-    $expression = new TableNameExpression('schema.table');
+    $expression = new TableName('schema.table');
     $sql = $expression->build( $this->connection );
 
     $this->assertEquals( '`schema`.`table`', $sql );
@@ -80,7 +82,7 @@ class TableNameExpressionTest extends \PHPUnit_Framework_TestCase {
    * Test a table expression with a database and an alias.
    */
   public function testBuildWithDatabseWithAlias() {
-    $expression = new TableNameExpression( 'schema.table', 'alias' );
+    $expression = new TableName( 'schema.table', 'alias' );
     $sql = $expression->build( $this->connection );
 
     $this->assertEquals( '`schema`.`table` AS `alias`', $sql );
@@ -91,8 +93,8 @@ class TableNameExpressionTest extends \PHPUnit_Framework_TestCase {
    * allowed.
    */
   public function testConstructDuplicateTable() {
-    $expression = new TableNameExpression( 'table1', 'alias' );
-    $expression = new TableNameExpression( 'table2', 'alias' );
+    $expression = new TableName( 'table1', 'alias' );
+    $expression = new TableName( 'table2', 'alias' );
     // If we get to this point, the test is passed as otherwise an exception
     // would be thrown
   }
@@ -105,11 +107,11 @@ class TableNameExpressionTest extends \PHPUnit_Framework_TestCase {
    */
   public function testSelectWithDuplicateTableAlias() {
     $query = Select::select('table');
-    $expression = new TableNameExpression( 'table1', 'tab' );
+    $expression = new TableName( 'table1', 'tab' );
     // FIXME - This is wrong as adding a table alias to a select list should
     // not be allowed.
     $query->addExpression( $expression );
-    $expression = new TableNameExpression( 'table2', 'tab' );
+    $expression = new TableName( 'table2', 'tab' );
     $query->addExpression( $expression );
   }
 

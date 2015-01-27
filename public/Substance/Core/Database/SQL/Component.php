@@ -16,42 +16,21 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\SQL\Expressions;
+namespace Substance\Core\Database\SQL;
 
 use Substance\Core\Database\Database;
 
 /**
- * A name expression for use in a SQL query.
+ * Represents a component part of an SQL query.
  */
-class NameExpression extends AbstractExpression {
+interface Component {
 
   /**
-   * @var string the name.
-   */
-  protected $name;
-
-  public function __construct( $name ) {
-    $this->name = $name;
-  }
-
-  public function __toString() {
-    return $this->name;
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Component::build()
-   */
-  public function build( Database $database ) {
-    return $database->quoteName( $this->name );
-  }
-
-  /**
-   * Returns the name.
+   * Builds this component for inclusion in a query on the given database.
    *
-   * @return string the name.
+   * @param Database $database the database to build the component for
+   * @return string the built component as a string.
    */
-  public function getName() {
-    return $this->name;
-  }
+  public function build( Database $database );
 
 }

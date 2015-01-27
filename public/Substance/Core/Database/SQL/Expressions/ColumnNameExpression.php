@@ -19,6 +19,7 @@
 namespace Substance\Core\Database\SQL\Expressions;
 
 use Substance\Core\Database\Database;
+use Substance\Core\Database\SQL\TableReferences\TableName;
 
 /**
  * A column name expression for use in a SQL query.
@@ -26,7 +27,7 @@ use Substance\Core\Database\Database;
 class ColumnNameExpression extends NameExpression {
 
   /**
-   * @var TableNameExpression the table name.
+   * @var TableName the table name.
    */
   protected $table_name;
 
@@ -35,9 +36,9 @@ class ColumnNameExpression extends NameExpression {
    * optionally specified table name.
    *
    * @param string $name the column name
-   * @param TableNameExpression $table_name the table name
+   * @param TableName $table_name the table name
    */
-  public function __construct( $name, TableNameExpression $table_name = NULL ) {
+  public function __construct( $name, TableName $table_name = NULL ) {
     parent::__construct( $name );
     $this->table_name = $table_name;
   }
@@ -53,7 +54,7 @@ class ColumnNameExpression extends NameExpression {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Expression::build()
+   * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
   	$string = '';

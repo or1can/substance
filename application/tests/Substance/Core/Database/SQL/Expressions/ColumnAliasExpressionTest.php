@@ -19,6 +19,7 @@
 namespace Substance\Core\Database\SQL\Expressions;
 
 use Substance\Core\Database\SQL\Queries\Select;
+use Substance\Core\Database\SQL\TableReferences\TableName;
 use Substance\Core\Database\TestDatabase;
 
 /**
@@ -62,7 +63,7 @@ class ColumnAliasExpressionTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildOneColumnOneTable() {
     $expression = new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' );
-    $expression = new TableNameExpression( 'table', 'col' );
+    $expression = new TableName( 'table', 'col' );
     // If we get to this point, the test is passed as otherwise an exception
     // would be thrown
   }

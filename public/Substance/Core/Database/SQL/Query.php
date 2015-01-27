@@ -21,8 +21,8 @@ namespace Substance\Core\Database\SQL;
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\Expressions\ColumnAliasExpression;
-use Substance\Core\Database\SQL\Expressions\TableNameExpression;
 use Substance\Core\Database\SQL\Queries\Select;
+use Substance\Core\Database\SQL\TableReferences\TableName;
 
 /**
  * Represents a database query.
@@ -64,24 +64,24 @@ abstract class Query {
    *
    * @param TableNameExpression $expression the new table name.
    */
-  public function defineTableName( TableNameExpression $expression ) {
-    if ( is_null( $expression->getAlias() ) ) {
+  public function defineTableName( TableName $table_name ) {
+    if ( is_null( $table_name->getAlias() ) ) {
       // Table has no alias, so check we don't have the table name twice.
-        if ( $this->hasTable( $expression->getName() ) ) {
+      if ( $this->hasTable( $table_name->getName() ) ) {
         // TODO - Would an Illegal argument alert be useful?
         throw Alert::alert( 'Duplicate table', 'You can only define a table once in a query' )
-          ->culprit( 'table name', $expression->getName() );
+          ->culprit( 'table name', $table_name->getName() );
       } else {
-        $this->tables[ $expression->getName() ] = $expression;
+        $this->tables[ $table_name->getName() ] = $table_name;
       }
     } else {
       // Table has an alias, so check we don't have the alias twice.
-      if ( $this->hasTableAlias( $expression->getAlias() ) ) {
+      if ( $this->hasTableAlias( $table_name->getAlias() ) ) {
         // TODO - Would an Illegal argument alert be useful?
         throw Alert::alert( 'Duplicate table alias', 'You can only define a table alias once in a query' )
-          ->culprit( 'table alias', $expression->getAlias() );
+          ->culprit( 'table alias', $table_name->getAlias() );
       } else {
-        $this->aliases_table[ $expression->getAlias() ] = $expression;
+        $this->aliases_table[ $table_name->getAlias() ] = $table_name;
       }
     }
   }
@@ -124,7 +124,7 @@ abstract class Query {
    * @return \Substance\Core\Database\SQL\Queries\Select
    */
   public static function select( $table, $alias = NULL ) {
-    return new Select( new TableNameExpression( $table, $alias ) );
+    return new Select( new TableName( $table, $alias ) );
   }
 
 }

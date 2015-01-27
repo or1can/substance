@@ -23,7 +23,7 @@ use Substance\Core\Database\Database;
 /**
  * Represents an expression in a SQL query.
  */
-interface Expression {
+interface Expression extends Component {
 
   /**
    * Should be called before this expression is added to a query at the
@@ -33,14 +33,5 @@ interface Expression {
    * @param QueryLocation $location the location within the query
    */
   public function aboutToAddQuery( Query $query, QueryLocation $location );
-
-  /**
-   * Builds this expression for the given database connection.
-   *
-   * @param Database $database the database connection to build the expression
-   * for
-   * @return string the built expression as a string.
-   */
-  public function build( Database $database );
 
 }

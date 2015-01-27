@@ -45,7 +45,7 @@ abstract class AbstractPostfixExpression extends AbstractExpression implements P
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Expression::build()
+   * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
     $string = '';

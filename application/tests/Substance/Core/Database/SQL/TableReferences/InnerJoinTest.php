@@ -16,15 +16,15 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\SQL\Expressions;
+namespace Substance\Core\Database\SQL\TableReferences;
 
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Database\TestDatabase;
 
 /**
- * Tests the inner join expression.
+ * Tests the inner join table reference.
  */
-class InnerJoinExpressionTest extends \PHPUnit_Framework_TestCase {
+class InnerJoinTest extends \PHPUnit_Framework_TestCase {
 
   protected $connection;
 
@@ -36,23 +36,24 @@ class InnerJoinExpressionTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test a table alias for a tables with no aliases.
+   * Test an inner join on two tables with no aliases.
    */
-  public function testBuildNoAlias() {
-    $expr = new InnerJoinExpression( new TableNameExpression('table1'), new TableNameExpression('table2') );
+  public function testBuild() {
+    // Test a join with two simple table names with no aliases.
+    $expr = new InnerJoin( new TableName('table1'), new TableName('table2') );
     $sql = $expr->build( $this->connection );
-
     $this->assertEquals( '`table1` INNER JOIN `table2`', $sql );
-  }
 
-  /**
-   * Test a table alias for a tables with aliases.
-   */
-  public function testBuildWithAlias() {
-    $expr = new InnerJoinExpression( new TableNameExpression( 'table1', 't1' ), new TableNameExpression( 'table2', 't2' ) );
+    // Test a join with two simple table names with aliases.
+    $expr = new InnerJoin( new TableName( 'table1', 't1' ), new TableName( 'table2', 't2' ) );
     $sql = $expr->build( $this->connection );
-
     $this->assertEquals( '`table1` AS `t1` INNER JOIN `table2` AS `t2`', $sql );
+
+    // Test a join with one simple table names with no alias an inner join.
+    $expr = new InnerJoin( new TableName( 'table1', 't1' ), new TableName( 'table2', 't2' ) );
+    $expr = new InnerJoin( $expr, new TableName( 'table3', 't3' ) );
+    $sql = $expr->build( $this->connection );
+    $this->assertEquals( '`table1` AS `t1` INNER JOIN `table2` AS `t2` INNER JOIN `table3` AS `t3`', $sql );
   }
 
 }
