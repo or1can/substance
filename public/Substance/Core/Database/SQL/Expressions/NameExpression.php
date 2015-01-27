@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 /* Substance - Content Management System and application framework.
  * Copyright (C) 2014 - 2015 Kevin Rogers
@@ -17,37 +16,42 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Substance Front Controller.
- */
+namespace Substance\Core\Database\SQL\Expressions;
 
-// Report all errors.
-error_reporting(E_ALL | E_STRICT);
-
-require dirname( __DIR__ ) . '/vendor/autoload.php';
-
-use Substance\Core\Alert\Alert;
-use Substance\Core\Bootstrap;
 use Substance\Core\Database\Database;
-use Substance\Core\Database\SQL\Expressions\AllColumnsExpression;
-use Substance\Core\Database\SQL\Queries\Select;
-use Substance\Core\Environment\Environment;
-use Substance\Core\Module;
 
-// Bootstap the system.
-Bootstrap::initialise();
+/**
+ * A name expression for use in a SQL query.
+ */
+class NameExpression extends AbstractExpression {
 
-var_dump( Module::findModules() );
+  /**
+   * @var string the name.
+   */
+  protected $name;
 
-$alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
+  public function __construct( $name ) {
+    $this->name = $name;
+  }
 
-echo $alert;
+  public function __toString() {
+    return $this->name;
+  }
 
-$connection = Database::getConnection( '*', 'master' );
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Expression::build()
+   */
+  public function build( Database $database ) {
+    return $database->quoteName( $this->name );
+  }
 
-var_dump( $connection->listTables() );
+  /**
+   * Returns the name.
+   *
+   * @return string the name.
+   */
+  public function getName() {
+    return $this->name;
+  }
 
-var_dump( $connection->listDatabases() );
-
-
-throw $alert;
+}

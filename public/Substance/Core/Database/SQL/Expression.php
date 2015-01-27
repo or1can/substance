@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 /* Substance - Content Management System and application framework.
  * Copyright (C) 2014 - 2015 Kevin Rogers
@@ -17,37 +16,31 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Substance Front Controller.
- */
+namespace Substance\Core\Database\SQL;
 
-// Report all errors.
-error_reporting(E_ALL | E_STRICT);
-
-require dirname( __DIR__ ) . '/vendor/autoload.php';
-
-use Substance\Core\Alert\Alert;
-use Substance\Core\Bootstrap;
 use Substance\Core\Database\Database;
-use Substance\Core\Database\SQL\Expressions\AllColumnsExpression;
-use Substance\Core\Database\SQL\Queries\Select;
-use Substance\Core\Environment\Environment;
-use Substance\Core\Module;
 
-// Bootstap the system.
-Bootstrap::initialise();
+/**
+ * Represents an expression in a SQL query.
+ */
+interface Expression {
 
-var_dump( Module::findModules() );
+  /**
+   * Should be called before this expression is added to a query at the
+   * specified location.
+   *
+   * @param Query $query the query this expression is about to be added to
+   * @param QueryLocation $location the location within the query
+   */
+  public function aboutToAddQuery( Query $query, QueryLocation $location );
 
-$alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
+  /**
+   * Builds this expression for the given database connection.
+   *
+   * @param Database $database the database connection to build the expression
+   * for
+   * @return string the built expression as a string.
+   */
+  public function build( Database $database );
 
-echo $alert;
-
-$connection = Database::getConnection( '*', 'master' );
-
-var_dump( $connection->listTables() );
-
-var_dump( $connection->listDatabases() );
-
-
-throw $alert;
+}

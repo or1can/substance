@@ -19,11 +19,11 @@
 namespace Substance\Core\Database\Drivers\MySQL;
 
 use Substance\Core\Database\Database;
-use Substance\Core\Database\Expressions\AllColumnsExpression;
-use Substance\Core\Database\Expressions\ColumnNameExpression;
-use Substance\Core\Database\Expressions\EqualsExpression;
-use Substance\Core\Database\Expressions\LiteralExpression;
-use Substance\Core\Database\Queries\Select;
+use Substance\Core\Database\SQL\Expressions\AllColumnsExpression;
+use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
+use Substance\Core\Database\SQL\Expressions\EqualsExpression;
+use Substance\Core\Database\SQL\Expressions\LiteralExpression;
+use Substance\Core\Database\SQL\Queries\Select;
 
 /**
  * Represents a database connection in Substance, which is an extension of the
