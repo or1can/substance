@@ -76,6 +76,15 @@ class InnerJoin extends AbstractTableReference {
     return $string;
   }
 
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\TableReference::define()
+   */
+  public function define( Query $query ) {
+    // We must define the table reference on the left and on the right.
+    $this->left->define( $query );
+    $this->right->define( $query );
+  }
+
   /**
    * Returns the left hand side table reference.
    *

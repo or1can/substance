@@ -19,6 +19,7 @@
 namespace Substance\Core\Database\SQL\TableReferences;
 
 use Substance\Core\Database\Database;
+use Substance\Core\Database\SQL\Query;
 use Substance\Core\Database\SQL\TableReference;
 
 /**
@@ -73,6 +74,13 @@ class TableName extends AbstractTableReference {
       $string .= $database->quoteName( $this->alias );
     }
     return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\TableReference::define()
+   */
+  public function define( Query $query ) {
+    $query->defineTableName( $this );
   }
 
   /**

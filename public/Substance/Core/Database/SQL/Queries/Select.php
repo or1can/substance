@@ -94,7 +94,7 @@ class Select extends Query {
     $this->table = $table;
     // Manually define this table in the query, so other joins do not clash with
     // it.
-    $this->defineTableName( $this->table );
+    $this->table->define( $this );
   }
 
   public function __toString() {
