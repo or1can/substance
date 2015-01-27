@@ -8,6 +8,7 @@ TODO
       methods, as this is irritating. Should be able to find alias for a given
       column, table or join on a specific query dynamically.
     * Joins (Inner, Left, Right) [HIGH]
+    * Join conditions [HIGH]
     * Alterations [HIGH]
     * Extensions [HIGH]
     * Use prepared statements for static and dynamic data [HIGH]
