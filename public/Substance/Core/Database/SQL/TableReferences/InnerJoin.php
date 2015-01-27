@@ -36,6 +36,11 @@ use Substance\Core\Database\SQL\TableReference;
 class InnerJoin extends AbstractTableReference {
 
   /**
+   * @var JoinCondition the join condition.
+   */
+  protected $condition;
+
+  /**
    * @var TableReference the left hand side table reference
    */
   protected $left;
@@ -52,16 +57,21 @@ class InnerJoin extends AbstractTableReference {
    * @param TableReference $left the left table reference
    * @param TableReference $right the right table reference
    */
-  public function __construct( TableReference $left, TableReference $right ) {
+  public function __construct( TableReference $left, TableReference $right, JoinCondition $condition = NULL ) {
     $this->left = $left;
     $this->right = $right;
+    $this->condition = $condition;
   }
 
   public function __toString() {
     $string = '';
-    $string .= $this->left;
+    $string .= (string) $this->left;
     $string .= ' INNER JOIN ';
-    $string .= $this->right;
+    $string .= (string) $this->right;
+    if ( isset( $this->condition ) ) {
+      $string .= ' ';
+      $string .= (string) $this->condition;
+    }
     return $string;
   }
 
@@ -73,6 +83,10 @@ class InnerJoin extends AbstractTableReference {
     $string .= $this->left->build( $database );
     $string .= ' INNER JOIN ';
     $string .= $this->right->build( $database );
+    if ( isset( $this->condition ) ) {
+      $string .= ' ';
+      $string .= $this->condition->build( $database );
+    }
     return $string;
   }
 

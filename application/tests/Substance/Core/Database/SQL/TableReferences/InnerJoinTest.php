@@ -19,7 +19,11 @@
 namespace Substance\Core\Database\SQL\TableReferences;
 
 use Substance\Core\Database\SQL\Expressions\AllColumnsExpression;
+use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
+use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Queries\Select;
+use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
+use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
 use Substance\Core\Database\TestDatabase;
 
 /**
@@ -37,9 +41,9 @@ class InnerJoinTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test an inner join on two tables with no aliases.
+   * Test an inner join on two tables with no condition.
    */
-  public function testBuild() {
+  public function testBuildJoinNoCondition() {
     // Test a join with two simple table names with no aliases.
     $expr = new InnerJoin( new TableName('table1'), new TableName('table2') );
     $sql = $expr->build( $this->connection );
@@ -58,9 +62,55 @@ class InnerJoinTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test an inner join in a select query.
+   * Test an inner join on two tables with no condition.
    */
-  public function testBuildOnSelect() {
+  public function testBuildJoinOn() {
+    // Test a join with two simple table names with no aliases.
+    $expr = new InnerJoin(
+      new TableName('table1'),
+      new TableName('table2'),
+      new On( new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
+    );
+    $sql = $expr->build( $this->connection );
+    $this->assertEquals( '`table1` INNER JOIN `table2` ON `column1` = `column2`', $sql );
+
+    // Test a join with two simple table names with no aliases.
+    $expr = new InnerJoin(
+      new TableName( 'table1', 't1' ),
+      new TableName( 'table2', 't2' ),
+      new On( new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
+    );
+    $sql = $expr->build( $this->connection );
+    $this->assertEquals( '`table1` AS `t1` INNER JOIN `table2` AS `t2` ON `column1` = `column2`', $sql );
+  }
+
+  /**
+   * Test an inner join on two tables with no condition.
+   */
+  public function testBuildJoinUsing() {
+    // Test a join with a USING condition with a single column.
+    $expr = new InnerJoin(
+      new TableName('table1'),
+      new TableName('table2'),
+      new Using( new ColumnNameExpression('column1') )
+    );
+    $sql = $expr->build( $this->connection );
+    $this->assertEquals( '`table1` INNER JOIN `table2` USING ( `column1` )', $sql );
+
+    // Test a join with a USING condition with two single column.
+    $expr = new InnerJoin(
+      new TableName( 'table1', 't1' ),
+      new TableName( 'table2', 't2' ),
+      Using::using( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
+    );
+    $sql = $expr->build( $this->connection );
+    $this->assertEquals( '`table1` AS `t1` INNER JOIN `table2` AS `t2` USING ( `column1`, `column2` )', $sql );
+  }
+
+  /**
+   * Test an inner join in a select query with no condition.
+   */
+  public function testBuildOnSelectNoCondition() {
     // Test a join with no aliases.
     $sql = Select::select('table1')
       ->addExpression( new AllColumnsExpression() )
