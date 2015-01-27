@@ -18,12 +18,12 @@
 
 namespace Substance\Core\Database\SQL\TableReferences\JoinConditions;
 
+use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\CommaExpression;
 use Substance\Core\Database\SQL\TableReferences\JoinCondition;
-use Substance\Core\Alert\Alert;
 
 /**
  * Represents an USING join condition.
@@ -42,36 +42,6 @@ class Using implements JoinCondition {
    */
   public function __construct( ColumnNameExpression $name ) {
     $this->expression = $name;
-  }
-
-  public function __toString() {
-    $string = 'USING ( ';
-    $string .= (string) $this->expression;
-    $string .= ' )';
-    return $string;
-  }
-
-  /**
-   * Adds a column name to this condition.
-   *
-   * @param ColumnNameExpression $name the column name to add to this condition.
-   */
-  public function addColumnName( ColumnNameExpression $name ) {
-    if ( $this->expression instanceof CommaExpression ) {
-      $this->expression->addExpressionToSequence( $name );
-    } else {
-      $this->expression = new CommaExpression( $this->expression, $name );
-    }
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Component::build()
-   */
-  public function build( Database $database ) {
-    $string = 'USING ( ';
-    $string .= $this->expression->build( $database );
-    $string .= ' )';
-    return $string;
   }
 
   /**
@@ -102,6 +72,36 @@ class Using implements JoinCondition {
       }
       return $using;
     }
+  }
+
+  public function __toString() {
+    $string = 'USING ( ';
+    $string .= (string) $this->expression;
+    $string .= ' )';
+    return $string;
+  }
+
+  /**
+   * Adds a column name to this condition.
+   *
+   * @param ColumnNameExpression $name the column name to add to this condition.
+   */
+  public function addColumnName( ColumnNameExpression $name ) {
+    if ( $this->expression instanceof CommaExpression ) {
+      $this->expression->addExpressionToSequence( $name );
+    } else {
+      $this->expression = new CommaExpression( $this->expression, $name );
+    }
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::build()
+   */
+  public function build( Database $database ) {
+    $string = 'USING ( ';
+    $string .= $this->expression->build( $database );
+    $string .= ' )';
+    return $string;
   }
 
 }
