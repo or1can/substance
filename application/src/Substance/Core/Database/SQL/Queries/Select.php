@@ -21,6 +21,7 @@ namespace Substance\Core\Database\SQL\Queries;
 use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\Expressions\AndExpression;
+use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\CommaExpression;
 use Substance\Core\Database\SQL\Expressions\OrderByExpression;
 use Substance\Core\Database\SQL\Expressions\SelectListExpression;
@@ -28,8 +29,10 @@ use Substance\Core\Database\SQL\Expressions\TableNameExpression;
 use Substance\Core\Database\SQL\Query;
 use Substance\Core\Database\SQL\TableReference;
 use Substance\Core\Database\SQL\TableReferences\InnerJoin;
-use Substance\Core\Database\SQL\TableReferences\TableName;
+use Substance\Core\Database\SQL\TableReferences\JoinCondition;
+use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
 use Substance\Core\Database\SQL\TableReferences\LeftJoin;
+use Substance\Core\Database\SQL\TableReferences\TableName;
 
 /**
  * Represents a SELECT database query.
@@ -239,15 +242,58 @@ class Select extends Query {
   /**
    * Adds an inner join to the specified table at the end of the from clause.
    *
-   * @param string $table the table name
-   * @param string $alias the table name alias
+   * @param string $table the table name.
+   * @param string $alias the table name alias or NULL for no alias.
+   * @param JoinCondition $condition the join condition, or NULL for no
+   * condition.
    * @return self
    */
-  public function innerJoin( $table, $alias = NULL ) {
+  public function innerJoin( $table, $alias = NULL, JoinCondition $condition = NULL ) {
     $right_table = new TableName( $table, $alias );
     // Define the new table in the query, so other joins do not clash with it.
     $right_table->define( $this );
-    $this->table = new InnerJoin( $this->table, $right_table );
+    $this->table = new InnerJoin( $this->table, $right_table, $condition );
+    return $this;
+  }
+
+  /**
+   * Adds an inner join to the specified table, using the specified expression
+   * in an ON clause.
+   *
+   * @param string $table the table name
+   * @param Expression $expression the ON join condition expression
+   * @param string $alias the table name alias or NULL for no alias.
+   * @return self
+   */
+  public function innerJoinOn( $table, $alias, Expression $expression ) {
+    $this->innerJoin( $table, $alias, new On( $expression ) );
+    return $this;
+  }
+
+  /**
+   * Adds an inner join to the specified table, using the specified expression
+   * in an USING clause.
+   *
+   * @param string $table the table name
+   * @param string $alias the table name alias or NULL for no alias.
+   * @param ColumnNameExpression ...$name one or more column names for the
+   * USING expression
+   * @return self
+   */
+  public function innerJoinUsing( $table, $alias ) {
+    // To get the column names, first get all the arguments and then remove the
+    // table and alias from the front. Anything left over are the names.
+    $names = func_get_args();
+    array_shift( $names );
+    array_shift( $names );
+    $this->innerJoin(
+      $table,
+      $alias,
+      call_user_func_array(
+        array( 'Substance\Core\Database\SQL\TableReferences\JoinConditions\Using', 'using' ),
+        $names
+      )
+    );
     return $this;
   }
 
