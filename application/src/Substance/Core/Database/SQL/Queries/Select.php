@@ -29,6 +29,7 @@ use Substance\Core\Database\SQL\Query;
 use Substance\Core\Database\SQL\TableReference;
 use Substance\Core\Database\SQL\TableReferences\InnerJoin;
 use Substance\Core\Database\SQL\TableReferences\TableName;
+use Substance\Core\Database\SQL\TableReferences\LeftJoin;
 
 /**
  * Represents a SELECT database query.
@@ -280,8 +281,19 @@ class Select extends Query {
     // TODO
   }
 
-  public function leftJoin() {
-    // TODO
+  /**
+   * Adds a left join to the specified table at the end of the from clause.
+   *
+   * @param string $table the table name
+   * @param string $alias the table name alias
+   * @return self
+   */
+  public function leftJoin( $table, $alias = NULL ) {
+    $right_table = new TableName( $table, $alias );
+    // Define the new table in the query, so other joins do not clash with it.
+    $right_table->define( $this );
+    $this->table = new LeftJoin( $this->table, $right_table );
+    return $this;
   }
 
   /**
