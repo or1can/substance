@@ -18,6 +18,7 @@
 
 namespace Substance\Core\Database\SQL\TableReferences;
 
+use Substance\Core\Database\SQL\Expressions\AllColumnsExpression;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Database\TestDatabase;
 
@@ -54,6 +55,33 @@ class InnerJoinTest extends \PHPUnit_Framework_TestCase {
     $expr = new InnerJoin( $expr, new TableName( 'table3', 't3' ) );
     $sql = $expr->build( $this->connection );
     $this->assertEquals( '`table1` AS `t1` INNER JOIN `table2` AS `t2` INNER JOIN `table3` AS `t3`', $sql );
+  }
+
+  /**
+   * Test an inner join in a select query.
+   */
+  public function testBuildOnSelect() {
+    // Test a join with no aliases.
+    $sql = Select::select('table1')
+      ->addExpression( new AllColumnsExpression() )
+      ->innerJoin('table2')
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` INNER JOIN `table2`', $sql );
+
+    // Test a join with aliases.
+    $sql = Select::select( 'table1', 't1' )
+      ->addExpression( new AllColumnsExpression() )
+      ->innerJoin( 'table2', 't2' )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t2`', $sql );
+
+    // Test two joins with aliases.
+    $sql = Select::select( 'table1', 't1' )
+      ->addExpression( new AllColumnsExpression() )
+      ->innerJoin( 'table2', 't2' )
+      ->innerJoin( 'table3', 't3' )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t2` INNER JOIN `table3` AS `t3`', $sql );
   }
 
 }

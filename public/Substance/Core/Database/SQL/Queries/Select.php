@@ -27,6 +27,8 @@ use Substance\Core\Database\SQL\Expressions\SelectListExpression;
 use Substance\Core\Database\SQL\Expressions\TableNameExpression;
 use Substance\Core\Database\SQL\Query;
 use Substance\Core\Database\SQL\TableReference;
+use Substance\Core\Database\SQL\TableReferences\InnerJoin;
+use Substance\Core\Database\SQL\TableReferences\TableName;
 
 /**
  * Represents a SELECT database query.
@@ -92,8 +94,7 @@ class Select extends Query {
   public function __construct( TableReference $table ) {
     $this->select_list = new SelectListExpression();
     $this->table = $table;
-    // Manually define this table in the query, so other joins do not clash with
-    // it.
+    // Define this table in the query, so other joins do not clash with it.
     $this->table->define( $this );
   }
 
@@ -234,8 +235,19 @@ class Select extends Query {
     return $this;
   }
 
-  public function innerJoin() {
-    // TODO
+  /**
+   * Adds an inner join to the specified table at the end of the from clause.
+   *
+   * @param string $table the table name
+   * @param string $alias the table name alias
+   * @return self
+   */
+  public function innerJoin( $table, $alias = NULL ) {
+    $right_table = new TableName( $table, $alias );
+    // Define the new table in the query, so other joins do not clash with it.
+    $right_table->define( $this );
+    $this->table = new InnerJoin( $this->table, $right_table );
+    return $this;
   }
 
   /**
