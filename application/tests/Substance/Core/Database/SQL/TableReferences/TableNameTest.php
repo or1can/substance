@@ -110,9 +110,9 @@ class TableNameTest extends \PHPUnit_Framework_TestCase {
     $expression = new TableName( 'table1', 'tab' );
     // FIXME - This is wrong as adding a table alias to a select list should
     // not be allowed.
-    $query->addExpression( $expression );
+    $query->addColumn( $expression );
     $expression = new TableName( 'table2', 'tab' );
-    $query->addExpression( $expression );
+    $query->addColumn( $expression );
   }
 
 }

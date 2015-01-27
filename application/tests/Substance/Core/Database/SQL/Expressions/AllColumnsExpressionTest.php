@@ -18,14 +18,14 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
-use Substance\Core\Database\SQL\Expressions\AllColumnsExpression;
+use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Database\TestDatabase;
 
 /**
  * Tests the all columns select expression.
  */
-class AllColumnsExpressionTest extends \PHPUnit_Framework_TestCase {
+class AllColumnsTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * Test a build of the all columns select expression.
@@ -33,7 +33,7 @@ class AllColumnsExpressionTest extends \PHPUnit_Framework_TestCase {
   public function testBuild() {
     $connection = new TestDatabase();
 
-    $expression = new AllColumnsExpression();
+    $expression = new AllColumns();
 
     $sql = $expression->build( $connection );
 

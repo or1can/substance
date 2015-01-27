@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 /* Substance - Content Management System and application framework.
  * Copyright (C) 2014 - 2015 Kevin Rogers
@@ -17,36 +16,34 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Substance Front Controller.
- */
+namespace Substance\Core\Database\SQL\Columns;
 
-// Report all errors.
-error_reporting(E_ALL | E_STRICT);
-
-require dirname( __DIR__ ) . '/vendor/autoload.php';
-
-use Substance\Core\Alert\Alert;
-use Substance\Core\Bootstrap;
 use Substance\Core\Database\Database;
-use Substance\Core\Database\SQL\Queries\Select;
-use Substance\Core\Environment\Environment;
-use Substance\Core\Module;
+use Substance\Core\Database\SQL\Column;
+use Substance\Core\Database\SQL\Query;
+use Substance\Core\Database\SQL\QueryLocation;
 
-// Bootstap the system.
-Bootstrap::initialise();
+/**
+ * An all columns from all tables column for use in a SQL query.
+ */
+class AllColumns implements Column {
 
-var_dump( Module::findModules() );
+  public function __toString() {
+    return '*';
+  }
 
-$alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Column::aboutToAddQuery()
+   */
+  public function aboutToAddQuery( Query $query, QueryLocation $location ) {
+    // Nothing to do.
+  }
 
-echo $alert;
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::build()
+   */
+  public function build( Database $database ) {
+  	return '*';
+  }
 
-$connection = Database::getConnection( '*', 'master' );
-
-var_dump( $connection->listTables() );
-
-var_dump( $connection->listDatabases() );
-
-
-throw $alert;
+}

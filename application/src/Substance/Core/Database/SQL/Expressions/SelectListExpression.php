@@ -22,6 +22,7 @@ use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\Query;
 use Substance\Core\Database\SQL\QueryLocation;
+use Substance\Core\Database\SQL\Column;
 
 /**
  * Represents the select list in a SELECT query.
@@ -39,20 +40,20 @@ class SelectListExpression extends AbstractExpression implements QueryLocation {
   protected $select_list = NULL;
 
   /**
-   * Adds the expression to the select list.
+   * Adds the column to the select list.
    *
-   * @param Expression $expression the expression to add to the select list.
+   * @param Column $column the column to add to the select list.
    */
-  public function add( Query $query, Expression $expression ) {
+  public function add( Query $query, Column $column ) {
     // Let the expression handle any pre-conditions, etc.
-    $expression->aboutToAddQuery( $query, $this );
+    $column->aboutToAddQuery( $query, $this );
     // Now add the expression to the select list.
     if ( is_null( $this->select_list ) ) {
-      $this->select_list = $expression;
+      $this->select_list = $column;
     } elseif ( $this->select_list instanceof CommaExpression ) {
-      $this->select_list->addExpressionToSequence( $expression );
+      $this->select_list->addExpressionToSequence( $column );
     } else {
-      $this->select_list = new CommaExpression( $this->select_list, $expression );
+      $this->select_list = new CommaExpression( $this->select_list, $column );
     }
   }
 

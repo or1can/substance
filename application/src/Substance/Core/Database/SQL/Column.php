@@ -16,24 +16,22 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\SQL\Expressions;
+namespace Substance\Core\Database\SQL;
 
 use Substance\Core\Database\Database;
 
 /**
- * A column expression for use in a SQL query.
+ * Represents a column in a SQL query select list.
  */
-class AllColumnsExpression extends AbstractExpression {
+interface Column extends Component {
 
-  public function __toString() {
-    return '*';
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Component::build()
+  /**
+   * Should be called before this expression is added to a query at the
+   * specified location.
+   *
+   * @param Query $query the query this expression is about to be added to
+   * @param QueryLocation $location the location within the query
    */
-  public function build( Database $database ) {
-  	return '*';
-  }
+  public function aboutToAddQuery( Query $query, QueryLocation $location );
 
 }

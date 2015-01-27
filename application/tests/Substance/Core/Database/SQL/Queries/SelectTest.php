@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\SQL\Queries;
 
-use Substance\Core\Database\SQL\Expressions\AllColumnsExpression;
+use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Expressions\ColumnAliasExpression;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\CommaExpression;
@@ -48,28 +48,28 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table`', $sql );
 
     // Try explicitly stating it's not a distinct query.
     $sql = Select::select('table')
       ->distinct( FALSE )
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table`', $sql );
 
     // Try a query with an explicitly stated column.
     $sql = Select::select('table')
       ->distinct( FALSE )
-      ->addExpression( new ColumnNameExpression('column1') )
+      ->addColumn( new ColumnNameExpression('column1') )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT `column1` FROM `table`', $sql );
 
     // Try a query with an explicitly stated column and alias.
     $sql = Select::select('table')
       ->distinct( FALSE )
-      ->addExpression( new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' ) )
+      ->addColumn( new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT `column1` AS `col` FROM `table`', $sql );
 
@@ -77,7 +77,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // an alias.
     $sql = Select::select( 'table', 't' )
       ->distinct( FALSE )
-      ->addExpression( new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' ) )
+      ->addColumn( new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT `column1` AS `col` FROM `table` AS `t`', $sql );
   }
@@ -88,7 +88,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereNoGroupNoHavingNoOrderNoLimitNoOffsetWithDatabase() {
     $sql = Select::select('information_schema.TABLES')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT * FROM `information_schema`.`TABLES`', $sql );
@@ -100,7 +100,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereNoGroupNoHavingNoOrderNoLimitOneOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->offset( 2 )
       ->build( $this->connection );
 
@@ -115,7 +115,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereNoGroupNoHavingNoOrderOneLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->limit( 1 )
       ->build( $this->connection );
 
@@ -128,7 +128,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereNoGroupNoHavingNoOrderOneLimitOneOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->limit( 1 )
       ->offset( 2 )
       ->build( $this->connection );
@@ -142,7 +142,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereNoGroupNoHavingOneOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->orderBy( new ColumnNameExpression('column1') )
       ->build( $this->connection );
 
@@ -156,7 +156,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnNoJoinNoWhereNoGroupNoHavingOneOrderOneLimitNoOffset() {
     // Try an order using the default direction.
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->orderBy( new ColumnNameExpression('column1') )
       ->limit( 1 )
       ->build( $this->connection );
@@ -164,7 +164,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Try the same with specifying the ascending sort direction explicitly.
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->orderBy( new ColumnNameExpression('column1'), 'ASC' )
       ->limit( 1 )
       ->build( $this->connection );
@@ -172,7 +172,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // And again, with a descending sort direction.
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->orderBy( new ColumnNameExpression('column1'), 'DESC' )
       ->limit( 1 )
       ->build( $this->connection );
@@ -181,7 +181,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try an order using an explicit order by expression with ascending
     // direction.
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->orderBy( new OrderByExpression( new ColumnNameExpression('column1'), 'ASC' ) )
       ->limit( 1 )
       ->build( $this->connection );
@@ -190,7 +190,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try an order using an explicit order by expression with descending
     // direction.
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->orderBy( new OrderByExpression( new ColumnNameExpression('column1'), 'DESC' ) )
       ->limit( 1 )
       ->build( $this->connection );
@@ -204,7 +204,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnNoJoinNoWhereNoGroupNoHavingTwoOrderNoLimitNoOffset() {
     // Try two order expressions using the default direction.
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->orderBy( new ColumnNameExpression('column1') )
       ->orderBy( new ColumnNameExpression('column2') )
       ->build( $this->connection );
@@ -212,7 +212,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Try two order expressions using the different directions.
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->orderBy( new ColumnNameExpression('column1'), 'ASC' )
       ->orderBy( new ColumnNameExpression('column2'), 'DESC' )
       ->build( $this->connection );
@@ -220,7 +220,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Try two order expressions using the opposite directions.
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->orderBy( new ColumnNameExpression('column1'), 'DESC' )
       ->orderBy( new ColumnNameExpression('column2'), 'ASC' )
       ->build( $this->connection );
@@ -228,7 +228,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Try two order expressions with both using the descending directions.
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->orderBy( new ColumnNameExpression('column1'), 'DESC' )
       ->orderBy( new ColumnNameExpression('column2'), 'DESC' )
       ->build( $this->connection );
@@ -237,7 +237,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try two order expressions using explicit order by expressions with
     // ascending direction
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->orderBy( new OrderByExpression( new ColumnNameExpression('column1'), 'ASC' ) )
       ->orderBy( new OrderByExpression( new ColumnNameExpression('column2'), 'ASC' ) )
       ->build( $this->connection );
@@ -246,7 +246,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try two order expressions using explicit order by expressions with
     // different directions.
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->orderBy( new OrderByExpression( new ColumnNameExpression('column1'), 'ASC' ) )
       ->orderBy( new OrderByExpression( new ColumnNameExpression('column2'), 'DESC' ) )
       ->build( $this->connection );
@@ -255,7 +255,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try two order expressions using explicit order by expressions with
     // opposite directions.
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->orderBy( new OrderByExpression( new ColumnNameExpression('column1'), 'DESC' ) )
       ->orderBy( new OrderByExpression( new ColumnNameExpression('column2'), 'ASC' ) )
       ->build( $this->connection );
@@ -263,7 +263,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Try two order expressions with both using the descending directions.
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->orderBy( new OrderByExpression( new ColumnNameExpression('column1'), 'DESC' ) )
       ->orderBy( new OrderByExpression( new ColumnNameExpression('column2'), 'DESC' ) )
       ->build( $this->connection );
@@ -272,7 +272,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try two order expressions by adding a prebuilt comma expression of
     // explicit order by expressions with ascending directions.
     $select = Select::select('table')
-      ->addExpression( new AllColumnsExpression() );
+      ->addColumn( new AllColumns() );
     $order_by = new CommaExpression(
       new OrderByExpression( new ColumnNameExpression('column1'), 'ASC' ),
       new OrderByExpression( new ColumnNameExpression('column2'), 'ASC' )
@@ -284,7 +284,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try two order expressions by adding a prebuilt comma expression of
     // explicit order by expressions with different directions.
     $select = Select::select('table')
-      ->addExpression( new AllColumnsExpression() );
+      ->addColumn( new AllColumns() );
     $order_by = new CommaExpression(
       new OrderByExpression( new ColumnNameExpression('column1'), 'ASC' ),
       new OrderByExpression( new ColumnNameExpression('column2'), 'DESC' )
@@ -296,7 +296,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try two order expressions by adding a prebuilt comma expression of
     // explicit order by expressions with opposite directions.
     $select = Select::select('table')
-      ->addExpression( new AllColumnsExpression() );
+      ->addColumn( new AllColumns() );
     $order_by = new CommaExpression(
       new OrderByExpression( new ColumnNameExpression('column1'), 'DESC' ),
       new OrderByExpression( new ColumnNameExpression('column2'), 'ASC' )
@@ -308,7 +308,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try two order expressions by adding a prebuilt comma expression of
     // explicit order by expressions with descending directions.
     $select = Select::select('table')
-      ->addExpression( new AllColumnsExpression() );
+      ->addColumn( new AllColumns() );
     $order_by = new CommaExpression(
       new OrderByExpression( new ColumnNameExpression('column1'), 'DESC' ),
       new OrderByExpression( new ColumnNameExpression('column2'), 'DESC' )
@@ -320,7 +320,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try two order expressions by adding a prebuilt comma expression of
     // general expressions using the default ascending direction.
     $select = Select::select('table')
-      ->addExpression( new AllColumnsExpression() );
+      ->addColumn( new AllColumns() );
     $order_by = new CommaExpression(
       new ColumnNameExpression('column1'),
       new ColumnNameExpression('column2')
@@ -332,7 +332,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try two order expressions by adding a prebuilt comma expression of
     // general expressions using a specified ascending direction.
     $select = Select::select('table')
-      ->addExpression( new AllColumnsExpression() );
+      ->addColumn( new AllColumns() );
     $order_by = new CommaExpression(
       new ColumnNameExpression('column1'),
       new ColumnNameExpression('column2')
@@ -344,7 +344,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
     // Try two order expressions by adding a prebuilt comma expression of
     // general expressions using a specified descending direction.
     $select = Select::select('table')
-      ->addExpression( new AllColumnsExpression() );
+      ->addColumn( new AllColumns() );
     $order_by = new CommaExpression(
       new ColumnNameExpression('column1'),
       new ColumnNameExpression('column2')
@@ -360,7 +360,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereNoGroupNoHavingTwoOrderOneLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->orderBy( new ColumnNameExpression('column1') )
       ->orderBy( new ColumnNameExpression('column2') )
       ->limit( 1 )
@@ -375,7 +375,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->build( $this->connection );
 
@@ -388,7 +388,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupNoHavingNoOrderOneLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->limit( 1 )
       ->build( $this->connection );
@@ -402,7 +402,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupNoHavingOneOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->orderBy( new ColumnNameExpression('column1') )
       ->build( $this->connection );
@@ -416,7 +416,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupNoHavingOneOrderOneLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->orderBy( new ColumnNameExpression('column1') )
       ->limit( 1 )
@@ -431,7 +431,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupOneHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->build( $this->connection );
@@ -445,7 +445,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupOneHavingNoOrderOneLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->limit( 1 )
@@ -460,7 +460,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupOneHavingOneOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->orderBy( new ColumnNameExpression('column1') )
@@ -475,7 +475,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupOneHavingOneOrderOneLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->orderBy( new ColumnNameExpression('column1') )
@@ -491,7 +491,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupTwoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->having( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) )
@@ -506,7 +506,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupTwoHavingNoOrderOneLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->having( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) )
@@ -522,7 +522,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinNoWhereTwoGroupNoHavingNoOrderOneLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->groupBy( new ColumnNameExpression('column2') )
       ->limit( 1 )
@@ -537,7 +537,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinOneWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->build( $this->connection );
 
@@ -550,7 +550,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinOneWhereNoGroupNoHavingOneOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->orderBy( new ColumnNameExpression('column1') )
       ->build( $this->connection );
@@ -564,7 +564,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinOneWhereOneGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->groupBy( new ColumnNameExpression('column1') )
       ->build( $this->connection );
@@ -578,7 +578,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinOneWhereOneGroupNoHavingNoOrderOneLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->groupBy( new ColumnNameExpression('column1') )
       ->limit( 1 )
@@ -593,7 +593,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinOneWhereOneGroupNoHavingOneOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->groupBy( new ColumnNameExpression('column1') )
       ->orderBy( new ColumnNameExpression('column1') )
@@ -608,7 +608,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinOneWhereOneGroupNoHavingOneOrderOneLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->groupBy( new ColumnNameExpression('column1') )
       ->orderBy( new ColumnNameExpression('column1') )
@@ -624,7 +624,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinThreeWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->where( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) )
       ->where( new EqualsExpression( new ColumnNameExpression('column3'), new LiteralExpression( 7 ) ) )
@@ -640,7 +640,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinThreeWhereNoGroupNoHavingOneOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->where( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) )
       ->where( new EqualsExpression( new ColumnNameExpression('column3'), new LiteralExpression( 7 ) ) )
@@ -657,7 +657,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllOneColumnNoJoinTwoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->where( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) )
       ->build( $this->connection );
@@ -672,84 +672,84 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnOneJoinNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     // Test an inner join with no aliases.
     $sql = Select::select('table1')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->innerJoin('table2')
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` INNER JOIN `table2`', $sql );
 
     // Test a left join with no aliases.
     $sql = Select::select('table1')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->leftJoin('table2')
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` LEFT JOIN `table2`', $sql );
 
     // Test an inner join with no aliases and an ON condition.
     $sql = Select::select('table1')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->innerJoinOn( 'table2', NULL, new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` INNER JOIN `table2` ON `column1` = `column2`', $sql );
 
     // Test a left join with no aliases and an ON condition.
     $sql = Select::select('table1')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->leftJoinOn( 'table2', NULL, new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` LEFT JOIN `table2` ON `column1` = `column2`', $sql );
 
     // Test an inner join with no aliases and a USING condition.
     $sql = Select::select('table1')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->innerJoinUsing( 'table2', NULL, new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` INNER JOIN `table2` USING ( `column1`, `column2` )', $sql );
 
     // Test a left join with no aliases and a USING condition.
     $sql = Select::select('table1')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->leftJoinUsing( 'table2', NULL, new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` LEFT JOIN `table2` USING ( `column1`, `column2` )', $sql );
 
     // Test an inner join with aliases.
     $sql = Select::select( 'table1', 't1' )
-    ->addExpression( new AllColumnsExpression() )
+    ->addColumn( new AllColumns() )
     ->innerJoin( 'table2', 't2' )
     ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t2`', $sql );
 
     // Test a left join with aliases.
     $sql = Select::select( 'table1', 't1' )
-    ->addExpression( new AllColumnsExpression() )
+    ->addColumn( new AllColumns() )
     ->leftJoin( 'table2', 't2' )
     ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t2`', $sql );
 
     // Test an inner join with aliases and an ON condition.
     $sql = Select::select( 'table1', 't1' )
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->innerJoinOn( 'table2', 't2', new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t2` ON `column1` = `column2`', $sql );
 
     // Test a left join with aliases and an ON condition.
     $sql = Select::select( 'table1', 't1' )
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->leftJoinOn( 'table2', 't2', new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t2` ON `column1` = `column2`', $sql );
 
     // Test an inner join with aliases and a USING condition.
     $sql = Select::select( 'table1', 't1' )
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->innerJoinUsing( 'table2', 't2', new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t2` USING ( `column1`, `column2` )', $sql );
 
     // Test a left join with aliases and a USING condition.
     $sql = Select::select( 'table1', 't1' )
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->leftJoinUsing( 'table2', 't2', new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t2` USING ( `column1`, `column2` )', $sql );
@@ -762,7 +762,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildAllOneColumnTwoJoinNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     // Test two inner joins with no aliases.
     $sql = Select::select('table1')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->innerJoin('table2')
       ->innerJoin('table3')
       ->build( $this->connection );
@@ -770,7 +770,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Test two left joins with no aliases.
     $sql = Select::select('table1')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->leftJoin('table2')
       ->leftJoin('table3')
       ->build( $this->connection );
@@ -778,7 +778,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Test one inner and one left join with no aliases.
     $sql = Select::select('table1')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->innerJoin('table2')
       ->leftJoin('table3')
       ->build( $this->connection );
@@ -786,7 +786,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Test two inner joins with no aliases and USING conditions.
     $sql = Select::select('table1')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->innerJoinUsing( 'table2', NULL, new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
       ->innerJoinUsing( 'table3', NULL, new ColumnNameExpression('column3'), new ColumnNameExpression('column4') )
       ->build( $this->connection );
@@ -794,7 +794,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Test two left joins with no aliases and USING conditions.
     $sql = Select::select('table1')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->leftJoinUsing( 'table2', NULL, new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
       ->leftJoinUsing( 'table3', NULL, new ColumnNameExpression('column3'), new ColumnNameExpression('column4') )
       ->build( $this->connection );
@@ -802,7 +802,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Test one inner and one left join with no aliases and USING conditions.
     $sql = Select::select('table1')
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->leftJoinUsing( 'table2', NULL, new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
       ->innerJoinUsing( 'table3', NULL, new ColumnNameExpression('column3'), new ColumnNameExpression('column4') )
       ->build( $this->connection );
@@ -810,7 +810,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Test two inner joins with aliases.
     $sql = Select::select( 'table1', 't1' )
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->innerJoin( 'table2', 't2' )
       ->innerJoin( 'table3', 't3' )
       ->build( $this->connection );
@@ -818,7 +818,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Test two left joins with aliases.
     $sql = Select::select( 'table1', 't1' )
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->leftJoin( 'table2', 't2' )
       ->leftJoin( 'table3', 't3' )
       ->build( $this->connection );
@@ -826,7 +826,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Test one inner and one left join with aliases.
     $sql = Select::select( 'table1', 't1' )
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->leftJoin( 'table2', 't2' )
       ->innerJoin( 'table3', 't3' )
       ->build( $this->connection );
@@ -834,7 +834,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Test two inner joins with aliases and USING conditions.
     $sql = Select::select( 'table1', 't1' )
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->innerJoinUsing( 'table2', 't2', new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
       ->innerJoinUsing( 'table3', 't3', new ColumnNameExpression('column3'), new ColumnNameExpression('column4') )
       ->build( $this->connection );
@@ -842,7 +842,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Test two left joins with aliases and USING conditions.
     $sql = Select::select( 'table1', 't1' )
-    ->addExpression( new AllColumnsExpression() )
+    ->addColumn( new AllColumns() )
     ->leftJoinUsing( 'table2', 't2', new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
     ->leftJoinUsing( 'table3', 't3', new ColumnNameExpression('column3'), new ColumnNameExpression('column4') )
     ->build( $this->connection );
@@ -850,7 +850,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
 
     // Test one inner and one left join with aliases and USING conditions.
     $sql = Select::select( 'table1', 't1' )
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->innerJoinUsing( 'table2', 't2', new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
       ->leftJoinUsing( 'table3', 't3', new ColumnNameExpression('column3'), new ColumnNameExpression('column4') )
       ->build( $this->connection );
@@ -863,9 +863,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllThreeColumnsNoJoinNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new ColumnNameExpression('column1') )
-      ->addExpression( new ColumnNameExpression('column2') )
-      ->addExpression( new ColumnNameExpression('column3') )
+      ->addColumn( new ColumnNameExpression('column1') )
+      ->addColumn( new ColumnNameExpression('column2') )
+      ->addColumn( new ColumnNameExpression('column3') )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT `column1`, `column2`, `column3` FROM `table`', $sql );
@@ -877,8 +877,8 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildAllTwoColumnNoJoinNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
-      ->addExpression( new ColumnNameExpression('column1') )
-      ->addExpression( new ColumnNameExpression('column2') )
+      ->addColumn( new ColumnNameExpression('column1') )
+      ->addColumn( new ColumnNameExpression('column2') )
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT `column1`, `column2` FROM `table`', $sql );
@@ -891,14 +891,14 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildDistinctOneColumnNoJoinNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->distinct()
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT DISTINCT * FROM `table`', $sql );
 
     // Try explicitly stating it's a distinct query.
     $sql = Select::select('table')
       ->distinct( TRUE )
-      ->addExpression( new AllColumnsExpression() )
+      ->addColumn( new AllColumns() )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT DISTINCT * FROM `table`', $sql );
   }
@@ -910,16 +910,16 @@ class SelectTest extends \PHPUnit_Framework_TestCase {
   public function testBuildDistinctTwoColumnNoJoinNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
     $sql = Select::select('table')
       ->distinct()
-      ->addExpression( new ColumnNameExpression('column1') )
-      ->addExpression( new ColumnNameExpression('column2') )
+      ->addColumn( new ColumnNameExpression('column1') )
+      ->addColumn( new ColumnNameExpression('column2') )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT DISTINCT `column1`, `column2` FROM `table`', $sql );
 
     // Try explicitly stating it's a distinct query.
     $sql = Select::select('table')
       ->distinct( TRUE )
-      ->addExpression( new ColumnNameExpression('column1') )
-      ->addExpression( new ColumnNameExpression('column2') )
+      ->addColumn( new ColumnNameExpression('column1') )
+      ->addColumn( new ColumnNameExpression('column2') )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT DISTINCT `column1`, `column2` FROM `table`', $sql );
   }

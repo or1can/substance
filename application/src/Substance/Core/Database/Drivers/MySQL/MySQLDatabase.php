@@ -19,7 +19,7 @@
 namespace Substance\Core\Database\Drivers\MySQL;
 
 use Substance\Core\Database\Database;
-use Substance\Core\Database\SQL\Expressions\AllColumnsExpression;
+use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
@@ -97,7 +97,7 @@ class MySQLDatabase extends Database {
    */
   public function listTables() {
     $select = new Select('information_schema.TABLES');
-    $select->addExpression( new AllColumnsExpression() );
+    $select->addColumn( new AllColumns() );
     $select->where( new EqualsExpression( new ColumnNameExpression('TABLE_SCHEMA'), new LiteralExpression( $this->getDatabaseName() ) ) );
     $sql = $select->build( $this );
     $tables = array();

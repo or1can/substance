@@ -88,9 +88,9 @@ class ColumnAliasExpressionTest extends \PHPUnit_Framework_TestCase {
   public function testSelectWithDuplicateColumnAlias() {
     $query = Select::select('table');
     $expression = new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' );
-    $query->addExpression( $expression );
+    $query->addColumn( $expression );
     $expression = new ColumnAliasExpression( new ColumnNameExpression('column2'), 'col' );
-    $query->addExpression( $expression );
+    $query->addColumn( $expression );
   }
 
 }

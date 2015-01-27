@@ -33,6 +33,7 @@ use Substance\Core\Database\SQL\TableReferences\JoinCondition;
 use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
 use Substance\Core\Database\SQL\TableReferences\LeftJoin;
 use Substance\Core\Database\SQL\TableReferences\TableName;
+use Substance\Core\Database\SQL\Column;
 
 /**
  * Represents a SELECT database query.
@@ -143,8 +144,8 @@ class Select extends Query {
    * @param Expression $expression
    * @return self
    */
-  public function addExpression( Expression $expression ) {
-    $this->select_list->add( $this, $expression );
+  public function addColumn( Column $column ) {
+    $this->select_list->add( $this, $column );
     return $this;
   }
 

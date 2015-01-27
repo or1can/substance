@@ -18,7 +18,6 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
-use Substance\Core\Database\SQL\Expressions\AllColumnsExpression;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Database\SQL\TableReferences\TableName;
 use Substance\Core\Database\TestDatabase;
