@@ -87,12 +87,11 @@ class Select extends Query {
   /**
    * Construct a new SELECT query to select data from the specified table.
    *
-   * @param string $table the table to select data from.
-   * @param string $alias the alias for the table being selected from
+   * @param TableReference $table the table to select data from.
    */
-  public function __construct( $table, $alias = NULL ) {
+  public function __construct( TableReference $table ) {
     $this->select_list = new SelectListExpression();
-    $this->table = new TableNameExpression( $table, $alias );
+    $this->table = $table;
     // Manually define this table in the query, so other joins do not clash with
     // it.
     $this->defineTableName( $this->table );

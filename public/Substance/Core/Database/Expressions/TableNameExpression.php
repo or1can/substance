@@ -68,15 +68,9 @@ class TableNameExpression extends AbstractExpression implements TableReference {
    * @see \Substance\Core\Database\Expression::aboutToAddQuery()
    */
   public function aboutToAddQuery( Query $query, QueryLocation $location ) {
-    // FIXME - This is wrong, as a table alias cannot be added to a select
-    // list...
-    if ( $location instanceof SelectListExpression ) {
-      $query->defineTableName( $this );
-    } else {
-      throw Alert::alert( 'Invalid location for table alias', 'Table aliases can only be used in [FIXME]' )
-        ->culprit( 'query location', $location )
-        ->culprit( 'query', $query );
-    }
+    // A table name expression can only be used in a FROM or JOIN clause, so we
+    // simply need to define the table in the query.
+    $query->defineTableName( $this );
   }
 
   /* (non-PHPdoc)

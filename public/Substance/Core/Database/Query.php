@@ -123,7 +123,7 @@ abstract class Query {
    * @return \Substance\Core\Database\Queries\Select
    */
   public static function select( $table, $alias = NULL ) {
-    return new Select( $table, $alias );
+    return new Select( new TableNameExpression( $table, $alias ) );
   }
 
 }
