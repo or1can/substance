@@ -261,8 +261,8 @@ class Select extends Query {
    * in an ON clause.
    *
    * @param string $table the table name
-   * @param Expression $expression the ON join condition expression
    * @param string $alias the table name alias or NULL for no alias.
+   * @param Expression $expression the ON join condition expression
    * @return self
    */
   public function innerJoinOn( $table, $alias, Expression $expression ) {
@@ -331,14 +331,57 @@ class Select extends Query {
    * Adds a left join to the specified table at the end of the from clause.
    *
    * @param string $table the table name
-   * @param string $alias the table name alias
+   * @param string $alias the table name alias or NULL for no alias.
+   * @param JoinCondition $condition the join condition, or NULL for no
+   * condition.
    * @return self
    */
-  public function leftJoin( $table, $alias = NULL ) {
+  public function leftJoin( $table, $alias = NULL, JoinCondition $condition = NULL ) {
     $right_table = new TableName( $table, $alias );
     // Define the new table in the query, so other joins do not clash with it.
     $right_table->define( $this );
-    $this->table = new LeftJoin( $this->table, $right_table );
+    $this->table = new LeftJoin( $this->table, $right_table, $condition );
+    return $this;
+  }
+
+  /**
+   * Adds a left join to the specified table, using the specified expression
+   * in an ON clause.
+   *
+   * @param string $table the table name
+   * @param string $alias the table name alias or NULL for no alias.
+   * @param Expression $expression the ON join condition expression
+   * @return self
+   */
+  public function leftJoinOn( $table, $alias, Expression $expression ) {
+    $this->leftJoin( $table, $alias, new On( $expression ) );
+    return $this;
+  }
+
+  /**
+   * Adds a left join to the specified table, using the specified expression
+   * in an USING clause.
+   *
+   * @param string $table the table name
+   * @param string $alias the table name alias or NULL for no alias.
+   * @param ColumnNameExpression ...$name one or more column names for the
+   * USING expression
+   * @return self
+   */
+  public function leftJoinUsing( $table, $alias ) {
+    // To get the column names, first get all the arguments and then remove the
+    // table and alias from the front. Anything left over are the names.
+    $names = func_get_args();
+    array_shift( $names );
+    array_shift( $names );
+    $this->leftJoin(
+      $table,
+      $alias,
+      call_user_func_array(
+        array( 'Substance\Core\Database\SQL\TableReferences\JoinConditions\Using', 'using' ),
+        $names
+      )
+    );
     return $this;
   }
 

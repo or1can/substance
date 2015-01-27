@@ -107,31 +107,4 @@ class LeftJoinTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals( '`table1` AS `t1` LEFT JOIN `table2` AS `t2` USING ( `column1`, `column2` )', $sql );
   }
 
-  /**
-   * Test a left join in a select query with no condition.
-   */
-  public function testBuildOnSelectNoCondition() {
-    // Test a join with no aliases.
-    $sql = Select::select('table1')
-      ->addExpression( new AllColumnsExpression() )
-      ->leftJoin('table2')
-      ->build( $this->connection );
-    $this->assertEquals( 'SELECT * FROM `table1` LEFT JOIN `table2`', $sql );
-
-    // Test a join with aliases.
-    $sql = Select::select( 'table1', 't1' )
-      ->addExpression( new AllColumnsExpression() )
-      ->leftJoin( 'table2', 't2' )
-      ->build( $this->connection );
-    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t2`', $sql );
-
-    // Test two joins with aliases.
-    $sql = Select::select( 'table1', 't1' )
-      ->addExpression( new AllColumnsExpression() )
-      ->leftJoin( 'table2', 't2' )
-      ->leftJoin( 'table3', 't3' )
-      ->build( $this->connection );
-    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t2` LEFT JOIN `table3` AS `t3`', $sql );
-  }
-
 }
