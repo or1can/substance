@@ -31,7 +31,7 @@ class Bootstrap {
   public static function initialise() {
     // FIXME - This should load the appropriate settings based on the supplied
     // domain, but for now we just load the defaults for testing.
-    require dirname( dirname( __DIR__ ) ) . '/Sites/_default/settings.php';
+    require dirname( dirname( dirname( dirname( __DIR__ ) ) ) ). '/Sites/_default/settings.php';
     // Set the application temporary files folder
     if ( is_dir( '/tmp/substance' ) ) {
       $environment = Environment::getEnvironment();
