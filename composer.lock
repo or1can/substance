@@ -1228,22 +1228,17 @@
             "time": "2014-02-13 10:19:29"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "liquid/liquid": 20
     },
     "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": {
         "php": ">=5.3.3",
         "ext-dom": "*"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }
