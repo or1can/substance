@@ -16,13 +16,14 @@
 * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Substance\Core\Database\SQL\Expressions;
+namespace Substance\Core\Database\SQL\Components;
 
 use Substance\Core\Database\Database;
+use Substance\Core\Database\SQL\Column;
+use Substance\Core\Database\SQL\Component;
 use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\Query;
 use Substance\Core\Database\SQL\QueryLocation;
-use Substance\Core\Database\SQL\Column;
 
 /**
  * Represents the select list in a SELECT query.
@@ -32,12 +33,12 @@ use Substance\Core\Database\SQL\Column;
  * part of
  *     SELECT column1, column2 FROM table
  */
-class SelectListExpression extends AbstractExpression implements QueryLocation {
+class SelectList implements Component, QueryLocation {
 
   /**
-   * @var Expression select list expression.
+   * @var array select list columns.
    */
-  protected $select_list = NULL;
+  protected $columns = array();
 
   /**
    * Adds the column to the select list.
@@ -48,21 +49,19 @@ class SelectListExpression extends AbstractExpression implements QueryLocation {
     // Let the expression handle any pre-conditions, etc.
     $column->aboutToAddQuery( $query, $this );
     // Now add the expression to the select list.
-    if ( is_null( $this->select_list ) ) {
-      $this->select_list = $column;
-    } elseif ( $this->select_list instanceof CommaExpression ) {
-      $this->select_list->addExpressionToSequence( $column );
-    } else {
-      $this->select_list = new CommaExpression( $this->select_list, $column );
-    }
+    $this->columns[] = $column;
   }
 
   public function __toString() {
     $string = '';
-    if ( is_null( $this->select_list ) ) {
+    if ( is_null( $this->columns ) ) {
       $string .= '/* No select expressions */';
     } else {
-      $string .= (string) $this->select_list;
+      $parts = array();
+      foreach ( $this->columns as $column ) {
+        $parts[] = (string) $column;
+      }
+      $string .= implode( ', ', $parts );
     }
     return $string;
   }
@@ -72,10 +71,14 @@ class SelectListExpression extends AbstractExpression implements QueryLocation {
    */
   public function build( Database $database ) {
     $string = '';
-    if ( is_null( $this->select_list ) ) {
+    if ( is_null( $this->columns ) ) {
       $string .= '/* No select expressions */';
     } else {
-      $string .= $this->select_list->build( $database );
+      $parts = array();
+      foreach ( $this->columns as $column ) {
+        $parts[] = $column->build( $database );
+      }
+      $string .= implode( ', ', $parts );
     }
     return $string;
   }

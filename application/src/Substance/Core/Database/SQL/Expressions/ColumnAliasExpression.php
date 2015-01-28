@@ -19,6 +19,7 @@
 namespace Substance\Core\Database\SQL\Expressions;
 
 use Substance\Core\Alert\Alert;
+use Substance\Core\Database\SQL\Components\SelectList;
 use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\Query;
 use Substance\Core\Database\SQL\QueryLocation;
@@ -49,7 +50,7 @@ class ColumnAliasExpression extends AbstractInfixExpression {
    * @see \Substance\Core\Database\SQL\Expression::aboutToAddQuery()
    */
   public function aboutToAddQuery( Query $query, QueryLocation $location ) {
-    if ( $location instanceof SelectListExpression ) {
+    if ( $location instanceof SelectList ) {
       $query->defineColumnAlias( $this );
     } else {
       throw Alert::alert( 'Invalid location for column alias', 'Column aliases can only be used in select lists' )

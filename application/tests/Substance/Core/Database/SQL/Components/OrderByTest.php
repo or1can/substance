@@ -16,22 +16,24 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\SQL\Expressions;
+namespace Substance\Core\Database\SQL\Components;
 
 use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\Components\OrderBy;
+use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Queries\Select;
 
 /**
- * Tests the order by expression.
+ * Tests the order by component.
  */
-class OrderByExpressionTest extends AbstractDatabaseTest {
+class OrderByTest extends AbstractDatabaseTest {
 
   /**
    * Test an ascending order by expression.
    */
   public function testBuildAscendingOrder() {
     $left = new ColumnNameExpression('column1');
-    $expr = new OrderByExpression( $left, 'ASC' );
+    $expr = new OrderBy( $left, 'ASC' );
     $sql = $expr->build( $this->connection );
 
     $this->assertEquals( '`column1` ASC', $sql );
@@ -42,7 +44,7 @@ class OrderByExpressionTest extends AbstractDatabaseTest {
    */
   public function testBuildDescendingOrder() {
     $left = new ColumnNameExpression('column1');
-    $expr = new OrderByExpression( $left, 'DESC' );
+    $expr = new OrderBy( $left, 'DESC' );
     $sql = $expr->build( $this->connection );
 
     $this->assertEquals( '`column1` DESC', $sql );
@@ -55,18 +57,18 @@ class OrderByExpressionTest extends AbstractDatabaseTest {
    */
   public function testInvalidDirection() {
     $left = new ColumnNameExpression('column1');
-    $expr = new OrderByExpression( $left, 'ALLOWED' );
+    $expr = new OrderBy( $left, 'ALLOWED' );
   }
 
   /**
-   * Test that an order by expression cannot be built with an OrderByExpression
+   * Test that an order by expression cannot be built with an OrderBy
    * as the left hand side.
    *
    * @expectedException Substance\Core\Alert\Alert
    */
-  public function testNoOrderByOrderByExpression() {
-    $left = new OrderByExpression( new ColumnNameExpression('column1'), 'DESC' );
-    $expr = new OrderByExpression( $left, 'DESC' );
+  public function testNoOrderByOrderBy() {
+    $left = new OrderBy( new ColumnNameExpression('column1'), 'DESC' );
+    $expr = new OrderBy( $left, 'DESC' );
   }
 
 }

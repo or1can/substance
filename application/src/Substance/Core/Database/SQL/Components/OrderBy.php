@@ -16,10 +16,12 @@
 * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Substance\Core\Database\SQL\Expressions;
+namespace Substance\Core\Database\SQL\Components;
 
 use Substance\Core\Alert\Alert;
+use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\Expression;
+use Substance\Core\Database\SQL\Component;
 
 /**
  * Represents a column or expression in an ORDER BY section of a database
@@ -30,23 +32,49 @@ use Substance\Core\Database\SQL\Expression;
  * part of:
  *     SELECT * FROM table ORDER BY table.column1 ASC
  */
-class OrderByExpression extends AbstractPostfixExpression {
+class OrderBy implements Component {
 
   protected $direction;
 
+  /**
+   * @var Expression the left expression.
+   */
+  protected $left;
+
   public function __construct( Expression $left, $direction ) {
-    if ( $left instanceof OrderByExpression ) {
-      // TODO - Would an Illegal argument alert be useful?
-      throw Alert::alert( 'Illegal argument', 'Cannot ORDER BY an OrderByExpression' )
-        ->culprit( 'left', $left );
-    }
-    parent::__construct( $left );
+    $this->left = $left;
     if ( !in_array( $direction, array( 'ASC', 'DESC' ) ) ) {
       // TODO - Would an Illegal argument alert be useful?
       throw Alert::alert( 'Illegal argument', 'Only ASC or DESC are allowed in ORDER BY' )
         ->culprit( 'order', $direction );
     }
     $this->direction = $direction;
+  }
+
+  public function __toString() {
+    $string = '';
+    $string .= $this->left;
+    $string .= ' ';
+    $string .= $this->getSymbol();
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::build()
+   */
+  public function build( Database $database ) {
+    $string = '';
+    $string .= $this->left->build( $database );
+    $string .= ' ';
+    $string .= $this->getSymbol();
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\PostfixExpression::getLeftExpression()
+   */
+  public function getLeftExpression() {
+    return $this->left;
   }
 
   /* (non-PHPdoc)
