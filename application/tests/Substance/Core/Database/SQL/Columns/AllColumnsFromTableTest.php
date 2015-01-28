@@ -18,24 +18,14 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
-use Substance\Core\Database\SQL\Columns\AllColumns;
-use Substance\Core\Database\SQL\Queries\Select;
-use Substance\Core\Database\TestDatabase;
+use Substance\Core\Database\AbstractDatabaseTest;
 use Substance\Core\Database\SQL\Columns\AllColumnsFromTable;
+use Substance\Core\Database\SQL\Queries\Select;
 
 /**
  * Tests the all columns from table select expression.
  */
-class AllColumnsFromTableTest extends \PHPUnit_Framework_TestCase {
-
-  protected $connection;
-
-  /* (non-PHPdoc)
-   * @see PHPUnit_Framework_TestCase::setUp()
-   */
-  public function setUp() {
-    $this->connection = new TestDatabase();
-  }
+class AllColumnsFromTableTest extends AbstractDatabaseTest {
 
   /**
    * Test a build of the all columns from table column without a database.

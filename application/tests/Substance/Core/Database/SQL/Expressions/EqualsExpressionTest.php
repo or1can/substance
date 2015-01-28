@@ -18,22 +18,13 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
+use Substance\Core\Database\AbstractDatabaseTest;
 use Substance\Core\Database\SQL\Queries\Select;
-use Substance\Core\Database\TestDatabase;
 
 /**
  * Tests the equals expression.
  */
-class EqualsExpressionTest extends \PHPUnit_Framework_TestCase {
-
-  protected $connection;
-
-  /* (non-PHPdoc)
-   * @see PHPUnit_Framework_TestCase::setUp()
-   */
-  public function setUp() {
-    $this->connection = new TestDatabase();
-  }
+class EqualsExpressionTest extends AbstractDatabaseTest {
 
   /**
    * Test an equals expression with no alias.

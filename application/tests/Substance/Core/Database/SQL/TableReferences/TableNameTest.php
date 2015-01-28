@@ -18,24 +18,15 @@
 
 namespace Substance\Core\Database\SQL\TableReferences;
 
+use Substance\Core\Database\AbstractDatabaseTest;
 use Substance\Core\Database\SQL\Expressions\ColumnAliasExpression;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Queries\Select;
-use Substance\Core\Database\TestDatabase;
 
 /**
  * Tests the table name table reference.
  */
-class TableNameTest extends \PHPUnit_Framework_TestCase {
-
-  protected $connection;
-
-  /* (non-PHPdoc)
-   * @see PHPUnit_Framework_TestCase::setUp()
-   */
-  public function setUp() {
-    $this->connection = new TestDatabase();
-  }
+class TableNameTest extends AbstractDatabaseTest {
 
   /**
    * Test a table expression with no database and no alias.

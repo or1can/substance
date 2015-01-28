@@ -18,23 +18,14 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
+use Substance\Core\Database\AbstractDatabaseTest;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Database\SQL\TableReferences\TableName;
-use Substance\Core\Database\TestDatabase;
 
 /**
  * Tests the column expression.
  */
-class ColumnNameExpressionTest extends \PHPUnit_Framework_TestCase {
-
-  protected $connection;
-
-  /* (non-PHPdoc)
-   * @see PHPUnit_Framework_TestCase::setUp()
-   */
-  public function setUp() {
-    $this->connection = new TestDatabase();
-  }
+class ColumnNameExpressionTest extends AbstractDatabaseTest {
 
   /**
    * Test a column expression with no table.

@@ -18,21 +18,12 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
-use Substance\Core\Database\TestDatabase;
+use Substance\Core\Database\AbstractDatabaseTest;
 
 /**
  * Tests the literal expression.
  */
-class LiteralExpressionTest extends \PHPUnit_Framework_TestCase {
-
-  protected $connection;
-
-  /* (non-PHPdoc)
-   * @see PHPUnit_Framework_TestCase::setUp()
-   */
-  public function setUp() {
-    $this->connection = new TestDatabase();
-  }
+class LiteralExpressionTest extends AbstractDatabaseTest {
 
   /**
    * Test a boolean false literal expression.

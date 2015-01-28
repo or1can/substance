@@ -18,21 +18,12 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
-use Substance\Core\Database\TestDatabase;
+use Substance\Core\Database\AbstractDatabaseTest;
 
 /**
  * Tests the is null expression.
  */
-class IsNullExpressionTest extends \PHPUnit_Framework_TestCase {
-
-  protected $connection;
-
-  /* (non-PHPdoc)
-   * @see PHPUnit_Framework_TestCase::setUp()
-   */
-  public function setUp() {
-    $this->connection = new TestDatabase();
-  }
+class IsNullExpressionTest extends AbstractDatabaseTest {
 
   /**
    * Test constructing with an illegal not argument.

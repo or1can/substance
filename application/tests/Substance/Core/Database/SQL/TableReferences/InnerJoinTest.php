@@ -18,26 +18,17 @@
 
 namespace Substance\Core\Database\SQL\TableReferences;
 
+use Substance\Core\Database\AbstractDatabaseTest;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
 use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
-use Substance\Core\Database\TestDatabase;
 
 /**
  * Tests the inner join table reference.
  */
-class InnerJoinTest extends \PHPUnit_Framework_TestCase {
-
-  protected $connection;
-
-  /* (non-PHPdoc)
-   * @see PHPUnit_Framework_TestCase::setUp()
-   */
-  public function setUp() {
-    $this->connection = new TestDatabase();
-  }
+class InnerJoinTest extends AbstractDatabaseTest {
 
   /**
    * Test an inner join on two tables with no condition.

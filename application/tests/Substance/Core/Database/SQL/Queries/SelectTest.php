@@ -18,6 +18,7 @@
 
 namespace Substance\Core\Database\SQL\Queries;
 
+use Substance\Core\Database\AbstractDatabaseTest;
 use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Expressions\ColumnAliasExpression;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
@@ -26,21 +27,11 @@ use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Expressions\OrderByExpression;
 use Substance\Core\Database\SQL\Queries\Select;
-use Substance\Core\Database\TestDatabase;
 
 /**
  * Tests select queries.
  */
-class SelectTest extends \PHPUnit_Framework_TestCase {
-
-  protected $connection;
-
-  /* (non-PHPdoc)
-   * @see PHPUnit_Framework_TestCase::setUp()
-   */
-  public function setUp() {
-    $this->connection = new TestDatabase();
-  }
+class SelectTest extends AbstractDatabaseTest {
 
   /**
    * Test a build all, with one column, no join, no where, no group, no having,

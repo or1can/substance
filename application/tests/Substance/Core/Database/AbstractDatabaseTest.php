@@ -16,23 +16,22 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\SQL\Expressions;
+namespace Substance\Core\Database;
 
-use Substance\Core\Database\AbstractDatabaseTest;
-use Substance\Core\Database\SQL\Columns\AllColumns;
+use Substance\Core\Database\TestDatabase;
 
 /**
- * Tests the all columns select expression.
+ * Abstract database test.
  */
-class AllColumnsTest extends AbstractDatabaseTest {
+abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
 
-  /**
-   * Test a build of the all columns select expression.
+  protected $connection;
+
+  /* (non-PHPdoc)
+   * @see PHPUnit_Framework_TestCase::setUp()
    */
-  public function testBuild() {
-    $expression = new AllColumns();
-    $sql = $expression->build( $this->connection );
-    $this->assertEquals( '*', $sql );
+  public function setUp() {
+    $this->connection = new TestDatabase();
   }
 
 }
