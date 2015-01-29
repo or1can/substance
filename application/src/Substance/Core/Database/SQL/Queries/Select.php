@@ -32,6 +32,7 @@ use Substance\Core\Database\SQL\TableReference;
 use Substance\Core\Database\SQL\TableReferences\InnerJoin;
 use Substance\Core\Database\SQL\TableReferences\JoinCondition;
 use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
+use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
 use Substance\Core\Database\SQL\TableReferences\LeftJoin;
 use Substance\Core\Database\SQL\TableReferences\TableName;
 
@@ -318,10 +319,7 @@ class Select extends Query {
     $this->innerJoin(
       $table,
       $alias,
-      call_user_func_array(
-        array( 'Substance\Core\Database\SQL\TableReferences\JoinConditions\Using', 'using' ),
-        $names
-      )
+      Using::usingArray( $names )
     );
     return $this;
   }
@@ -406,10 +404,7 @@ class Select extends Query {
     $this->leftJoin(
       $table,
       $alias,
-      call_user_func_array(
-        array( 'Substance\Core\Database\SQL\TableReferences\JoinConditions\Using', 'using' ),
-        $names
-      )
+      Using::usingArray( $names )
     );
     return $this;
   }

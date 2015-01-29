@@ -52,23 +52,26 @@ class Using implements JoinCondition {
    * @return Using a new USING condition on the specified columns.
    */
   public static function using() {
-    $args = func_get_args();
-    if ( count( $args ) == 0 ) {
+    return self::usingArray( func_get_args() );
+  }
+
+  public static function usingArray( array $columns ) {
+    if ( count( $columns ) == 0 ) {
       // TODO - Would an Illegal argument alert be useful?
       throw Alert::alert( 'Illegal argument', 'At least one column name required' );
     } else {
       $using = NULL;
-      foreach ( $args as $arg ) {
-        if ( $arg instanceof ColumnNameExpression ) {
+      foreach ( $columns as $column ) {
+        if ( $column instanceof ColumnNameExpression ) {
           if ( is_null( $using ) ) {
-            $using = new Using( $arg );
+            $using = new Using( $column );
           } else {
-            $using->addColumnName( $arg );
+            $using->addColumnName( $column );
           }
         } else {
           // TODO - Would an Illegal argument alert be useful?
           throw Alert::alert( 'Illegal argument', 'Only column names can be used in a USING condition' )
-            ->culprit( 'arg', $arg );
+          ->culprit( 'arg', $column );
         }
       }
       return $using;
