@@ -20,7 +20,6 @@ namespace Substance\Core\Database\SQL\TableReferences;
 
 use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\Query;
-use Substance\Core\Database\SQL\TableReference;
 
 /**
  * Represents a simple table name reference in a query, e.g.

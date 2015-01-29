@@ -19,7 +19,6 @@
 namespace Substance\Core\Database\SQL\Components;
 
 use Substance\Core\Database\Database;
-use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\Component;
 
 /**

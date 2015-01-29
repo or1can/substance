@@ -18,8 +18,6 @@
 
 namespace Substance\Core\Database\SQL;
 
-use Substance\Core\Database\Database;
-
 /**
  * Represents a column in a SQL query select list.
  */

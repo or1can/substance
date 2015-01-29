@@ -18,7 +18,6 @@
 
 namespace Substance\Core\Database\SQL\TableReferences;
 
-use Substance\Core\Alert\Alert;
 use Substance\Core\Database\SQL\Component;
 
 /**

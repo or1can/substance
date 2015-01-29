@@ -21,7 +21,6 @@ namespace Substance\Core\Database\SQL\Components;
 use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\Column;
 use Substance\Core\Database\SQL\Component;
-use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\Query;
 
 /**

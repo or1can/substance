@@ -28,7 +28,6 @@ use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\Expressions\AndExpression;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\CommaExpression;
-use Substance\Core\Database\SQL\Expressions\TableNameExpression;
 use Substance\Core\Database\SQL\Query;
 use Substance\Core\Database\SQL\TableReference;
 use Substance\Core\Database\SQL\TableReferences\InnerJoin;

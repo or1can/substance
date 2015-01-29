@@ -18,8 +18,6 @@
 
 namespace Substance\Core\Database\SQL;
 
-use Substance\Core\Alert\Alert;
-
 /**
  * Represents table references in queries.
  *
