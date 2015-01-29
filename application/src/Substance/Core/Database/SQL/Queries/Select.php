@@ -35,6 +35,7 @@ use Substance\Core\Database\SQL\TableReferences\JoinCondition;
 use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
 use Substance\Core\Database\SQL\TableReferences\LeftJoin;
 use Substance\Core\Database\SQL\TableReferences\TableName;
+use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
 
 /**
  * Represents a SELECT database query.
@@ -140,13 +141,29 @@ class Select extends Query {
   }
 
   /**
-   * Adds an expression to the select list
+   * Adds a column to the select list.
    *
-   * @param Expression $expression
+   * @param Column $column the column to add
    * @return self
    */
   public function addColumn( Column $column ) {
     $this->select_list->add( $this, $column );
+    return $this;
+  }
+
+  /**
+   * Adds an expression as a column to the select list.
+   *
+   * @param Expression $expression the expression to add a column for.
+   * @param string $alias the alias for the column or NULL for no alias.
+   * @return self
+   */
+  public function addExpression( Expression $expression, $alias = NULL ) {
+    if ( isset( $alias ) ) {
+      $this->addColumn( new ColumnWithAlias( $expression, $alias ) );
+    } else {
+      $this->addColumn( $expression );
+    }
     return $this;
   }
 

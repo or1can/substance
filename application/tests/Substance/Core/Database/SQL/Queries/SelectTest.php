@@ -64,11 +64,27 @@ class SelectTest extends AbstractDatabaseTest {
       ->build( $this->connection );
     $this->assertEquals( 'SELECT `column1` AS `col` FROM `table`', $sql );
 
+    // Try a query with an explicitly stated column and alias using add
+    // expression method.
+    $sql = Select::select('table')
+      ->distinct( FALSE )
+      ->addExpression( new ColumnNameExpression('column1'), 'col' )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT `column1` AS `col` FROM `table`', $sql );
+
     // Try a query with an explicitly stated column and alias from a table with
     // an alias.
     $sql = Select::select( 'table', 't' )
       ->distinct( FALSE )
       ->addColumn( new ColumnWithAlias( new ColumnNameExpression('column1'), 'col' ) )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT `column1` AS `col` FROM `table` AS `t`', $sql );
+
+    // Try a query with an explicitly stated column and alias from a table with
+    // an alias using add expression method.
+    $sql = Select::select( 'table', 't' )
+      ->distinct( FALSE )
+      ->addExpression( new ColumnNameExpression('column1'), 'col' )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT `column1` AS `col` FROM `table` AS `t`', $sql );
   }
