@@ -167,20 +167,6 @@ class Select extends Query {
     return $this;
   }
 
-  /**
-   * Converts the specified array to a string, adding each element sequentially
-   * to the string after formatting with the specified formatter, separating
-   * each element with the specified separator.
-   *
-   * @param array $array the array to covert to a string.
-   * @param callable $formatter a callback that will format each item in the
-   * array.
-   * @param string $separator a string to separate each item
-   */
-  public static function arrayToString( array $array, callable $formatter, $separator ) {
-    return implode( $separator, array_map( $formatter, $array ) );
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Query::build()
    */
