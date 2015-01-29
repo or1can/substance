@@ -19,7 +19,7 @@
 namespace Substance\Core\Database\SQL\TableReferences;
 
 use Substance\Core\Database\AbstractDatabaseTest;
-use Substance\Core\Database\SQL\Expressions\ColumnAliasExpression;
+use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Queries\Select;
 
@@ -53,7 +53,7 @@ class TableNameTest extends AbstractDatabaseTest {
    * is allowed.
    */
   public function testBuildOneColumnOneTable() {
-    $expression = new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' );
+    $expression = new ColumnWithAlias( new ColumnNameExpression('column1'), 'col' );
     $expression = new TableName( 'table', 'col' );
     // If we get to this point, the test is passed as otherwise an exception
     // would be thrown

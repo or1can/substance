@@ -16,22 +16,25 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\SQL\Expressions;
+namespace Substance\Core\Database\SQL\Columns;
 
 use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
+use Substance\Core\Database\SQL\Expressions\AndExpression;
+use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Database\SQL\TableReferences\TableName;
 
 /**
- * Tests the column alias expression.
+ * Tests the column alias.
  */
-class ColumnAliasExpressionTest extends AbstractDatabaseTest {
+class ColumnWithAliasTest extends AbstractDatabaseTest {
 
   /**
    * Test a column alias for a simple column expression.
    */
   public function testBuildOnColumn() {
-    $expression = new ColumnAliasExpression( new ColumnNameExpression('column'), 'col' );
+    $expression = new ColumnWithAlias( new ColumnNameExpression('column'), 'col' );
     $sql = $expression->build( $this->connection );
 
     $this->assertEquals( '`column` AS `col`', $sql );
@@ -42,7 +45,7 @@ class ColumnAliasExpressionTest extends AbstractDatabaseTest {
    */
   public function testBuildOnInfixExpression() {
     $infix = new AndExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') );
-    $expression = new ColumnAliasExpression( $infix, 'col' );
+    $expression = new ColumnWithAlias( $infix, 'col' );
     $sql = $expression->build( $this->connection );
 
     $this->assertEquals( '`column1` AND `column2` AS `col`', $sql );
@@ -53,7 +56,7 @@ class ColumnAliasExpressionTest extends AbstractDatabaseTest {
    * is allowed.
    */
   public function testBuildOneColumnOneTable() {
-    $expression = new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' );
+    $expression = new ColumnWithAlias( new ColumnNameExpression('column1'), 'col' );
     $expression = new TableName( 'table', 'col' );
     // If we get to this point, the test is passed as otherwise an exception
     // would be thrown
@@ -64,8 +67,8 @@ class ColumnAliasExpressionTest extends AbstractDatabaseTest {
    * allowed.
    */
   public function testConstructDuplicateColumn() {
-    $expression = new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' );
-    $expression = new ColumnAliasExpression( new ColumnNameExpression('column2'), 'col' );
+    $expression = new ColumnWithAlias( new ColumnNameExpression('column1'), 'col' );
+    $expression = new ColumnWithAlias( new ColumnNameExpression('column2'), 'col' );
     // If we get to this point, the test is passed as otherwise an exception
     // would be thrown
   }
@@ -78,9 +81,9 @@ class ColumnAliasExpressionTest extends AbstractDatabaseTest {
    */
   public function testSelectWithDuplicateColumnAlias() {
     $query = Select::select('table');
-    $expression = new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' );
+    $expression = new ColumnWithAlias( new ColumnNameExpression('column1'), 'col' );
     $query->addColumn( $expression );
-    $expression = new ColumnAliasExpression( new ColumnNameExpression('column2'), 'col' );
+    $expression = new ColumnWithAlias( new ColumnNameExpression('column2'), 'col' );
     $query->addColumn( $expression );
   }
 

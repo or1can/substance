@@ -20,7 +20,7 @@ namespace Substance\Core\Database\SQL;
 
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Database;
-use Substance\Core\Database\SQL\Expressions\ColumnAliasExpression;
+use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Database\SQL\TableReferences\TableName;
 
@@ -47,15 +47,15 @@ abstract class Query {
   /**
    * Defines the specifed column alias for this query.
    *
-   * @param ColumnAliasExpression $expression the new column alias.
+   * @param ColumnWithAlias $column the new column alias.
    */
-  public function defineColumnAlias( ColumnAliasExpression $expression ) {
-    if ( $this->hasColumnAlias( $expression->getAlias() ) ) {
+  public function defineColumnAlias( ColumnWithAlias $column ) {
+    if ( $this->hasColumnAlias( $column->getAlias() ) ) {
       // TODO - Would an Illegal argument alert be useful?
       throw Alert::alert( 'Duplicate column alias', 'You can only define a column alias once in a query' )
-        ->culprit( 'column alias', $expression->getAlias() );
+        ->culprit( 'column alias', $column->getAlias() );
     } else {
-      $this->aliases_column[ $expression->getAlias() ] = $expression;
+      $this->aliases_column[ $column->getAlias() ] = $column;
     }
   }
 

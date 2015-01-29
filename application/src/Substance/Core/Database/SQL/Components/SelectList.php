@@ -23,7 +23,6 @@ use Substance\Core\Database\SQL\Column;
 use Substance\Core\Database\SQL\Component;
 use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\Query;
-use Substance\Core\Database\SQL\QueryLocation;
 
 /**
  * Represents the select list in a SELECT query.
@@ -33,7 +32,7 @@ use Substance\Core\Database\SQL\QueryLocation;
  * part of
  *     SELECT column1, column2 FROM table
  */
-class SelectList implements Component, QueryLocation {
+class SelectList implements Component {
 
   /**
    * @var array select list columns.

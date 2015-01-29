@@ -30,8 +30,7 @@ interface Column extends Component {
    * specified location.
    *
    * @param Query $query the query this expression is about to be added to
-   * @param QueryLocation $location the location within the query
    */
-  public function aboutToAddQuery( Query $query, QueryLocation $location );
+  public function aboutToAddQuery( Query $query );
 
 }

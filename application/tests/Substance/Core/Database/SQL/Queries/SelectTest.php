@@ -20,8 +20,8 @@ namespace Substance\Core\Database\SQL\Queries;
 
 use Substance\Core\Database\AbstractDatabaseTest;
 use Substance\Core\Database\SQL\Columns\AllColumns;
+use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
 use Substance\Core\Database\SQL\Components\OrderBy;
-use Substance\Core\Database\SQL\Expressions\ColumnAliasExpression;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\CommaExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
@@ -60,7 +60,7 @@ class SelectTest extends AbstractDatabaseTest {
     // Try a query with an explicitly stated column and alias.
     $sql = Select::select('table')
       ->distinct( FALSE )
-      ->addColumn( new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' ) )
+      ->addColumn( new ColumnWithAlias( new ColumnNameExpression('column1'), 'col' ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT `column1` AS `col` FROM `table`', $sql );
 
@@ -68,7 +68,7 @@ class SelectTest extends AbstractDatabaseTest {
     // an alias.
     $sql = Select::select( 'table', 't' )
       ->distinct( FALSE )
-      ->addColumn( new ColumnAliasExpression( new ColumnNameExpression('column1'), 'col' ) )
+      ->addColumn( new ColumnWithAlias( new ColumnNameExpression('column1'), 'col' ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT `column1` AS `col` FROM `table` AS `t`', $sql );
   }

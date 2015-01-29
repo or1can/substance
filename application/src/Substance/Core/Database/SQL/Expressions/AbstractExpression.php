@@ -20,7 +20,6 @@ namespace Substance\Core\Database\SQL\Expressions;
 
 use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\Query;
-use Substance\Core\Database\SQL\QueryLocation;
 
 /**
  * Represents an alias in a query, e.g.
@@ -35,7 +34,7 @@ abstract class AbstractExpression implements Expression {
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Expression::aboutToAddQuery()
    */
-  public function aboutToAddQuery( Query $query, QueryLocation $location ) {
+  public function aboutToAddQuery( Query $query ) {
     // No-op
   }
 

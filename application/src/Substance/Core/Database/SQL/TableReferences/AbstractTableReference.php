@@ -18,9 +18,6 @@
 
 namespace Substance\Core\Database\SQL\TableReferences;
 
-use Substance\Core\Database\SQL\Expression;
-use Substance\Core\Database\SQL\Query;
-use Substance\Core\Database\SQL\QueryLocation;
 use Substance\Core\Database\SQL\TableReference;
 
 /**
