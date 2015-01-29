@@ -18,7 +18,6 @@
 
 namespace Substance\Core\Database\SQL\Queries;
 
-use Substance\Core\Database\AbstractDatabaseTest;
 use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
 use Substance\Core\Database\SQL\Components\OrderBy;
@@ -26,11 +25,12 @@ use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Queries\Select;
+use Substance\Core\Database\SQL\QueryTest;
 
 /**
  * Tests select queries.
  */
-class SelectTest extends AbstractDatabaseTest {
+class SelectTest extends QueryTest {
 
   /**
    * Test a build all, with one column, no join, no where, no group, no having,

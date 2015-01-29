@@ -50,7 +50,9 @@ abstract class Query {
    * @param ColumnWithAlias $column the new column alias.
    */
   public function defineColumnAlias( ColumnWithAlias $column ) {
-    if ( $this->hasColumnAlias( $column->getAlias() ) ) {
+    // Check if the alias already exists, ignoring reserved aliases as we might
+    // actually be defining them...
+    if ( $this->hasColumnAlias( $column->getAlias(), TRUE ) ) {
       // TODO - Would an Illegal argument alert be useful?
       throw Alert::alert( 'Duplicate column alias', 'You can only define a column alias once in a query' )
         ->culprit( 'column alias', $column->getAlias() );
@@ -87,13 +89,21 @@ abstract class Query {
   }
 
   /**
-   * Checks if the specified column alias has been defined for this query.
+   * Checks if the specified column alias has been defined (or reserved) for
+   * this query.
    *
    * @param string $alias the column alias to check.
-   * @return boolean TRUE if the alias already exists and FALSE otherwise.
+   * @param boolean $ignore_reserved TRUE to ignore reserved aliases when
+   * checking if the column alias already exists.
+   * @return boolean TRUE if the alias already exists or has been reserved, and
+   * FALSE otherwise.
    */
-  public function hasColumnAlias( $alias ) {
-    return array_key_exists( $alias, $this->aliases_column );
+  public function hasColumnAlias( $alias, $ignore_reserved = FALSE ) {
+    if ( $ignore_reserved ) {
+      return isset( $this->aliases_column[ $alias ] );
+    } else {
+      return array_key_exists( $alias, $this->aliases_column );
+    }
   }
 
   /**
@@ -114,6 +124,40 @@ abstract class Query {
    */
   public function hasTable( $table ) {
     return array_key_exists( $table, $this->tables );
+  }
+
+  /**
+   * Reserve the specified column alias.
+   *
+   * This will automatically append a unique suffix if the specified alias
+   * already exists. For example, trying to reserve the already defined column
+   * alias "col" might acutally reserve "col2" or even "col3" if "col2" is
+   * already defined.
+   *
+   * This allows you to suggest an alias in a query, but not have fatal errors
+   * if it already exists, e.g.
+   *
+   *     $query->addExpression( NULL, $myalias = $query->reserveColumnAlias('col') );
+   *
+   * so $myalias will contain the unique alias for use elsewhere in the query.
+   *
+   * @param string $alias the alias to reserve.
+   * @return string the reserved unique alias.
+   */
+  public function reserveColumnAlias( $alias ) {
+    $reserved_alias = $alias;
+    if ( $this->hasColumnAlias( $reserved_alias ) ) {
+      // Generate unique suffix.
+      // NOTE - If the alias "col" already exists, we'll skip "col1" and start
+      // with "col2" - if we knew there would be more than one "col" alias,
+      // "col" would have been "col1"...
+      $suffix = 2;
+      do {
+        $reserved_alias = $alias . $suffix++;
+      } while ( $this->hasColumnAlias( $reserved_alias ) );
+    }
+    // Now reserve the alias.
+    $this->aliases_column[ $reserved_alias ] = NULL;
   }
 
   /**
