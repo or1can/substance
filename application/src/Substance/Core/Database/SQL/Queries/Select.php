@@ -20,14 +20,13 @@ namespace Substance\Core\Database\SQL\Queries;
 
 use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\Column;
+use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
 use Substance\Core\Database\SQL\Component;
-use Substance\Core\Database\SQL\Components\Comma;
+use Substance\Core\Database\SQL\Components\ComponentList;
 use Substance\Core\Database\SQL\Components\OrderBy;
-use Substance\Core\Database\SQL\Components\SelectList;
 use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\Expressions\AndExpression;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
-use Substance\Core\Database\SQL\Expressions\CommaExpression;
 use Substance\Core\Database\SQL\Query;
 use Substance\Core\Database\SQL\TableReference;
 use Substance\Core\Database\SQL\TableReferences\InnerJoin;
@@ -35,7 +34,6 @@ use Substance\Core\Database\SQL\TableReferences\JoinCondition;
 use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
 use Substance\Core\Database\SQL\TableReferences\LeftJoin;
 use Substance\Core\Database\SQL\TableReferences\TableName;
-use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
 
 /**
  * Represents a SELECT database query.
@@ -49,9 +47,9 @@ class Select extends Query {
   protected $distinct = FALSE;
 
   /**
-   * @var Expression group by expression.
+   * @var ComponentList the list of expressions making up the group by.
    */
-  protected $group_by = NULL;
+  protected $group_by;
 
   /**
    * @var Expression having expression.
@@ -74,12 +72,12 @@ class Select extends Query {
   protected $offset;
 
   /**
-   * @var Component order by component.
+   * @var ComponentList the list of expressions making up the order by
    */
-  protected $order_by = NULL;
+  protected $order_by;
 
   /**
-   * @var SelectList select list expression.
+   * @var ComponentList the list of columns making up the select list.
    */
   protected $select_list;
 
@@ -99,7 +97,7 @@ class Select extends Query {
    * @param TableReference $table the table to select data from.
    */
   public function __construct( TableReference $table ) {
-    $this->select_list = new SelectList();
+    $this->select_list = new ComponentList();
     $this->table = $table;
     // Define this table in the query, so other joins do not clash with it.
     $this->table->define( $this );
@@ -147,7 +145,8 @@ class Select extends Query {
    * @return self
    */
   public function addColumn( Column $column ) {
-    $this->select_list->add( $this, $column );
+    $column->aboutToAddQuery( $this );
+    $this->select_list->add( $column );
     return $this;
   }
 
@@ -165,6 +164,20 @@ class Select extends Query {
       $this->addColumn( $expression );
     }
     return $this;
+  }
+
+  /**
+   * Converts the specified array to a string, adding each element sequentially
+   * to the string after formatting with the specified formatter, separating
+   * each element with the specified separator.
+   *
+   * @param array $array the array to covert to a string.
+   * @param callable $formatter a callback that will format each item in the
+   * array.
+   * @param string $separator a string to separate each item
+   */
+  public static function arrayToString( array $array, callable $formatter, $separator ) {
+    return implode( $separator, array_map( $formatter, $array ) );
   }
 
   /* (non-PHPdoc)
@@ -231,12 +244,9 @@ class Select extends Query {
    */
   public function groupBy( Expression $expression ) {
     if ( is_null( $this->group_by ) ) {
-      $this->group_by = $expression;
-    } elseif ( $this->group_by instanceof CommaExpression ) {
-      $this->group_by->addExpressionToSequence( $expression );
-    } else {
-      $this->group_by = new CommaExpression( $this->group_by, $expression );
+      $this->group_by = new ComponentList();
     }
+    $this->group_by->add( $expression );
     return $this;
   }
 
@@ -444,16 +454,10 @@ class Select extends Query {
    * @return self
    */
   public function orderBy( Expression $expression, $direction = 'ASC' ) {
-    $order_by = new OrderBy( $expression, $direction );
-    // FIXME - Should we handle a CommaExpression as a list of order by's here
-    // or should we get rid of the CommaExpression?
     if ( is_null( $this->order_by ) ) {
-      $this->order_by = $order_by;
-    } elseif ( $this->order_by instanceof Comma ) {
-      $this->order_by->addComponentToSequence( $order_by );
-    } else {
-      $this->order_by = new Comma( $this->order_by, $order_by );
+      $this->order_by = new ComponentList();
     }
+    $this->order_by->add( new OrderBy( $expression, $direction ) );
     return $this;
   }
 
@@ -464,14 +468,12 @@ class Select extends Query {
    * clause. Each expression in the supplied array is added in sequence using
    * the specified direction, e.g.
    *     $select = new Select(...);
-   *     $order_by = new CommaExpression(
+   *     $order_by = array(
    *         new ColumnNameExpression('col1'),
    *         new ColumnNameExpression('col2'),
-   *     );
-   *     $order_by->addExpressionToSequence(
    *         new ColumnNameExpression('col3'),
    *     );
-   *     $select->orderByExpressions( $order_by->toArray(), 'ASC' );
+   *     $select->orderByExpressions( $order_by, 'ASC' );
    * would generate the following SQL:
    *     SELECT ... ORDER BY col1 ASC, col2 ASC, col3 ASC
    *

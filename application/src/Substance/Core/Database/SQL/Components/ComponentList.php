@@ -24,44 +24,35 @@ use Substance\Core\Database\SQL\Component;
 use Substance\Core\Database\SQL\Query;
 
 /**
- * Represents the select list in a SELECT query.
+ * Represents a component list in a query.
  *
  * e.g. the
  *     column1, column2
  * part of
  *     SELECT column1, column2 FROM table
  */
-class SelectList implements Component {
+class ComponentList implements Component {
 
   /**
-   * @var array select list columns.
+   * @var Component[] list of components
    */
-  protected $columns = array();
+  protected $components = array();
 
   /**
-   * Adds the column to the select list.
+   * Adds the component to the list.
    *
-   * @param Column $column the column to add to the select list.
+   * @param Component $component the component to add to the list.
    */
-  public function add( Query $query, Column $column ) {
-    // Let the expression handle any pre-conditions, etc.
-    $column->aboutToAddQuery( $query, $this );
-    // Now add the expression to the select list.
-    $this->columns[] = $column;
+  public function add( Component $component ) {
+    $this->components[] = $component;
   }
 
   public function __toString() {
-    $string = '';
-    if ( is_null( $this->columns ) ) {
-      $string .= '/* No select expressions */';
-    } else {
-      $parts = array();
-      foreach ( $this->columns as $column ) {
-        $parts[] = (string) $column;
-      }
-      $string .= implode( ', ', $parts );
+    $parts = array();
+    foreach ( $this->columns as $column ) {
+      $parts[] = (string) $column;
     }
-    return $string;
+    return implode( ', ', $parts );
   }
 
   /* (non-PHPdoc)
@@ -69,14 +60,11 @@ class SelectList implements Component {
    */
   public function build( Database $database ) {
     $string = '';
-    if ( is_null( $this->columns ) ) {
-      $string .= '/* No select expressions */';
-    } else {
-      $parts = array();
-      foreach ( $this->columns as $column ) {
-        $parts[] = $column->build( $database );
-      }
-      $string .= implode( ', ', $parts );
+    $glue = '';
+    foreach ( $this->components as $component ) {
+      $string .= $glue;
+      $string .= $component->build( $database );
+      $glue = ', ';
     }
     return $string;
   }

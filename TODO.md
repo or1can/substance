@@ -13,8 +13,6 @@ TODO
     * Expressions
       * Functions [HIGH]
       * 
-    * Select list cannot be an expression, must be standalone, or re-integrated
-      with select query.
     * Unions [MEDIUM]
     * Count queries [MEDIUM]
     * FOR UPDATE [MEDIUM]

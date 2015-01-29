@@ -20,9 +20,9 @@ namespace Substance\Core\Database\SQL\TableReferences\JoinConditions;
 
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Database;
+use Substance\Core\Database\SQL\Components\ComponentList;
 use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
-use Substance\Core\Database\SQL\Expressions\CommaExpression;
 use Substance\Core\Database\SQL\TableReferences\JoinCondition;
 
 /**
@@ -31,9 +31,9 @@ use Substance\Core\Database\SQL\TableReferences\JoinCondition;
 class Using implements JoinCondition {
 
   /**
-   * @var Expression the using condition expression.
+   * @var ComponentList the using condition component list.
    */
-  protected $expression;
+  protected $columns;
 
   /**
    * Constructs a USING join condition on the specific column.
@@ -41,7 +41,8 @@ class Using implements JoinCondition {
    * @param ColumnNameExpression $name the column name
    */
   public function __construct( ColumnNameExpression $name ) {
-    $this->expression = $name;
+    $this->columns = new ComponentList();
+    $this->columns->add( $name );
   }
 
   /**
@@ -76,7 +77,7 @@ class Using implements JoinCondition {
 
   public function __toString() {
     $string = 'USING ( ';
-    $string .= (string) $this->expression;
+    $string .= (string) $this->columns;
     $string .= ' )';
     return $string;
   }
@@ -87,11 +88,7 @@ class Using implements JoinCondition {
    * @param ColumnNameExpression $name the column name to add to this condition.
    */
   public function addColumnName( ColumnNameExpression $name ) {
-    if ( $this->expression instanceof CommaExpression ) {
-      $this->expression->addExpressionToSequence( $name );
-    } else {
-      $this->expression = new CommaExpression( $this->expression, $name );
-    }
+    $this->columns->add( $name );
   }
 
   /* (non-PHPdoc)
@@ -99,7 +96,7 @@ class Using implements JoinCondition {
    */
   public function build( Database $database ) {
     $string = 'USING ( ';
-    $string .= $this->expression->build( $database );
+    $string .= $this->columns->build( $database );
     $string .= ' )';
     return $string;
   }

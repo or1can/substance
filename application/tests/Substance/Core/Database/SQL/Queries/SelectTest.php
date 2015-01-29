@@ -23,7 +23,6 @@ use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
 use Substance\Core\Database\SQL\Components\OrderBy;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
-use Substance\Core\Database\SQL\Expressions\CommaExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Queries\Select;
@@ -235,11 +234,11 @@ class SelectTest extends AbstractDatabaseTest {
     // general expressions using the default ascending direction.
     $select = Select::select('table')
       ->addColumn( new AllColumns() );
-    $order_by = new CommaExpression(
+    $order_by = array(
       new ColumnNameExpression('column1'),
       new ColumnNameExpression('column2')
     );
-    $sql = $select->orderByExpressions( $order_by->toArray() )
+    $sql = $select->orderByExpressions( $order_by )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` ASC, `column2` ASC', $sql );
 
@@ -247,11 +246,11 @@ class SelectTest extends AbstractDatabaseTest {
     // general expressions using a specified ascending direction.
     $select = Select::select('table')
       ->addColumn( new AllColumns() );
-    $order_by = new CommaExpression(
+    $order_by = array(
       new ColumnNameExpression('column1'),
       new ColumnNameExpression('column2')
     );
-    $sql = $select->orderByExpressions( $order_by->toArray(), 'ASC' )
+    $sql = $select->orderByExpressions( $order_by, 'ASC' )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` ASC, `column2` ASC', $sql );
 
@@ -259,11 +258,11 @@ class SelectTest extends AbstractDatabaseTest {
     // general expressions using a specified descending direction.
     $select = Select::select('table')
       ->addColumn( new AllColumns() );
-    $order_by = new CommaExpression(
+    $order_by = array(
       new ColumnNameExpression('column1'),
       new ColumnNameExpression('column2')
     );
-    $sql = $select->orderByExpressions( $order_by->toArray(), 'DESC' )
+    $sql = $select->orderByExpressions( $order_by, 'DESC' )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table` ORDER BY `column1` DESC, `column2` DESC', $sql );
   }
