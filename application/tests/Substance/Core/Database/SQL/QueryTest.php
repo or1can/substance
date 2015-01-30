@@ -22,6 +22,7 @@ use Substance\Core\Database\AbstractDatabaseTest;
 use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Queries\Select;
+use Substance\Core\Database\SQL\TableReferences\TableName;
 
 /**
  * Tests for the abstract query class.
@@ -29,8 +30,8 @@ use Substance\Core\Database\SQL\Queries\Select;
 abstract class QueryTest extends AbstractDatabaseTest {
 
   /**
-   * Test that defining multiple column aliases with the same alias in a single query is
-   * not allowed.
+   * Test that defining multiple column aliases with the same alias in a single
+   * query is not allowed.
    *
    * @expectedException Substance\Core\Alert\Alert
    */
@@ -42,6 +43,19 @@ abstract class QueryTest extends AbstractDatabaseTest {
   }
 
   /**
+   * Test that defining multiple table aliases with the same alias in a single
+   * query is not allowed.
+   *
+   * @expectedException Substance\Core\Alert\Alert
+   */
+  public function testDefineDuplicateTableAlias() {
+    // TODO - This should really use the child classes query type.
+    $query = Select::select('table');
+    $query->defineTableName( new TableName( 'table1', 't' ) );
+    $query->defineTableName( new TableName( 'table2', 't' ) );
+  }
+
+  /**
    * Test defining one column aliases.
    */
   public function testDefineOneColumnAlias() {
@@ -50,6 +64,17 @@ abstract class QueryTest extends AbstractDatabaseTest {
     $this->assertFalse( $query->hasColumnAlias( 'col' ) );
     $query->defineColumnAlias( new ColumnWithAlias( new ColumnNameExpression('column1'), 'col' ) );
     $this->assertTrue( $query->hasColumnAlias( 'col' ) );
+  }
+
+  /**
+   * Test defining one table aliases.
+   */
+  public function testDefineOneTableAlias() {
+    // TODO - This should really use the child classes query type.
+    $query = Select::select('table');
+    $this->assertFalse( $query->hasTableAlias('t') );
+    $query->defineTableName( new TableName( 'table1', 't' ) );
+    $this->assertTrue( $query->hasTableAlias('t') );
   }
 
   /**
@@ -69,9 +94,25 @@ abstract class QueryTest extends AbstractDatabaseTest {
   }
 
   /**
-   * Test reserving one column aliases.
+   * Test defining two table aliases.
    */
-  public function testReserveOneColumnAlias() {
+  public function testDefineTwoTableAlias() {
+    // TODO - This should really use the child classes query type.
+    $query = Select::select('table');
+    $this->assertFalse( $query->hasTableAlias( 't1' ) );
+    $this->assertFalse( $query->hasTableAlias( 't2' ) );
+    $query->defineTableName( new TableName( 'table1', 't1' ) );
+    $this->assertTrue( $query->hasTableAlias( 't1' ) );
+    $this->assertFalse( $query->hasTableAlias( 't2' ) );
+    $query->defineTableName( new TableName( 'table2', 't2' ) );
+    $this->assertTrue( $query->hasTableAlias( 't1' ) );
+    $this->assertTrue( $query->hasTableAlias( 't2' ) );
+  }
+
+  /**
+   * Test generating one unique column aliases.
+   */
+  public function testUniqueOneColumnAlias() {
     // TODO - This should really use the child classes query type.
     $query = Select::select('table');
     // Check aliases col, col1 and col2 do not exist.
@@ -85,7 +126,9 @@ abstract class QueryTest extends AbstractDatabaseTest {
     $this->assertFalse( $query->hasColumnAlias( 'col1' ) );
     $this->assertFalse( $query->hasColumnAlias( 'col2' ) );
     // Reserve col
-    $reserved = $query->reserveColumnAlias('col');
+    $reserved = $query->uniqueColumnAlias('col');
+    $this->assertNotNull( $reserved );
+    $this->assertNotEquals( 'col', $reserved );
     // Check alias col and col2 exist and col1 does not exist.
     $this->assertTrue( $query->hasColumnAlias( 'col' ) );
     $this->assertFalse( $query->hasColumnAlias( 'col1' ) );
@@ -98,6 +141,40 @@ abstract class QueryTest extends AbstractDatabaseTest {
     $this->assertTrue( $query->hasColumnAlias( 'col' ) );
     $this->assertFalse( $query->hasColumnAlias( 'col1' ) );
     $this->assertTrue( $query->hasColumnAlias( 'col2' ) );
+  }
+
+  /**
+   * Test generating one unique table aliases.
+   */
+  public function testUniqueOneTableAlias() {
+    // TODO - This should really use the child classes query type.
+    $query = Select::select('table');
+    // Check aliases col, col1 and col2 do not exist.
+    $this->assertFalse( $query->hasTableAlias( 't' ) );
+    $this->assertFalse( $query->hasTableAlias( 't1' ) );
+    $this->assertFalse( $query->hasTableAlias( 't2' ) );
+    // Define t
+    $query->defineTableName( new TableName( 'table', 't' ) );
+    // Check alias t exists and t1 and t2 do not exist.
+    $this->assertTrue( $query->hasTableAlias( 't' ) );
+    $this->assertFalse( $query->hasTableAlias( 't1' ) );
+    $this->assertFalse( $query->hasTableAlias( 't2' ) );
+    // Reserve t
+    $reserved = $query->uniqueTableAlias('t');
+    $this->assertNotNull( $reserved );
+    $this->assertNotEquals( 't', $reserved );
+    // Check alias t and t2 exist and t1 does not exist.
+    $this->assertTrue( $query->hasTableAlias( 't' ) );
+    $this->assertFalse( $query->hasTableAlias( 't1' ) );
+    $this->assertTrue( $query->hasTableAlias( 't2' ) );
+    // Check that alias t2 was reserved.
+    $this->assertFalse( $query->hasTableAlias( 't2', TRUE ) );
+    // Now define the reserved alias
+    $query->defineTableName( new TableName( 'table', $reserved ) );
+    // Check alias t and t2 exist and t1 does not exist.
+    $this->assertTrue( $query->hasTableAlias( 't' ) );
+    $this->assertFalse( $query->hasTableAlias( 't1' ) );
+    $this->assertTrue( $query->hasTableAlias( 't2' ) );
   }
 
 }
