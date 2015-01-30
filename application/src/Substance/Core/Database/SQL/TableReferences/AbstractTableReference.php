@@ -18,11 +18,19 @@
 
 namespace Substance\Core\Database\SQL\TableReferences;
 
+use Substance\Core\Database\SQL\Query;
 use Substance\Core\Database\SQL\TableReference;
 
 /**
  * An abstract table reference, for easily building concrete table references.
  */
 abstract class AbstractTableReference implements TableReference {
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
+   */
+  public function aboutToAddQuery( Query $query ) {
+    // Nothing to do.
+  }
 
 }

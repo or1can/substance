@@ -21,6 +21,7 @@ namespace Substance\Core\Database\SQL\Expressions;
 use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\PostfixExpression;
+use Substance\Core\Database\SQL\Query;
 
 /**
  * An asbtract postfix expression, for easily building simple postifx expressions.
@@ -42,6 +43,13 @@ abstract class AbstractPostfixExpression extends AbstractExpression implements P
     $string .= ' ';
     $string .= $this->getSymbol();
     return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
+   */
+  public function aboutToAddQuery( Query $query ) {
+    $this->left->aboutToAddQuery( $query );
   }
 
   /* (non-PHPdoc)

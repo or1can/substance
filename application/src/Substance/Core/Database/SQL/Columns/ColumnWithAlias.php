@@ -62,7 +62,7 @@ class ColumnWithAlias implements Column {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Column::aboutToAddQuery()
+   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
    */
   public function aboutToAddQuery( Query $query ) {
     // Nothing to do.

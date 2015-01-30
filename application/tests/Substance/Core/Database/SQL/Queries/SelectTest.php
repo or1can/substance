@@ -360,13 +360,16 @@ class SelectTest extends QueryTest {
    * having, no limit, no order and no offset.
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupOneHavingNoOrderNoLimitNoOffset() {
-    $sql = Select::select('table')
+    $select = Select::select('table')
       ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
-      ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->build( $this->connection );
+      ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = 5', $sql );
+    // We've used a literal value here, so we must check for placeholders and
+    // arguments.
+    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = :dbph', $sql );
+    $this->assertEquals( array( ':dbph' => 5 ), $select->getArguments() );
   }
 
   /**
@@ -374,14 +377,17 @@ class SelectTest extends QueryTest {
    * having, one limit, no order and no offset.
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupOneHavingNoOrderOneLimitNoOffset() {
-    $sql = Select::select('table')
+    $select = Select::select('table')
       ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->limit( 1 )
-      ->build( $this->connection );
+      ->limit( 1 );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = 5 LIMIT 1', $sql );
+    // We've used a literal value here, so we must check for placeholders and
+    // arguments.
+    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = :dbph LIMIT 1', $sql );
+    $this->assertEquals( array( ':dbph' => 5 ), $select->getArguments() );
   }
 
   /**
@@ -389,14 +395,17 @@ class SelectTest extends QueryTest {
    * having, no limit, one order and no offset.
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupOneHavingOneOrderNoLimitNoOffset() {
-    $sql = Select::select('table')
+    $select = Select::select('table')
       ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->orderBy( new ColumnNameExpression('column1') )
-      ->build( $this->connection );
+      ->orderBy( new ColumnNameExpression('column1') );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = 5 ORDER BY `column1` ASC', $sql );
+    // We've used a literal value here, so we must check for placeholders and
+    // arguments.
+    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = :dbph ORDER BY `column1` ASC', $sql );
+    $this->assertEquals( array( ':dbph' => 5 ), $select->getArguments() );
   }
 
   /**
@@ -404,15 +413,18 @@ class SelectTest extends QueryTest {
    * having, one limit, one order and no offset.
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupOneHavingOneOrderOneLimitNoOffset() {
-    $sql = Select::select('table')
+    $select = Select::select('table')
       ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->orderBy( new ColumnNameExpression('column1') )
-      ->limit( 1 )
-      ->build( $this->connection );
+      ->limit( 1 );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = 5 ORDER BY `column1` ASC LIMIT 1', $sql );
+    // We've used a literal value here, so we must check for placeholders and
+    // arguments.
+    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = :dbph ORDER BY `column1` ASC LIMIT 1', $sql );
+    $this->assertEquals( array( ':dbph' => 5 ), $select->getArguments() );
   }
 
   /**
@@ -420,14 +432,17 @@ class SelectTest extends QueryTest {
    * having, no limit, no order and no offset.
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupTwoHavingNoOrderNoLimitNoOffset() {
-    $sql = Select::select('table')
+    $select = Select::select('table')
       ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->having( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) )
-      ->build( $this->connection );
+      ->having( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = 5 AND `column2` = \'hello\'', $sql );
+    // We've used a literal value here, so we must check for placeholders and
+    // arguments.
+    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = :dbph AND `column2` = :dbph_2', $sql );
+    $this->assertEquals( array( ':dbph' => 5, ':dbph_2' => 'hello' ), $select->getArguments() );
   }
 
   /**
@@ -435,15 +450,18 @@ class SelectTest extends QueryTest {
    * having, one limit, no order and no offset.
    */
   public function testBuildAllOneColumnNoJoinNoWhereOneGroupTwoHavingNoOrderOneLimitNoOffset() {
-    $sql = Select::select('table')
+    $select = Select::select('table')
       ->addColumn( new AllColumns() )
       ->groupBy( new ColumnNameExpression('column1') )
       ->having( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->having( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) )
-      ->limit( 1 )
-      ->build( $this->connection );
+      ->limit( 1 );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = 5 AND `column2` = \'hello\' LIMIT 1', $sql );
+    // We've used a literal value here, so we must check for placeholders and
+    // arguments.
+    $this->assertEquals( 'SELECT * FROM `table` GROUP BY `column1` HAVING `column1` = :dbph AND `column2` = :dbph_2 LIMIT 1', $sql );
+    $this->assertEquals( array( ':dbph' => 5, ':dbph_2' => 'hello' ), $select->getArguments() );
   }
 
   /**
@@ -466,12 +484,15 @@ class SelectTest extends QueryTest {
    * having, no limit, no order and offset.
    */
   public function testBuildAllOneColumnNoJoinOneWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
-    $sql = Select::select('table')
+    $select = Select::select('table')
       ->addColumn( new AllColumns() )
-      ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->build( $this->connection );
+      ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5', $sql );
+    // We've used a literal value here, so we must check for placeholders and
+    // arguments.
+    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = :dbph', $sql );
+    $this->assertEquals( array( ':dbph' => 5 ), $select->getArguments() );
   }
 
   /**
@@ -479,13 +500,16 @@ class SelectTest extends QueryTest {
    * having, no limit, one order and offset.
    */
   public function testBuildAllOneColumnNoJoinOneWhereNoGroupNoHavingOneOrderNoLimitNoOffset() {
-    $sql = Select::select('table')
+    $select = Select::select('table')
       ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->orderBy( new ColumnNameExpression('column1') )
-      ->build( $this->connection );
+      ->orderBy( new ColumnNameExpression('column1') );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 ORDER BY `column1` ASC', $sql );
+    // We've used a literal value here, so we must check for placeholders and
+    // arguments.
+    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = :dbph ORDER BY `column1` ASC', $sql );
+    $this->assertEquals( array( ':dbph' => 5 ), $select->getArguments() );
   }
 
   /**
@@ -493,13 +517,16 @@ class SelectTest extends QueryTest {
    * having, one limit, no order and no offset.
    */
   public function testBuildAllOneColumnNoJoinOneWhereOneGroupNoHavingNoOrderNoLimitNoOffset() {
-    $sql = Select::select('table')
+    $select = Select::select('table')
       ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->groupBy( new ColumnNameExpression('column1') )
-      ->build( $this->connection );
+      ->groupBy( new ColumnNameExpression('column1') );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 GROUP BY `column1`', $sql );
+    // We've used a literal value here, so we must check for placeholders and
+    // arguments.
+    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = :dbph GROUP BY `column1`', $sql );
+    $this->assertEquals( array( ':dbph' => 5 ), $select->getArguments() );
   }
 
   /**
@@ -507,14 +534,17 @@ class SelectTest extends QueryTest {
    * having, one limit, no order and no offset.
    */
   public function testBuildAllOneColumnNoJoinOneWhereOneGroupNoHavingNoOrderOneLimitNoOffset() {
-    $sql = Select::select('table')
+    $select = Select::select('table')
       ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->groupBy( new ColumnNameExpression('column1') )
-      ->limit( 1 )
-      ->build( $this->connection );
+      ->limit( 1 );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 GROUP BY `column1` LIMIT 1', $sql );
+    // We've used a literal value here, so we must check for placeholders and
+    // arguments.
+    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = :dbph GROUP BY `column1` LIMIT 1', $sql );
+    $this->assertEquals( array( ':dbph' => 5 ), $select->getArguments() );
   }
 
   /**
@@ -522,14 +552,17 @@ class SelectTest extends QueryTest {
    * having, one limit, one order and no offset.
    */
   public function testBuildAllOneColumnNoJoinOneWhereOneGroupNoHavingOneOrderNoLimitNoOffset() {
-    $sql = Select::select('table')
+    $select = Select::select('table')
       ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->groupBy( new ColumnNameExpression('column1') )
-      ->orderBy( new ColumnNameExpression('column1') )
-      ->build( $this->connection );
+      ->orderBy( new ColumnNameExpression('column1') );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 GROUP BY `column1` ORDER BY `column1` ASC', $sql );
+    // We've used a literal value here, so we must check for placeholders and
+    // arguments.
+    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = :dbph GROUP BY `column1` ORDER BY `column1` ASC', $sql );
+    $this->assertEquals( array( ':dbph' => 5 ), $select->getArguments() );
   }
 
   /**
@@ -537,15 +570,18 @@ class SelectTest extends QueryTest {
    * having, one limit, one order and no offset.
    */
   public function testBuildAllOneColumnNoJoinOneWhereOneGroupNoHavingOneOrderOneLimitNoOffset() {
-    $sql = Select::select('table')
+    $select = Select::select('table')
       ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->groupBy( new ColumnNameExpression('column1') )
       ->orderBy( new ColumnNameExpression('column1') )
-      ->limit( 1 )
-      ->build( $this->connection );
+      ->limit( 1 );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 GROUP BY `column1` ORDER BY `column1` ASC LIMIT 1', $sql );
+    // We've used a literal value here, so we must check for placeholders and
+    // arguments.
+    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = :dbph GROUP BY `column1` ORDER BY `column1` ASC LIMIT 1', $sql );
+    $this->assertEquals( array( ':dbph' => 5 ), $select->getArguments() );
   }
 
   /**
@@ -553,14 +589,17 @@ class SelectTest extends QueryTest {
    * having, no limit, no order and offset.
    */
   public function testBuildAllOneColumnNoJoinThreeWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
-    $sql = Select::select('table')
+    $select = Select::select('table')
       ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->where( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) )
-      ->where( new EqualsExpression( new ColumnNameExpression('column3'), new LiteralExpression( 7 ) ) )
-      ->build( $this->connection );
+      ->where( new EqualsExpression( new ColumnNameExpression('column3'), new LiteralExpression( 7 ) ) );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 AND `column2` = \'hello\' AND `column3` = 7', $sql );
+    // We've used a literal value here, so we must check for placeholders and
+    // arguments.
+    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = :dbph AND `column2` = :dbph_2 AND `column3` = :dbph_3', $sql );
+    $this->assertEquals( array( ':dbph' => 5, ':dbph_2' => 'hello', ':dbph_3' => 7 ), $select->getArguments() );
 //    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 AND `column2` = \'hello\' AND `column3` = 7', (string) $select );
   }
 
@@ -569,16 +608,19 @@ class SelectTest extends QueryTest {
    * having, no limit, one order and offset.
    */
   public function testBuildAllOneColumnNoJoinThreeWhereNoGroupNoHavingOneOrderNoLimitNoOffset() {
-    $sql = Select::select('table')
+    $select = Select::select('table')
       ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
       ->where( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) )
       ->where( new EqualsExpression( new ColumnNameExpression('column3'), new LiteralExpression( 7 ) ) )
-      ->orderBy( new ColumnNameExpression('column1') )
-      ->build( $this->connection );
+      ->orderBy( new ColumnNameExpression('column1') );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 AND `column2` = \'hello\' AND `column3` = 7 ORDER BY `column1` ASC', $sql );
-//    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 AND `column2` = \'hello\' AND `column3` = 7', (string) $select );
+    // We've used a literal value here, so we must check for placeholders and
+    // arguments.
+    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = :dbph AND `column2` = :dbph_2 AND `column3` = :dbph_3 ORDER BY `column1` ASC', $sql );
+    $this->assertEquals( array( ':dbph' => 5, ':dbph_2' => 'hello', ':dbph_3' => 7 ), $select->getArguments() );
+    //    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 AND `column2` = \'hello\' AND `column3` = 7', (string) $select );
   }
 
   /**
@@ -586,13 +628,16 @@ class SelectTest extends QueryTest {
    * no limit, no order and offset.
    */
   public function testBuildAllOneColumnNoJoinTwoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
-    $sql = Select::select('table')
+    $select = Select::select('table')
       ->addColumn( new AllColumns() )
       ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
-      ->where( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) )
-      ->build( $this->connection );
+      ->where( new EqualsExpression( new ColumnNameExpression('column2'), new LiteralExpression('hello') ) );
+    $sql = $select->build( $this->connection );
 
-    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = 5 AND `column2` = \'hello\'', $sql );
+    // We've used a literal value here, so we must check for placeholders and
+    // arguments.
+    $this->assertEquals( 'SELECT * FROM `table` WHERE `column1` = :dbph AND `column2` = :dbph_2', $sql );
+    $this->assertEquals( array( ':dbph' => 5, ':dbph_2' => 'hello' ), $select->getArguments() );
   }
 
   /**

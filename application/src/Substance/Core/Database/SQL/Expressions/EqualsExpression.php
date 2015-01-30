@@ -20,6 +20,7 @@ namespace Substance\Core\Database\SQL\Expressions;
 
 use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\Expression;
+use Substance\Core\Database\SQL\Query;
 
 /**
  * A equals expression, representing an equality test of a left and right
@@ -58,6 +59,14 @@ class EqualsExpression extends AbstractExpression {
       $string .= $this->alias;
     }
     return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
+   */
+  public function aboutToAddQuery( Query $query ) {
+    $this->left->aboutToAddQuery( $query );
+    $this->right->aboutToAddQuery( $query );
   }
 
   /* (non-PHPdoc)

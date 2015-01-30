@@ -23,6 +23,7 @@ use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\Components\ComponentList;
 use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
+use Substance\Core\Database\SQL\Query;
 use Substance\Core\Database\SQL\TableReferences\JoinCondition;
 
 /**
@@ -83,6 +84,13 @@ class Using implements JoinCondition {
     $string .= (string) $this->columns;
     $string .= ' )';
     return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
+   */
+  public function aboutToAddQuery( Query $query ) {
+    // Nothing to do.
   }
 
   /**

@@ -5,7 +5,6 @@ TODO
   * Select
     * Alterations [HIGH]
     * Extensions [HIGH]
-    * Use prepared statements for static and dynamic data [HIGH]
     * Expressions
       * Functions [HIGH]
       * 

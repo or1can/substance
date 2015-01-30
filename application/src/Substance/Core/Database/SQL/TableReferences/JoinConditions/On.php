@@ -20,6 +20,7 @@ namespace Substance\Core\Database\SQL\TableReferences\JoinConditions;
 
 use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\Expression;
+use Substance\Core\Database\SQL\Query;
 use Substance\Core\Database\SQL\TableReferences\JoinCondition;
 
 /**
@@ -40,6 +41,13 @@ class On implements JoinCondition {
     $string = 'ON ';
     $string .= (string) $this->expression;
     return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
+   */
+  public function aboutToAddQuery( Query $query ) {
+    // Nothing to do.
   }
 
   /* (non-PHPdoc)

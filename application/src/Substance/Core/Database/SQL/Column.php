@@ -23,12 +23,4 @@ namespace Substance\Core\Database\SQL;
  */
 interface Column extends Component {
 
-  /**
-   * Should be called before this expression is added to a query at the
-   * specified location.
-   *
-   * @param Query $query the query this expression is about to be added to
-   */
-  public function aboutToAddQuery( Query $query );
-
 }

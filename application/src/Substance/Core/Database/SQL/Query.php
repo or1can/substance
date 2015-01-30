@@ -21,6 +21,7 @@ namespace Substance\Core\Database\SQL;
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
+use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Database\SQL\TableReferences\TableName;
 
@@ -34,6 +35,11 @@ abstract class Query {
   protected $aliases_table = array();
 
   /**
+   * @var array the array of argument placeholders to values.
+   */
+  protected $arguments = array();
+
+  /**
    * Builds this query for the specified database connection.
    *
    * @param Database $database the database connection to build the query
@@ -41,6 +47,28 @@ abstract class Query {
    * @return string the built query as a string.
    */
   abstract public function build( Database $database );
+
+  /**
+   * Defines the specifed argument for this query, returning the unique alias
+   * assigned to it.
+   *
+   * @param LiteralExpression $argument the argument value.
+   * @return string the unique placeholder used for this argument.
+   */
+  public function defineArgument( LiteralExpression $argument ) {
+    // Get a unique placeholder
+    $unique_placeholder = $this->uniquePlaceholder(':dbph');
+    // Check if the alias already exists, ignoring reserved aliases as we might
+    // actually be defining them...
+    if ( $this->hasArgument( $unique_placeholder, TRUE ) ) {
+      // TODO - Would an Illegal argument alert be useful?
+      throw Alert::alert( 'Duplicate argument placeholder', 'You can only define an argument placeholder once in a query' )
+        ->culprit( 'placeholder', $unique_placeholder );
+    } else {
+      $this->arguments[ $unique_placeholder ] = $argument->getValue();
+    }
+    return $unique_placeholder;
+  }
 
   /**
    * Defines the specifed column alias for this query.
@@ -71,6 +99,33 @@ abstract class Query {
         ->culprit( 'table', $table_name );
     } else {
       $this->aliases_table[ $table_name->getReferenceName() ] = $table_name;
+    }
+  }
+
+  /**
+   * Returns the queries arguments.
+   *
+   * @return array the array of argument placeholders to values.
+   */
+  public function getArguments() {
+    return $this->arguments;
+  }
+
+  /**
+   * Checks if the specified column alias has been defined (or reserved) for
+   * this query.
+   *
+   * @param string $alias the column alias to check.
+   * @param boolean $ignore_reserved TRUE to ignore reserved aliases when
+   * checking if the column alias already exists.
+   * @return boolean TRUE if the alias already exists or has been reserved, and
+   * FALSE otherwise.
+   */
+  public function hasArgument( $argument, $ignore_reserved = FALSE ) {
+    if ( $ignore_reserved ) {
+      return isset( $this->arguments[ $argument ] );
+    } else {
+      return array_key_exists( $argument, $this->arguments );
     }
   }
 
@@ -159,6 +214,36 @@ abstract class Query {
     // Now reserve the alias.
     $this->aliases_column[ $unique_alias ] = NULL;
     return $unique_alias;
+  }
+
+  /**
+   * Return a unique placeholder using the specified placeholder as a base.
+   *
+   * If the specified placeholder does not already exist, it will be returned as
+   * is. However, if the specified placeholder is already in use, a unique
+   * suffix will be appended to generate a unique placeholder.
+   *
+   * For example, trying to reserve the already defined placeholder ":ph" might
+   * acutally reserve ":ph_2" or even ":ph_3" if ":ph_2" is already defined.
+   *
+   * @param string $placeholder the placeholder to reserve.
+   * @return string the reserved unique alias.
+   */
+  public function uniquePlaceholder( $argument ) {
+    $unique_argument = $argument;
+    if ( $this->hasArgument( $unique_argument ) ) {
+      // Generate unique suffix.
+      // NOTE - If the alias ":dbph" already exists, we'll skip ":dbph_1" and
+      // start with ":dbph_2" - if we knew there would be more than one ":dbph"
+      // alias, ":dbph" would have been ":dbph1"...
+      $suffix = 2;
+      do {
+        $unique_argument = $argument . '_' . $suffix++;
+      } while ( $this->hasArgument( $unique_argument ) );
+    }
+    // Now reserve the alias.
+    $this->arguments[ $unique_argument ] = NULL;
+    return $unique_argument;
   }
 
   /**

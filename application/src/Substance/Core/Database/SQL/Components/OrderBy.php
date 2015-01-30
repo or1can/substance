@@ -22,6 +22,7 @@ use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\Component;
+use Substance\Core\Database\SQL\Query;
 
 /**
  * Represents a column or expression in an ORDER BY section of a database
@@ -57,6 +58,13 @@ class OrderBy implements Component {
     $string .= ' ';
     $string .= $this->getSymbol();
     return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
+   */
+  public function aboutToAddQuery( Query $query ) {
+    // Nothing to do.
   }
 
   /* (non-PHPdoc)

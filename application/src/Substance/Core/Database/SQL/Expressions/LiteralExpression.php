@@ -20,6 +20,7 @@ namespace Substance\Core\Database\SQL\Expressions;
 
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Database;
+use Substance\Core\Database\SQL\Query;
 
 /**
  * A literal expression for strings, numbers and booleans in a SQL query.
@@ -30,6 +31,11 @@ class LiteralExpression extends AbstractExpression {
    * @var string the column alias.
    */
   protected $alias;
+
+  /**
+   * @var string the argument placeholder.
+   */
+  protected $placeholder;
 
   /**
    * @var string the literal value.
@@ -66,11 +72,20 @@ class LiteralExpression extends AbstractExpression {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
+   */
+  public function aboutToAddQuery( Query $query ) {
+    $this->placeholder = $query->defineArgument( $this );
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
   	$string = '';
-    if ( is_bool( $this->value ) ) {
+  	if ( isset( $this->placeholder ) ) {
+  	  $string = $this->placeholder;
+  	} elseif ( is_bool( $this->value ) ) {
       $string = $this->value ? 'TRUE' : 'FALSE';
     } elseif ( is_string( $this->value ) ) {
       $string = $database->quoteString( $this->value );
@@ -84,6 +99,15 @@ class LiteralExpression extends AbstractExpression {
       $string .= $database->quoteName( $this->alias );
     }
     return $string;
+  }
+
+  /**
+   * Returns this literal expressions value.
+   *
+   * @return mixed the literal value.
+   */
+  public function getValue() {
+    return $this->value;
   }
 
   /**

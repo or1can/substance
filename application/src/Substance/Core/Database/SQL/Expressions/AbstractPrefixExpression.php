@@ -21,6 +21,7 @@ namespace Substance\Core\Database\SQL\Expressions;
 use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\PrefixExpression;
+use Substance\Core\Database\SQL\Query;
 
 /**
  * An asbtract prefix expression, for easily building simple prefix expressions.
@@ -41,6 +42,13 @@ abstract class AbstractPrefixExpression extends AbstractExpression implements Pr
     $string .= ' ';
     $string .= $this->right;
     return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
+   */
+  public function aboutToAddQuery( Query $query ) {
+    $this->right->aboutToAddQuery( $query );
   }
 
   /* (non-PHPdoc)

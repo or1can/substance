@@ -26,6 +26,14 @@ use Substance\Core\Database\Database;
 interface Component {
 
   /**
+   * Should be called before this expression is added to a query at the
+   * specified location.
+   *
+   * @param Query $query the query this expression is about to be added to
+   */
+  public function aboutToAddQuery( Query $query );
+
+  /**
    * Builds this component for inclusion in a query on the given database.
    *
    * @param Database $database the database to build the component for
