@@ -65,16 +65,12 @@ abstract class Query {
    * @param TableNameExpression $expression the new table name.
    */
   public function defineTableName( TableName $table_name ) {
-    $alias = $table_name->getAlias();
-    if ( is_null( $alias ) ) {
-      $alias = $table_name->getName();
-    }
-    if ( $this->hasTableAlias( $alias, TRUE ) ) {
+    if ( $this->hasTableAlias( $table_name->getReferenceName(), TRUE ) ) {
       // TODO - Would an Illegal argument alert be useful?
       throw Alert::alert( 'Duplicate table', 'You can only define a table once in a query' )
         ->culprit( 'table', $table_name );
     } else {
-      $this->aliases_table[ $alias ] = $table_name;
+      $this->aliases_table[ $table_name->getReferenceName() ] = $table_name;
     }
   }
 
@@ -178,10 +174,18 @@ abstract class Query {
    * This allows you to suggest an alias in a query, but not have fatal errors
    * if it already exists, e.g.
    *
-   *     $query->addExpression(
-   *         new ColumnNameExpression('col'),
-   *         $myalias = $query->uniqueColumnAlias('col')
+   *     $table = new TableName( 'table', $query->uniqueTableAlias('t') );
+   *     $query->addExpression( new ColumnNameExpression( 'col', $table ) );
+   *
+   * or
+   *
+   *     $query = Select::select( 'table', 't' );
+   *     $query->innerJoin(
+   *         'other_table',
+   *         $other_table = $query->uniqueTableAlias('t')
    *     );
+   *     $query->addExpression( new ColumnNameExpression( 'col', 't' ) );
+   *     $query->addExpression( new ColumnNameExpression( 'col', $other_table ) );
    *
    * and now $myalias will contain the unique alias for use elsewhere in the
    * query.

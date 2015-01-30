@@ -38,13 +38,33 @@ class ColumnNameExpressionTest extends AbstractDatabaseTest {
   }
 
   /**
-   * Test a column expression with no alias and with a table.
+   * Test a column expression with no alias and a table with no alias.
    */
-  public function testBuildNoAliasWithTable() {
+  public function testBuildNoAliasWithTableNoAlias() {
+    // Test without a database specified.
     $expression = new ColumnNameExpression( 'column', new TableName('table') );
     $sql = $expression->build( $this->connection );
-
     $this->assertEquals( '`table`.`column`', $sql );
+
+    // Test with a database specified.
+    $expression = new ColumnNameExpression( 'column', new TableName('db.table') );
+    $sql = $expression->build( $this->connection );
+    $this->assertEquals( '`db`.`table`.`column`', $sql );
+  }
+
+  /**
+   * Test a column expression with no alias and a table with an alias.
+   */
+  public function testBuildNoAliasWithTableWithAlias() {
+    // Test without a database specified.
+    $expression = new ColumnNameExpression( 'column', new TableName( 'table', 't' ) );
+    $sql = $expression->build( $this->connection );
+    $this->assertEquals( '`t`.`column`', $sql );
+
+    // Test with a database specified.
+    $expression = new ColumnNameExpression( 'column', new TableName( 'db.table', 't' ) );
+    $sql = $expression->build( $this->connection );
+    $this->assertEquals( '`t`.`column`', $sql );
   }
 
 }

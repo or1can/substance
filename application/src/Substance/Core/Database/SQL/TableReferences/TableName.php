@@ -75,6 +75,31 @@ class TableName extends AbstractTableReference {
     return $string;
   }
 
+  /**
+   * Builds this table name for inclusion in a query as a reference to this
+   * table. This will be the table name if it has no alias, otherwise the alias.
+   *
+   * e.g. the
+   *     `t`
+   * part of
+   *     SELECT `t`.* FROM `table` AS `t`
+   *
+   * or the
+   *     `db`.`table`
+   * part of
+   *     SELECT `db`.`table`.* FROM `db`.`table`
+   *
+   * @param Database $database the database to build the component for
+   * @return string the built component as a string.
+   */
+  public function buildReference( Database $database ) {
+    if ( isset( $this->alias ) ) {
+      return $database->quoteName( $this->alias );
+    } else {
+      return $database->quoteTable( $this->table );
+    }
+  }
+
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\TableReference::define()
    */
@@ -98,6 +123,22 @@ class TableName extends AbstractTableReference {
    */
   public function getName() {
     return $this->table;
+  }
+
+  /**
+   * Returns the alias if defined, otherwise the name.
+   *
+   * This method is used to easily get the name to use when refering to this
+   * table elsewhere in a query.
+   *
+   * @return string the table alias if defined, otherwise the table name.
+   */
+  public function getReferenceName() {
+    if ( isset( $this->alias ) ) {
+      return $this->alias;
+    } else {
+      return $this->table;
+    }
   }
 
 }

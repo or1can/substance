@@ -46,7 +46,7 @@ class ColumnNameExpression extends NameExpression {
   public function __toString() {
     $string = '';
     if ( isset( $this->table_name ) ) {
-      $string .= (string) $this->table_name;
+      $string .= $this->table_name->getReferenceName();
       $string .= '.';
     }
     $string .= (string) parent::__toString();
@@ -59,7 +59,7 @@ class ColumnNameExpression extends NameExpression {
   public function build( Database $database ) {
   	$string = '';
   	if ( isset( $this->table_name ) ) {
-      $string .= $this->table_name->build( $database );
+      $string .= $this->table_name->buildReference( $database );
   	  $string .= '.';
   	}
     $string .= parent::build( $database );
