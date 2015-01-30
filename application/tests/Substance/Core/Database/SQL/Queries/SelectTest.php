@@ -44,9 +44,22 @@ class SelectTest extends QueryTest {
 
     // Try a query with an explicitly stated column and alias.
     $sql = Select::select('table')
-      ->addColumnByName( 'column1', 'col1' )
-      ->build( $this->connection );
+    ->addColumnByName( 'column1', 'col1' )
+    ->build( $this->connection );
     $this->assertEquals( 'SELECT `column1` AS `col1` FROM `table`', $sql );
+
+    // Try a query with an explicitly stated column and alias and table.
+    $sql = Select::select('table')
+    ->addColumnByName( 'column1', 'col1', 'table' )
+    ->build( $this->connection );
+    $this->assertEquals( 'SELECT `table`.`column1` AS `col1` FROM `table`', $sql );
+
+    // Try a query with an explicitly stated column and alias and table with
+    // database.
+    $sql = Select::select('table')
+      ->addColumnByName( 'column1', 'col1', 'db.table' )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT `db`.`table`.`column1` AS `col1` FROM `table`', $sql );
   }
 
   /**

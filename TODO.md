@@ -11,7 +11,6 @@ TODO
     * Unions [MEDIUM]
     * Count queries [MEDIUM]
     * FOR UPDATE [MEDIUM]
-    * Shorthand for adding simple column [MEDIUM]
     * Shorthand for adding multiple simple columns [MEDIUM]
   * Insert
   * Update
