@@ -3,10 +3,6 @@ TODO
 
 * Database
   * Select
-    * Aliases [HIGH]
-      I don't want the Drupal trap of not being able to chain field or join
-      methods, as this is irritating. Should be able to find alias for a given
-      column, table or join on a specific query dynamically.
     * Alterations [HIGH]
     * Extensions [HIGH]
     * Use prepared statements for static and dynamic data [HIGH]

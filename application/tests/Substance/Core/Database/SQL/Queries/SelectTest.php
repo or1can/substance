@@ -33,6 +33,23 @@ use Substance\Core\Database\SQL\QueryTest;
 class SelectTest extends QueryTest {
 
   /**
+   * Tests adding a column by name.
+   */
+  public function testAddColumnByName() {
+    // Try a query with an explicitly stated column.
+    $sql = Select::select('table')
+      ->addColumnByName('column1')
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT `column1` FROM `table`', $sql );
+
+    // Try a query with an explicitly stated column and alias.
+    $sql = Select::select('table')
+      ->addColumnByName( 'column1', 'col1' )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT `column1` AS `col1` FROM `table`', $sql );
+  }
+
+  /**
    * Test a build all, with one column, no join, no where, no group, no having,
    * no limit, no order and no offset.
    */
@@ -729,6 +746,14 @@ class SelectTest extends QueryTest {
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t2` INNER JOIN `table3` AS `t3`', $sql );
 
+    // Test two inner joins with automatic aliases.
+    $select = Select::select( 'table1', 't1' );
+    $sql = $select->addColumn( new AllColumns() )
+      ->innerJoin( 'table2', $table2 = $select->uniqueTableAlias('t') )
+      ->innerJoin( 'table3', $table3 = $select->uniqueTableAlias('t') )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t` INNER JOIN `table3` AS `t2`', $sql );
+
     // Test two left joins with aliases.
     $sql = Select::select( 'table1', 't1' )
       ->addColumn( new AllColumns() )
@@ -782,6 +807,24 @@ class SelectTest extends QueryTest {
       ->build( $this->connection );
 
     $this->assertEquals( 'SELECT `column1`, `column2`, `column3` FROM `table`', $sql );
+  }
+
+  /**
+   * Test a build all, with three columns, two join, no where, no group, no
+   * having, no limit, no order and no offset.
+   */
+  public function testBuildAllThreeColumnsTwoJoinNoWhereNoGroupNoHavingNoOrderNoLimitNoOffset() {
+    // Test two inner joins with automatic aliases and three columns using
+    // those aliases.
+    $select = Select::select( 'table1', 't1' );
+    $sql = $select
+      ->innerJoin( 'table2', $table2 = $select->uniqueTableAlias('t') )
+      ->innerJoin( 'table3', $table3 = $select->uniqueTableAlias('t') )
+      ->addColumn( new ColumnNameExpression('column1') )
+      ->addColumnByName( 'column2', NULL, $table2 )
+      ->addColumnByName( 'column3', NULL, $table3 )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT `column1`, `t`.`column2`, `t2`.`column3` FROM `table1` AS `t1` INNER JOIN `table2` AS `t` INNER JOIN `table3` AS `t2`', $sql );
   }
 
   /**

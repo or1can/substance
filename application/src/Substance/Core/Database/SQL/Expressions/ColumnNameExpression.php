@@ -19,7 +19,6 @@
 namespace Substance\Core\Database\SQL\Expressions;
 
 use Substance\Core\Database\Database;
-use Substance\Core\Database\SQL\TableReferences\TableName;
 
 /**
  * A column name expression for use in a SQL query.
@@ -27,18 +26,18 @@ use Substance\Core\Database\SQL\TableReferences\TableName;
 class ColumnNameExpression extends NameExpression {
 
   /**
-   * @var TableName the table name.
+   * @var string the table name or alias.
    */
   protected $table_name;
 
   /**
    * Constructs a new column name expression for the specified column in the
-   * optionally specified table name.
+   * optionally specified table.
    *
    * @param string $name the column name
-   * @param TableName $table_name the table name
+   * @param string $table the table name or alias.
    */
-  public function __construct( $name, TableName $table_name = NULL ) {
+  public function __construct( $name, $table_name = NULL ) {
     parent::__construct( $name );
     $this->table_name = $table_name;
   }
@@ -46,7 +45,7 @@ class ColumnNameExpression extends NameExpression {
   public function __toString() {
     $string = '';
     if ( isset( $this->table_name ) ) {
-      $string .= $this->table_name->getReferenceName();
+      $string .= $this->table_name;
       $string .= '.';
     }
     $string .= (string) parent::__toString();
@@ -59,7 +58,7 @@ class ColumnNameExpression extends NameExpression {
   public function build( Database $database ) {
   	$string = '';
   	if ( isset( $this->table_name ) ) {
-      $string .= $this->table_name->buildReference( $database );
+      $string .= $database->quoteTable( $this->table_name );
   	  $string .= '.';
   	}
     $string .= parent::build( $database );

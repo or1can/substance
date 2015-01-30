@@ -152,6 +152,19 @@ class Select extends Query {
   }
 
   /**
+   * Adds a column by name to the select list.
+   *
+   * @param string $name the name of the column to add.
+   * @param string $alias the alias for the column.
+   * @param string $table the table name or alias of the table containing the
+   * column.
+   * @return self
+   */
+  public function addColumnByName( $name, $alias = NULL, $table = NULL ) {
+    return $this->addExpression( new ColumnNameExpression( $name, $table ), $alias );
+  }
+
+  /**
    * Adds an expression as a column to the select list.
    *
    * @param Expression $expression the expression to add a column for.
