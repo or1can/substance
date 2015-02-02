@@ -25,11 +25,4 @@ namespace Substance\Core\Database\SQL;
  */
 interface TableReference extends Component {
 
-  /**
-   * Defines this table reference in the specifed query.
-   *
-   * @param Query $query the query to define this table reference in.
-   */
-  public function define( Query $query );
-
 }

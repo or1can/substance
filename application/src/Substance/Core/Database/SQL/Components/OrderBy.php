@@ -61,13 +61,6 @@ class OrderBy implements Component {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
-   */
-  public function aboutToAddQuery( Query $query ) {
-    // Nothing to do.
-  }
-
-  /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
@@ -76,6 +69,13 @@ class OrderBy implements Component {
     $string .= ' ';
     $string .= $this->getSymbol();
     return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::define()
+   */
+  public function define( Query $query ) {
+    // Nothing to do.
   }
 
   /* (non-PHPdoc)

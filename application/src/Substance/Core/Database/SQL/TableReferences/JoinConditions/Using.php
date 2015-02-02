@@ -86,13 +86,6 @@ class Using implements JoinCondition {
     return $string;
   }
 
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
-   */
-  public function aboutToAddQuery( Query $query ) {
-    // Nothing to do.
-  }
-
   /**
    * Adds a column name to this condition.
    *
@@ -110,6 +103,13 @@ class Using implements JoinCondition {
     $string .= $this->columns->build( $database );
     $string .= ' )';
     return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::define()
+   */
+  public function define( Query $query ) {
+    // Nothing to do.
   }
 
 }

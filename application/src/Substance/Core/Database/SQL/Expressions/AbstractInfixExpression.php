@@ -62,14 +62,6 @@ abstract class AbstractInfixExpression extends AbstractExpression implements Inf
     return $string;
   }
 
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
-   */
-  public function aboutToAddQuery( Query $query ) {
-    $this->left->aboutToAddQuery( $query );
-    $this->right->aboutToAddQuery( $query );
-  }
-
   /**
    * Adds the specified element to this infix expression. The right hand
    * expression is replaced with a new instance of this infix expression made
@@ -118,6 +110,14 @@ abstract class AbstractInfixExpression extends AbstractExpression implements Inf
     $string .= ' ';
     $string .= $this->right->build( $database );
     return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::define()
+   */
+  public function define( Query $query ) {
+    $this->left->define( $query );
+    $this->right->define( $query );
   }
 
   /* (non-PHPdoc)

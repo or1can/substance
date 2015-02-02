@@ -32,10 +32,10 @@ use Substance\Core\Database\SQL\Query;
 abstract class AbstractExpression implements Expression {
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
+   * @see \Substance\Core\Database\SQL\Component::define()
    */
-  public function aboutToAddQuery( Query $query ) {
-    // No-op
+  public function define( Query $query ) {
+    // Nothing to do.
   }
 
 }

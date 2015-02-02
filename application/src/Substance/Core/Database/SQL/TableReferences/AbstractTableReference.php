@@ -26,11 +26,4 @@ use Substance\Core\Database\SQL\TableReference;
  */
 abstract class AbstractTableReference implements TableReference {
 
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
-   */
-  public function aboutToAddQuery( Query $query ) {
-    // Nothing to do.
-  }
-
 }

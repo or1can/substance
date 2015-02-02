@@ -62,14 +62,6 @@ class EqualsExpression extends AbstractExpression {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
-   */
-  public function aboutToAddQuery( Query $query ) {
-    $this->left->aboutToAddQuery( $query );
-    $this->right->aboutToAddQuery( $query );
-  }
-
-  /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
@@ -82,6 +74,14 @@ class EqualsExpression extends AbstractExpression {
       $string .= $database->quoteName( $this->alias );
   	}
   	return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::define()
+   */
+  public function define( Query $query ) {
+    $this->left->define( $query );
+    $this->right->define( $query );
   }
 
 }

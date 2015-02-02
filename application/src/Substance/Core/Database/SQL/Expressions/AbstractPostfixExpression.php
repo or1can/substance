@@ -46,13 +46,6 @@ abstract class AbstractPostfixExpression extends AbstractExpression implements P
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
-   */
-  public function aboutToAddQuery( Query $query ) {
-    $this->left->aboutToAddQuery( $query );
-  }
-
-  /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
@@ -61,6 +54,13 @@ abstract class AbstractPostfixExpression extends AbstractExpression implements P
     $string .= ' ';
     $string .= $this->getSymbol();
     return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::define()
+   */
+  public function define( Query $query ) {
+    $this->left->define( $query );
   }
 
   /* (non-PHPdoc)

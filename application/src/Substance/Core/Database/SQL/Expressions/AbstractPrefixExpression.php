@@ -45,13 +45,6 @@ abstract class AbstractPrefixExpression extends AbstractExpression implements Pr
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
-   */
-  public function aboutToAddQuery( Query $query ) {
-    $this->right->aboutToAddQuery( $query );
-  }
-
-  /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
@@ -59,6 +52,13 @@ abstract class AbstractPrefixExpression extends AbstractExpression implements Pr
     $string .= ' ';
     $string .= $this->right->build( $database );
     return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::define()
+   */
+  public function define( Query $query ) {
+    $this->right->define( $query );
   }
 
   /* (non-PHPdoc)

@@ -146,7 +146,7 @@ class Select extends Query {
    * @return self
    */
   public function addColumn( Column $column ) {
-    $column->aboutToAddQuery( $this );
+    $column->define( $this );
     $this->select_list->add( $column );
     return $this;
   }
@@ -246,7 +246,7 @@ class Select extends Query {
     if ( is_null( $this->group_by ) ) {
       $this->group_by = new ComponentList();
     }
-    $expression->aboutToAddQuery( $this );
+    $expression->define( $this );
     $this->group_by->add( $expression );
     return $this;
   }
@@ -258,7 +258,7 @@ class Select extends Query {
    * @return self
    */
   public function having( Expression $expression ) {
-    $expression->aboutToAddQuery( $this );
+    $expression->define( $this );
     if ( is_null( $this->having ) ) {
       $this->having = $expression;
     } elseif ( $this->having instanceof AbstractInfixExpression ) {
@@ -284,7 +284,7 @@ class Select extends Query {
     // Define the new table in the query, so other joins do not clash with it.
     $right_table->define( $this );
     if ( isset( $condition ) ) {
-      $condition->aboutToAddQuery( $this );
+      $condition->define( $this );
     }
     $this->table = new InnerJoin( $this->table, $right_table, $condition );
     return $this;
@@ -372,7 +372,7 @@ class Select extends Query {
     // Define the new table in the query, so other joins do not clash with it.
     $right_table->define( $this );
     if ( isset( $condition ) ) {
-      $condition->aboutToAddQuery( $this );
+      $condition->define( $this );
     }
     $this->table = new LeftJoin( $this->table, $right_table, $condition );
     return $this;
@@ -459,7 +459,7 @@ class Select extends Query {
     if ( is_null( $this->order_by ) ) {
       $this->order_by = new ComponentList();
     }
-    $expression->aboutToAddQuery( $this );
+    $expression->define( $this );
     $this->order_by->add( new OrderBy( $expression, $direction ) );
     return $this;
   }
@@ -500,7 +500,7 @@ class Select extends Query {
    * @return self
    */
   public function where( Expression $expression ) {
-    $expression->aboutToAddQuery( $this );
+    $expression->define( $this );
     if ( is_null( $this->where ) ) {
       $this->where = $expression;
     } elseif ( $this->where instanceof AbstractInfixExpression ) {

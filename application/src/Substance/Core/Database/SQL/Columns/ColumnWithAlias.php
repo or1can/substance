@@ -62,14 +62,6 @@ class ColumnWithAlias implements Column {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Component::aboutToAddQuery()
-   */
-  public function aboutToAddQuery( Query $query ) {
-    // Nothing to do.
-    $query->defineColumnAlias( $this );
-  }
-
-  /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
@@ -86,6 +78,14 @@ class ColumnWithAlias implements Column {
    */
   public function getAlias() {
     return $this->alias;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Component::define()
+   */
+  public function define( Query $query ) {
+    // Nothing to do.
+    $query->defineColumnAlias( $this );
   }
 
 }
