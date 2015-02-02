@@ -93,12 +93,21 @@ abstract class Query {
    * @param TableNameExpression $expression the new table name.
    */
   public function defineTableName( TableName $table_name ) {
-    if ( $this->hasTableAlias( $table_name->getReferenceName(), TRUE ) ) {
-      // TODO - Would an Illegal argument alert be useful?
-      throw Alert::alert( 'Duplicate table', 'You can only define a table once in a query' )
+    // Do not redefine table names.
+    if ( array_search( $table_name, $this->aliases_table, TRUE ) === FALSE ) {
+      // If the alias is mutable, ensure it is unique before defining it.
+      if ( $table_name->isAliasMutable() ) {
+        $table_name->setAlias(
+            $this->uniqueTableAlias( $table_name->getAlias() )
+        );
+      }
+      if ( $this->hasTableAlias( $table_name->getAlias(), TRUE ) ) {
+        // TODO - Would an Illegal argument alert be useful?
+        throw Alert::alert( 'Duplicate table', 'You can only define a table once in a query' )
         ->culprit( 'table', $table_name );
-    } else {
-      $this->aliases_table[ $table_name->getReferenceName() ] = $table_name;
+      } else {
+        $this->aliases_table[ $table_name->getAlias() ] = $table_name;
+      }
     }
   }
 
@@ -109,6 +118,21 @@ abstract class Query {
    */
   public function getArguments() {
     return $this->arguments;
+  }
+
+  /**
+   * Gets the defined table name for the specified alias.
+   *
+   * @param string $alias the table alias
+   * @return TableName the table name for the specified alias or NULL if the
+   * alias has not been defined yet.
+   */
+  public function getTableName( $alias ) {
+    if ( array_key_exists( $alias, $this->aliases_table ) ) {
+      return $this->aliases_table[ $alias ];
+    } else {
+      return NULL;
+    }
   }
 
   /**

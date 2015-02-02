@@ -28,6 +28,11 @@ use Substance\Core\Database\SQL\Query;
  *     table AS tab
  * part of:
  *     SELECT table.column1 AS col FROM table AS tab
+ *
+ * A table alias can either mutable or immutable, i.e. the alias you specify
+ * must be used as-is, or the system can generate a unique alias if there is a
+ * clash.
+ *
  */
 class TableName extends AbstractTableReference {
 
@@ -35,6 +40,11 @@ class TableName extends AbstractTableReference {
    * @var string the table alias.
    */
   protected $alias;
+
+  /**
+   * @var boolean whether the alias is mutable or not.
+   */
+  protected $alias_mutable = FALSE;
 
   /**
    * @var string the table name.
@@ -46,16 +56,23 @@ class TableName extends AbstractTableReference {
    *
    * @param string $table the table name
    * @param string $alias the table name alias
+   * @param boolean $alias_mutable TRUE if the alias is mutable and FALSE
+   * otherwise.
    */
-  public function __construct( $table, $alias = NULL ) {
+  public function __construct( $table, $alias = NULL, $alias_mutable = FALSE ) {
     $this->table = $table;
-    $this->alias = $alias;
+    if ( isset( $alias ) ) {
+      $this->alias = $alias;
+    } else {
+      $this->alias = $this->table;
+    }
+    $this->alias_mutable = $alias_mutable;
   }
 
   public function __toString() {
     $string = '';
     $string .= $this->table;
-    if ( isset( $this->alias ) ) {
+    if ( $this->alias !== $this->table ) {
       $string .= ' AS ';
       $string .= $this->alias;
     }
@@ -68,7 +85,7 @@ class TableName extends AbstractTableReference {
   public function build( Database $database ) {
     $string = '';
     $string .= $database->quoteTable( $this->table );
-    if ( isset( $this->alias ) ) {
+    if ( $this->alias !== $this->table ) {
       $string .= ' AS ';
       $string .= $database->quoteName( $this->alias );
     }
@@ -93,11 +110,7 @@ class TableName extends AbstractTableReference {
    * @return string the built component as a string.
    */
   public function buildReference( Database $database ) {
-    if ( isset( $this->alias ) ) {
-      return $database->quoteName( $this->alias );
-    } else {
-      return $database->quoteTable( $this->table );
-    }
+    return $database->quoteTable( $this->alias );
   }
 
   /* (non-PHPdoc)
@@ -126,19 +139,21 @@ class TableName extends AbstractTableReference {
   }
 
   /**
-   * Returns the alias if defined, otherwise the name.
+   * Checks if the alias is mutable.
    *
-   * This method is used to easily get the name to use when refering to this
-   * table elsewhere in a query.
-   *
-   * @return string the table alias if defined, otherwise the table name.
+   * @return boolean TRUE if the alias is mutable and FALSE otherwise.
    */
-  public function getReferenceName() {
-    if ( isset( $this->alias ) ) {
-      return $this->alias;
-    } else {
-      return $this->table;
-    }
+  public function isAliasMutable() {
+    return $this->alias_mutable;
+  }
+
+  /**
+   * Sets the alias for this table name.
+   *
+   * @param string $alias the alias for this table name.
+   */
+  public function setAlias( $alias ) {
+    $this->alias = $alias;
   }
 
 }

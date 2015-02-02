@@ -20,6 +20,7 @@ namespace Substance\Core\Database\SQL\Expressions;
 
 use Substance\Core\Database\AbstractDatabaseTest;
 use Substance\Core\Database\SQL\Queries\Select;
+use Substance\Core\Database\SQL\TableReferences\TableName;
 
 /**
  * Tests the column expression.
@@ -41,12 +42,12 @@ class ColumnNameExpressionTest extends AbstractDatabaseTest {
    */
   public function testBuildNoAliasWithTableNoAlias() {
     // Test without a database specified.
-    $expression = new ColumnNameExpression( 'column', 'table' );
+    $expression = new ColumnNameExpression( 'column', new TableName( 'table' ) );
     $sql = $expression->build( $this->connection );
     $this->assertEquals( '`table`.`column`', $sql );
 
     // Test with a database specified.
-    $expression = new ColumnNameExpression( 'column', 'db.table' );
+    $expression = new ColumnNameExpression( 'column', new TableName( 'db.table' ) );
     $sql = $expression->build( $this->connection );
     $this->assertEquals( '`db`.`table`.`column`', $sql );
   }
@@ -56,7 +57,7 @@ class ColumnNameExpressionTest extends AbstractDatabaseTest {
    */
   public function testBuildNoAliasWithTableWithAlias() {
     // Test without a database specified.
-    $expression = new ColumnNameExpression( 'column', 't' );
+    $expression = new ColumnNameExpression( 'column', new TableName( 'table', 't' ) );
     $sql = $expression->build( $this->connection );
     $this->assertEquals( '`t`.`column`', $sql );
   }

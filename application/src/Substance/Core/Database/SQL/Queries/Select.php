@@ -161,7 +161,17 @@ class Select extends Query {
    * @return self
    */
   public function addColumnByName( $name, $alias = NULL, $table = NULL ) {
-    return $this->addExpression( new ColumnNameExpression( $name, $table ), $alias );
+    $table_name = $this->getTableName( $table );
+    // FIXME - Is the following right, or should we just introduce a
+    // TableNameReference object that looks up tables, where the TableName
+    // object defines them?
+    if ( is_null( $table_name ) && isset( $table ) ) {
+      $table_name = new TableName( $table );
+    }
+    return $this->addExpression(
+      new ColumnNameExpression( $name, $table_name ),
+      $alias
+    );
   }
 
   /**
