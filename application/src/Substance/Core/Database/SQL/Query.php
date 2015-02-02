@@ -265,7 +265,7 @@ abstract class Query {
    * or
    *
    *     $query = Select::select( 'table', 't' );
-   *     $query->innerJoin(
+   *     $query->innerJoinByName(
    *         'other_table',
    *         $other_table = $query->uniqueTableAlias('t')
    *     );

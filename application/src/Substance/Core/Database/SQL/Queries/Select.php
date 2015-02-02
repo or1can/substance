@@ -273,34 +273,46 @@ class Select extends Query {
   /**
    * Adds an inner join to the specified table at the end of the from clause.
    *
-   * @param string $table the table name.
+   * @param TableReference $table the table to join to
+   * @param JoinCondition $condition the join condition, or NULL for no
+   * condition.
+   * @return self
+   */
+  public function innerJoin( TableReference $table, JoinCondition $condition = NULL ) {
+    // Define the new table in the query, so other joins do not clash with it.
+    $table->define( $this );
+    if ( isset( $condition ) ) {
+      $condition->define( $this );
+    }
+    $this->table = new InnerJoin( $this->table, $table, $condition );
+    return $this;
+  }
+
+  /**
+   * Adds an inner join to the specified table at the end of the from clause.
+   *
+   * @param string $table the table name to join to.
    * @param string $alias the table name alias or NULL for no alias.
    * @param JoinCondition $condition the join condition, or NULL for no
    * condition.
    * @return self
    */
-  public function innerJoin( $table, $alias = NULL, JoinCondition $condition = NULL ) {
+  public function innerJoinByName( $table, $alias = NULL, JoinCondition $condition = NULL ) {
     $right_table = new TableName( $table, $alias );
-    // Define the new table in the query, so other joins do not clash with it.
-    $right_table->define( $this );
-    if ( isset( $condition ) ) {
-      $condition->define( $this );
-    }
-    $this->table = new InnerJoin( $this->table, $right_table, $condition );
-    return $this;
+    return $this->innerJoin( $right_table, $condition );
   }
 
   /**
    * Adds an inner join to the specified table, using the specified expression
    * in an ON clause.
    *
-   * @param string $table the table name
+   * @param string $table the table name to join to.
    * @param string $alias the table name alias or NULL for no alias.
    * @param Expression $expression the ON join condition expression
    * @return self
    */
-  public function innerJoinOn( $table, $alias, Expression $expression ) {
-    $this->innerJoin( $table, $alias, new On( $expression ) );
+  public function innerJoinByNameOn( $table, $alias, Expression $expression ) {
+    $this->innerJoinByName( $table, $alias, new On( $expression ) );
     return $this;
   }
 
@@ -308,23 +320,50 @@ class Select extends Query {
    * Adds an inner join to the specified table, using the specified expression
    * in an USING clause.
    *
-   * @param string $table the table name
+   * @param string $table the table name to join to.
    * @param string $alias the table name alias or NULL for no alias.
    * @param ColumnNameExpression ...$name one or more column names for the
    * USING expression
    * @return self
    */
-  public function innerJoinUsing( $table, $alias ) {
+  public function innerJoinByNameUsing( $table, $alias ) {
     // To get the column names, first get all the arguments and then remove the
     // table and alias from the front. Anything left over are the names.
     $names = func_get_args();
     array_shift( $names );
     array_shift( $names );
-    $this->innerJoin(
-      $table,
-      $alias,
-      Using::usingArray( $names )
-    );
+    $this->innerJoinByName( $table, $alias, Using::usingArray( $names ) );
+    return $this;
+  }
+
+  /**
+   * Adds an inner join to the specified table, using the specified expression
+   * in an ON clause.
+   *
+   * @param TableReference $table the table to join to
+   * @param Expression $expression the ON join condition expression
+   * @return self
+   */
+  public function innerJoinOn( TableReference $table, Expression $expression ) {
+    $this->innerJoin( $table, new On( $expression ) );
+    return $this;
+  }
+
+  /**
+   * Adds an inner join to the specified table, using the specified expression
+   * in an USING clause.
+   *
+   * @param TableReference $table the table to join to
+   * @param ColumnNameExpression ...$name one or more column names for the
+   * USING expression
+   * @return self
+   */
+  public function innerJoinUsing( TableReference $table ) {
+    // To get the column names, first get all the arguments and then remove the
+    // table from the front. Anything left over are the names.
+    $names = func_get_args();
+    array_shift( $names );
+    $this->innerJoin( $table, Using::usingArray( $names ) );
     return $this;
   }
 
@@ -361,59 +400,94 @@ class Select extends Query {
   /**
    * Adds a left join to the specified table at the end of the from clause.
    *
-   * @param string $table the table name
+   * @param TableReference $table the table to join to
+   * @param JoinCondition $condition the join condition, or NULL for no
+   * condition.
+   * @return self
+   */
+  public function leftJoin( TableReference $table, JoinCondition $condition = NULL ) {
+    // Define the new table in the query, so other joins do not clash with it.
+    $table->define( $this );
+    if ( isset( $condition ) ) {
+      $condition->define( $this );
+    }
+    $this->table = new LeftJoin( $this->table, $table, $condition );
+    return $this;
+  }
+
+  /**
+   * Adds a left join to the specified table at the end of the from clause.
+   *
+   * @param string $table the table name to join to.
    * @param string $alias the table name alias or NULL for no alias.
    * @param JoinCondition $condition the join condition, or NULL for no
    * condition.
    * @return self
    */
-  public function leftJoin( $table, $alias = NULL, JoinCondition $condition = NULL ) {
+  public function leftJoinByName( $table, $alias = NULL, JoinCondition $condition = NULL ) {
     $right_table = new TableName( $table, $alias );
-    // Define the new table in the query, so other joins do not clash with it.
-    $right_table->define( $this );
-    if ( isset( $condition ) ) {
-      $condition->define( $this );
-    }
-    $this->table = new LeftJoin( $this->table, $right_table, $condition );
-    return $this;
+    return $this->leftJoin( $right_table, $condition );
   }
 
   /**
    * Adds a left join to the specified table, using the specified expression
    * in an ON clause.
    *
-   * @param string $table the table name
+   * @param string $table the table name to join to.
    * @param string $alias the table name alias or NULL for no alias.
    * @param Expression $expression the ON join condition expression
    * @return self
    */
-  public function leftJoinOn( $table, $alias, Expression $expression ) {
-    $this->leftJoin( $table, $alias, new On( $expression ) );
-    return $this;
+  public function leftJoinByNameOn( $table, $alias, Expression $expression ) {
+    return $this->leftJoinByName( $table, $alias, new On( $expression ) );
   }
 
   /**
    * Adds a left join to the specified table, using the specified expression
    * in an USING clause.
    *
-   * @param string $table the table name
+   * @param string $table the table name to join to.
    * @param string $alias the table name alias or NULL for no alias.
    * @param ColumnNameExpression ...$name one or more column names for the
    * USING expression
    * @return self
    */
-  public function leftJoinUsing( $table, $alias ) {
+  public function leftJoinByNameUsing( $table, $alias ) {
     // To get the column names, first get all the arguments and then remove the
     // table and alias from the front. Anything left over are the names.
     $names = func_get_args();
     array_shift( $names );
     array_shift( $names );
-    $this->leftJoin(
-      $table,
-      $alias,
-      Using::usingArray( $names )
-    );
-    return $this;
+    return $this->leftJoinByName( $table, $alias, Using::usingArray( $names ) );
+  }
+
+  /**
+   * Adds a left join to the specified table, using the specified expression
+   * in an ON clause.
+   *
+   * @param TableReference $table the table to join to
+   * @param Expression $expression the ON join condition expression
+   * @return self
+   */
+  public function leftJoinOn( $table, Expression $expression ) {
+    return $this->leftJoin( $table, new On( $expression ) );
+  }
+
+  /**
+   * Adds a left join to the specified table, using the specified expression
+   * in an USING clause.
+   *
+   * @param TableReference $table the table to join to
+   * @param ColumnNameExpression ...$name one or more column names for the
+   * USING expression
+   * @return self
+   */
+  public function leftJoinUsing( $table ) {
+    // To get the column names, first get all the arguments and then remove the
+    // table from the front. Anything left over are the names.
+    $names = func_get_args();
+    array_shift( $names );
+    return $this->leftJoin( $table, Using::usingArray( $names ) );
   }
 
   /**

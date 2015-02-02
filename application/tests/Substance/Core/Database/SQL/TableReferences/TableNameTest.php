@@ -99,11 +99,9 @@ class TableNameTest extends AbstractDatabaseTest {
   public function testSelectWithDuplicateTableAlias() {
     $query = Select::select('table');
     $expression = new TableName( 'table1', 'tab' );
-    // FIXME - This is wrong as adding a table alias to a select list should
-    // not be allowed.
-    $query->addColumn( $expression );
+    $query->innerJoin( $expression );
     $expression = new TableName( 'table2', 'tab' );
-    $query->addColumn( $expression );
+    $query->innerJoin( $expression );
   }
 
 }
