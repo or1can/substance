@@ -51,8 +51,8 @@ class SelectTest extends QueryTest {
 
     // Try a query with an explicitly stated column and alias and table.
     $sql = Select::select('table')
-    ->addColumnByName( 'column1', 'col1', 'table' )
-    ->build( $this->connection );
+      ->addColumnByName( 'column1', 'col1', 'table' )
+      ->build( $this->connection );
     $this->assertEquals( 'SELECT `table`.`column1` AS `col1` FROM `table`', $sql );
 
     // Try a query with an explicitly stated column and alias and table with
@@ -74,12 +74,36 @@ class SelectTest extends QueryTest {
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` INNER JOIN `table2`', $sql );
 
+    // Test two inner joins with no aliases.
+    $sql = Select::select('table1')
+      ->addColumn( new AllColumns() )
+      ->innerJoin( new TableName('table2') )
+      ->innerJoin( new TableName('table3') )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` INNER JOIN `table2` INNER JOIN `table3`', $sql );
+
     // Test an inner join with aliases.
     $sql = Select::select( 'table1', 't1' )
       ->addColumn( new AllColumns() )
       ->innerJoin( new TableName( 'table2', 't2' ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t2`', $sql );
+
+    // Test two inner joins with aliases.
+    $sql = Select::select( 'table1', 't1' )
+      ->addColumn( new AllColumns() )
+      ->innerJoin( new TableName( 'table2', 't2' ) )
+      ->innerJoin( new TableName( 'table3', 't3' ) )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t2` INNER JOIN `table3` AS `t3`', $sql );
+
+    // Test two inner joins with automatic aliases.
+    $select = Select::select( 'table1', 't1' );
+    $sql = $select->addColumn( new AllColumns() )
+      ->innerJoin( new TableName( 'table2', 't', TRUE ) )
+      ->innerJoin( new TableName( 'table3', 't', TRUE ) )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t` INNER JOIN `table3` AS `t2`', $sql );
   }
 
   /**
@@ -136,12 +160,28 @@ class SelectTest extends QueryTest {
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` INNER JOIN `table2` ON `column1` = `column2`', $sql );
 
+    // Test two inner joins with no aliases and USING conditions.
+    $sql = Select::select('table1')
+      ->addColumn( new AllColumns() )
+      ->innerJoinByNameOn( 'table2', NULL, new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
+      ->innerJoinByNameOn( 'table3', NULL, new EqualsExpression( new ColumnNameExpression('column3'), new ColumnNameExpression('column4') ) )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` INNER JOIN `table2` ON `column1` = `column2` INNER JOIN `table3` ON `column3` = `column4`', $sql );
+
     // Test an inner join with aliases and an ON condition.
     $sql = Select::select( 'table1', 't1' )
       ->addColumn( new AllColumns() )
       ->innerJoinByNameOn( 'table2', 't2', new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t2` ON `column1` = `column2`', $sql );
+
+    // Test two inner joins with aliases and USING conditions.
+    $sql = Select::select( 'table1', 't1' )
+      ->addColumn( new AllColumns() )
+      ->innerJoinByNameOn( 'table2', 't2', new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
+      ->innerJoinByNameOn( 'table3', 't3', new EqualsExpression( new ColumnNameExpression('column3'), new ColumnNameExpression('column4') ) )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t2` ON `column1` = `column2` INNER JOIN `table3` AS `t3` ON `column3` = `column4`', $sql );
   }
 
   /**
@@ -190,12 +230,28 @@ class SelectTest extends QueryTest {
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` INNER JOIN `table2` ON `column1` = `column2`', $sql );
 
+    // Test two inner joins with no aliases and USING conditions.
+    $sql = Select::select('table1')
+      ->addColumn( new AllColumns() )
+      ->innerJoinOn( new TableName('table2'), new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
+      ->innerJoinOn( new TableName('table3'), new EqualsExpression( new ColumnNameExpression('column3'), new ColumnNameExpression('column4') ) )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` INNER JOIN `table2` ON `column1` = `column2` INNER JOIN `table3` ON `column3` = `column4`', $sql );
+
     // Test an inner join with aliases and an ON condition.
     $sql = Select::select( 'table1', 't1' )
       ->addColumn( new AllColumns() )
       ->innerJoinOn( new TableName( 'table2', 't2' ), new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t2` ON `column1` = `column2`', $sql );
+
+    // Test two inner joins with aliases and USING conditions.
+    $sql = Select::select( 'table1', 't1' )
+      ->addColumn( new AllColumns() )
+      ->innerJoinOn( new TableName( 'table2', 't2' ), new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
+      ->innerJoinOn( new TableName( 'table3', 't3' ), new EqualsExpression( new ColumnNameExpression('column3'), new ColumnNameExpression('column4') ) )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t2` ON `column1` = `column2` INNER JOIN `table3` AS `t3` ON `column3` = `column4`', $sql );
   }
 
   /**
@@ -209,12 +265,28 @@ class SelectTest extends QueryTest {
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` INNER JOIN `table2` USING ( `column1`, `column2` )', $sql );
 
+    // Test two inner joins with no aliases and USING conditions.
+    $sql = Select::select('table1')
+      ->addColumn( new AllColumns() )
+      ->innerJoinUsing( new TableName('table2'), new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
+      ->innerJoinUsing( new TableName('table3'), new ColumnNameExpression('column3'), new ColumnNameExpression('column4') )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` INNER JOIN `table2` USING ( `column1`, `column2` ) INNER JOIN `table3` USING ( `column3`, `column4` )', $sql );
+
     // Test an inner join with aliases and a USING condition.
     $sql = Select::select( 'table1', 't1' )
       ->addColumn( new AllColumns() )
       ->innerJoinUsing( new TableName( 'table2', 't2' ), new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t2` USING ( `column1`, `column2` )', $sql );
+
+    // Test two inner joins with aliases and USING conditions.
+    $sql = Select::select( 'table1', 't1' )
+      ->addColumn( new AllColumns() )
+      ->innerJoinUsing( new TableName( 'table2', 't2' ), new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
+      ->innerJoinUsing( new TableName( 'table3', 't3' ), new ColumnNameExpression('column3'), new ColumnNameExpression('column4') )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` INNER JOIN `table2` AS `t2` USING ( `column1`, `column2` ) INNER JOIN `table3` AS `t3` USING ( `column3`, `column4` )', $sql );
   }
 
   /**
@@ -227,6 +299,14 @@ class SelectTest extends QueryTest {
       ->leftJoin( new TableName('table2') )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` LEFT JOIN `table2`', $sql );
+
+    // Test two inner joins with no aliases.
+    $sql = Select::select('table1')
+      ->addColumn( new AllColumns() )
+      ->leftJoin( new TableName('table2') )
+      ->leftJoin( new TableName('table3') )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` LEFT JOIN `table2` LEFT JOIN `table3`', $sql );
 
     // Test two left joins with no aliases.
     $sql = Select::select('table1')
@@ -242,6 +322,22 @@ class SelectTest extends QueryTest {
       ->leftJoin( new TableName( 'table2', 't2' ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t2`', $sql );
+
+    // Test two inner joins with aliases.
+    $sql = Select::select( 'table1', 't1' )
+      ->addColumn( new AllColumns() )
+      ->leftJoin( new TableName( 'table2', 't2' ) )
+      ->leftJoin( new TableName( 'table3', 't3' ) )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t2` LEFT JOIN `table3` AS `t3`', $sql );
+
+    // Test two inner joins with automatic aliases.
+    $select = Select::select( 'table1', 't1' );
+    $sql = $select->addColumn( new AllColumns() )
+      ->leftJoin( new TableName( 'table2', 't', TRUE ) )
+      ->leftJoin( new TableName( 'table3', 't', TRUE ) )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t` LEFT JOIN `table3` AS `t2`', $sql );
   }
 
   /**
@@ -254,6 +350,14 @@ class SelectTest extends QueryTest {
       ->leftJoinByName('table2')
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` LEFT JOIN `table2`', $sql );
+
+    // Test two inner joins with no aliases.
+    $sql = Select::select('table1')
+      ->addColumn( new AllColumns() )
+      ->leftJoinByName('table2')
+      ->leftJoinByName('table3')
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` LEFT JOIN `table2` LEFT JOIN `table3`', $sql );
 
     // Test a left join with no aliases and a USING condition.
     // Test an inner join with aliases.
@@ -270,6 +374,22 @@ class SelectTest extends QueryTest {
       ->leftJoinByName( 'table3', 't3' )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t2` LEFT JOIN `table3` AS `t3`', $sql );
+
+    // Test two inner joins with aliases.
+    $sql = Select::select( 'table1', 't1' )
+      ->addColumn( new AllColumns() )
+      ->leftJoinByName( 'table2', 't2' )
+      ->leftJoinByName( 'table3', 't3' )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t2` LEFT JOIN `table3` AS `t3`', $sql );
+
+    // Test two inner joins with automatic aliases.
+    $select = Select::select( 'table1', 't1' );
+    $sql = $select->addColumn( new AllColumns() )
+      ->leftJoinByName( 'table2', $table2 = $select->uniqueTableAlias('t') )
+      ->leftJoinByName( 'table3', $table3 = $select->uniqueTableAlias('t') )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t` LEFT JOIN `table3` AS `t2`', $sql );
   }
 
   /**
@@ -283,12 +403,28 @@ class SelectTest extends QueryTest {
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` LEFT JOIN `table2` ON `column1` = `column2`', $sql );
 
+    // Test two inner joins with no aliases and USING conditions.
+    $sql = Select::select('table1')
+      ->addColumn( new AllColumns() )
+      ->leftJoinByNameOn( 'table2', NULL, new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
+      ->leftJoinByNameOn( 'table3', NULL, new EqualsExpression( new ColumnNameExpression('column3'), new ColumnNameExpression('column4') ) )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` LEFT JOIN `table2` ON `column1` = `column2` LEFT JOIN `table3` ON `column3` = `column4`', $sql );
+
     // Test an inner join with aliases and an ON condition.
     $sql = Select::select( 'table1', 't1' )
       ->addColumn( new AllColumns() )
       ->leftJoinByNameOn( 'table2', 't2', new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t2` ON `column1` = `column2`', $sql );
+
+    // Test two inner joins with aliases and USING conditions.
+    $sql = Select::select( 'table1', 't1' )
+      ->addColumn( new AllColumns() )
+      ->leftJoinByNameOn( 'table2', 't2', new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
+      ->leftJoinByNameOn( 'table3', 't3', new EqualsExpression( new ColumnNameExpression('column3'), new ColumnNameExpression('column4') ) )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t2` ON `column1` = `column2` LEFT JOIN `table3` AS `t3` ON `column3` = `column4`', $sql );
   }
 
   /**
@@ -337,12 +473,28 @@ class SelectTest extends QueryTest {
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` LEFT JOIN `table2` ON `column1` = `column2`', $sql );
 
+    // Test two inner joins with no aliases and USING conditions.
+    $sql = Select::select('table1')
+      ->addColumn( new AllColumns() )
+      ->leftJoinOn( new TableName('table2'), new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
+      ->leftJoinOn( new TableName('table3'), new EqualsExpression( new ColumnNameExpression('column3'), new ColumnNameExpression('column4') ) )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` LEFT JOIN `table2` ON `column1` = `column2` LEFT JOIN `table3` ON `column3` = `column4`', $sql );
+
     // Test an inner join with aliases and an ON condition.
     $sql = Select::select( 'table1', 't1' )
       ->addColumn( new AllColumns() )
       ->leftJoinOn( new TableName( 'table2', 't2' ), new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t2` ON `column1` = `column2`', $sql );
+
+    // Test two inner joins with aliases and USING conditions.
+    $sql = Select::select( 'table1', 't1' )
+      ->addColumn( new AllColumns() )
+      ->leftJoinOn( new TableName( 'table2', 't2' ), new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
+      ->leftJoinOn( new TableName( 'table3', 't3' ), new EqualsExpression( new ColumnNameExpression('column3'), new ColumnNameExpression('column4') ) )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t2` ON `column1` = `column2` LEFT JOIN `table3` AS `t3` ON `column3` = `column4`', $sql );
   }
 
   /**
@@ -356,12 +508,28 @@ class SelectTest extends QueryTest {
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` LEFT JOIN `table2` USING ( `column1`, `column2` )', $sql );
 
+    // Test two inner joins with no aliases and USING conditions.
+    $sql = Select::select('table1')
+      ->addColumn( new AllColumns() )
+      ->leftJoinUsing( new TableName('table2'), new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
+      ->leftJoinUsing( new TableName('table3'), new ColumnNameExpression('column3'), new ColumnNameExpression('column4') )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` LEFT JOIN `table2` USING ( `column1`, `column2` ) LEFT JOIN `table3` USING ( `column3`, `column4` )', $sql );
+
     // Test an inner join with aliases and a USING condition.
     $sql = Select::select( 'table1', 't1' )
       ->addColumn( new AllColumns() )
       ->leftJoinUsing( new TableName( 'table2', 't2' ), new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
       ->build( $this->connection );
     $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t2` USING ( `column1`, `column2` )', $sql );
+
+    // Test two inner joins with aliases and USING conditions.
+    $sql = Select::select( 'table1', 't1' )
+      ->addColumn( new AllColumns() )
+      ->leftJoinUsing( new TableName( 'table2', 't2' ), new ColumnNameExpression('column1'), new ColumnNameExpression('column2') )
+      ->leftJoinUsing( new TableName( 'table3', 't3' ), new ColumnNameExpression('column3'), new ColumnNameExpression('column4') )
+      ->build( $this->connection );
+    $this->assertEquals( 'SELECT * FROM `table1` AS `t1` LEFT JOIN `table2` AS `t2` USING ( `column1`, `column2` ) LEFT JOIN `table3` AS `t3` USING ( `column3`, `column4` )', $sql );
   }
 
   /**
