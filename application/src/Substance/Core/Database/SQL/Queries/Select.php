@@ -35,6 +35,7 @@ use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
 use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
 use Substance\Core\Database\SQL\TableReferences\LeftJoin;
 use Substance\Core\Database\SQL\TableReferences\TableName;
+use Substance\Core\Database\Statement;
 
 /**
  * Represents a SELECT database query.
@@ -243,6 +244,19 @@ class Select extends Query {
   public function distinct( $distinct = TRUE ) {
     $this->distinct = $distinct;
     return $this;
+  }
+
+  /**
+   * Execute this select query on the specified database.
+   *
+   * @param Database $database the database to run the query on.
+   * @return Statement the result statement.
+   */
+  public function execute( Database $database ) {
+    $sql = $this->build( $database );
+    $stmt = $database->prepare( $sql );
+    $result = $stmt->execute( $this->getArguments() );
+    return $stmt;
   }
 
   /**

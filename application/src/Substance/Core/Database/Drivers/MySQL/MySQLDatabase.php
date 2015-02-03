@@ -31,31 +31,22 @@ use Substance\Core\Database\SQL\Queries\Select;
  */
 class MySQLDatabase extends Database {
 
-  public function __construct( &$options = array(), &$pdo_options = array() ) {
+  public function __construct( $host, $database, $username, $password, $port = 3306, $prefix = array(), $pdo_options = array() ) {
     // Set default MySQL options
     $pdo_options += array(
       // Use buffered queries for consistency with other drivers.
       \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => TRUE,
     );
 
-    // Set default
-    $options += array(
-      Database::INIT_COMMANDS => array(),
-    );
-    $options[ Database::INIT_COMMANDS ] += array(
-      'sql_mode' => "SET sql_mode = 'ANSI,STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER'",
-      'names' => "SET NAMES utf8",
-    );
-
     $dsn = array();
-    $dsn[] = 'host=' . $options['host'];
-    $dsn[] = 'port=' . $options['port'];
-    $dsn[] = 'dbname=' . $options['database'];
-    $options['dsn'] = 'mysql:' . implode( ';', $dsn );
+    $dsn[] = 'host=' . $host;
+    $dsn[] = 'port=' . $port;
+    $dsn[] = 'dbname=' . $database;
+    $dsn = 'mysql:' . implode( ';', $dsn );
 
-    parent::__construct( $options, $pdo_options );
+    parent::__construct( $dsn, $username, $password, $pdo_options );
 
-    $this->setDatabaseName( $options['database'] );
+    $this->setDatabaseName( $database );
   }
 
   /* (non-PHPdoc)
@@ -73,6 +64,14 @@ class MySQLDatabase extends Database {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Database::initaliseConnection()
+   */
+  public function initaliseConnection() {
+    $this->exec( "SET sql_mode = 'ANSI,STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER'" );
+    $this->exec( "SET NAMES utf8" );
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Database\Database::listDatabases()
    */
   public function listDatabases() {
@@ -82,11 +81,15 @@ class MySQLDatabase extends Database {
     // same in PHP instead.
     foreach ( $this->query('SHOW DATABASES') as $row ) {
       if ( $row->Database != 'information_schema' ) {
-        // TODO - We need to associate the database name with a Database
-        // instance, but I'd rather create them lazily if possible to avoid
-        // the overhead of establishing a database connection unless it is
-        // necessary.
-        $databases[ $row->Database ] = NULL;
+        if ( $row->Database === $this->getDatabaseName() ) {
+          $databases[ $row->Database ] = $this;
+        } else {
+          // TODO - We need to associate the database name with a Database
+          // instance, but I'd rather create them lazily if possible to avoid
+          // the overhead of establishing a database connection unless it is
+          // necessary.
+          $databases[ $row->Database ] = NULL;
+        }
       }
     }
     return $databases;
@@ -96,12 +99,12 @@ class MySQLDatabase extends Database {
    * @see \Substance\Core\Database\Database::listTables()
    */
   public function listTables() {
-    $select = new Select('information_schema.TABLES');
-    $select->addColumn( new AllColumns() );
-    $select->where( new EqualsExpression( new ColumnNameExpression('TABLE_SCHEMA'), new LiteralExpression( $this->getDatabaseName() ) ) );
-    $sql = $select->build( $this );
+    $stmt = Select::select('information_schema.TABLES')
+      ->addColumn( new AllColumns() )
+      ->where( new EqualsExpression( new ColumnNameExpression('TABLE_SCHEMA'), new LiteralExpression( $this->getDatabaseName() ) ) )
+      ->execute( $this );
     $tables = array();
-    foreach ( $this->query( $sql ) as $row ) {
+    foreach ( $stmt as $row ) {
       $tables[ $row->TABLE_NAME ] = new MySQLTable( $this, $row );
     }
     return $tables;

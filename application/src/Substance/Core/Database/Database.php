@@ -18,6 +18,7 @@
 
 namespace Substance\Core\Database;
 
+use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Schema\Table;
 use Substance\Core\Environment\Environment;
 
@@ -35,9 +36,9 @@ abstract class Database extends \PDO {
 
   const INIT_COMMANDS = 'init_commands';
 
-  public function __construct( &$options = array(), &$pdo_options = array()  ) {
+  public function __construct( $dsn, $username, $password, $pdo_options = array()  ) {
     // Force error exceptions, always.
-    $options[ \PDO::ATTR_ERRMODE ] = \PDO::ERRMODE_EXCEPTION;
+    $pdo_options[ \PDO::ATTR_ERRMODE ] = \PDO::ERRMODE_EXCEPTION;
 
     // Set default options.
     $pdo_options += array(
@@ -49,13 +50,10 @@ abstract class Database extends \PDO {
     );
 
     // Create the PDO connection
-    parent::__construct( $options['dsn'], $options['username'], $options['password'], $pdo_options );
+    parent::__construct( $dsn, $username, $password, $pdo_options );
 
     // Execute init commands.
-    if ( !empty( $options[ Database::INIT_COMMANDS ] ) ) {
-      $this->exec( implode( ';', $options[ Database::INIT_COMMANDS ] ) );
-    }
-
+    $this->initaliseConnection();
   }
 
   /**
@@ -82,27 +80,15 @@ abstract class Database extends \PDO {
    * type.
    */
   public static function getConnection( $name = '*', $type = 'master' ) {
-    $databases = Environment::getEnvironment()->getSettings()->getDatabaseSettings();
-    if ( !array_key_exists( '*', $databases ) ) {
-      throw Alert::alert('You must define connection name "*" in your database configuration' )
-        ->culprit( 'defined connection names', implode( ',', array_keys( $databases ) ) );
-    }
-    if ( !array_key_exists( $name, $databases ) ) {
-      throw Alert::alert('No such database name in database settings.' )
-        ->culprit( 'name', $name );
-    }
-    $database = $databases[ $name ];
-    if ( !array_key_exists( $type, $database ) ) {
-      throw Alert::alert('No such database type for given name in database settings.' )
+    // TODO - Get a bit more intelligent with name and type here - look to
+    // Drupal as an example.
+    $connection = Environment::getEnvironment()->getSettings()->getDatabaseSettings( $name, $type );
+    if ( is_null( $connection ) ) {
+      throw Alert::alert( 'No such database type for given name in database settings.' )
         ->culprit( 'name', $name )
         ->culprit( 'type', $type );
     }
-    return Database::getConnectionFromSettings( $database[ $type ] );
-  }
-
-  public static function getConnectionFromSettings( $options = array() ) {
-    $class = $options['driverclass'];
-    return new $class( $options );
+    return $connection;
   }
 
   /**
@@ -114,6 +100,13 @@ abstract class Database extends \PDO {
    */
   public function getDatabaseName() {
     return $this->database_name;
+  }
+
+  /**
+   * This method is called just after the connection has been made and is used
+   * to allow concrete instances to fine tune the connection.
+   */
+  public function initaliseConnection() {
   }
 
   /**
