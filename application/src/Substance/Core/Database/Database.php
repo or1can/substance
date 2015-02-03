@@ -28,6 +28,16 @@ use Substance\Core\Environment\Environment;
 abstract class Database extends \PDO {
 
   /**
+   * @var string the active connection name.
+   */
+  protected static $active_connection_name = 'default';
+
+  /**
+   * @var Database[] active connections.
+   */
+  protected static $active_connections = array();
+
+  /**
    * @var string the database name.
    */
   protected $database_name;
@@ -73,22 +83,44 @@ abstract class Database extends \PDO {
   abstract public function createTable( $name );
 
   /**
-   * @param string $name the database name, either '*' for or a more specific
-   * name.
+   * Returns the active connection name, that is being used as the default
+   * connection name for establishing new connections.
+   *
+   * @return string the active connection name, or 'default' for default
+   * connection.
+   */
+  public static function getActiveConnectionName() {
+    return $this->active_connection_name;
+  }
+
+  /**
+   * Returns a database connection for the current active connection, or the
+   * specified override.
+   *
+   * @param string $name the connection name to use instead of the active
+   * connection, or NULL to use the active connection.
    * @param string $type the database type, either 'master' or 'slave'.
    * @return Database the database connection for the specified name and
    * type.
    */
-  public static function getConnection( $name = '*', $type = 'master' ) {
-    // TODO - Get a bit more intelligent with name and type here - look to
-    // Drupal as an example.
-    $connection = Environment::getEnvironment()->getSettings()->getDatabaseSettings( $name, $type );
-    if ( is_null( $connection ) ) {
-      throw Alert::alert( 'No such database type for given name in database settings.' )
-        ->culprit( 'name', $name )
-        ->culprit( 'type', $type );
+  public static function getConnection( $name = NULL, $type = 'master' ) {
+    // Use the active connection by default, but override with a supplied one.
+    $connection_name = self::$active_connection_name;
+    if ( isset( $name ) ) {
+      $connection_name = $name;
     }
-    return $connection;
+    // Set a connection in the cache, if required.
+    if ( !isset( self::$active_connections[ $connection_name ][ $type ] ) ) {
+      $connection = Environment::getEnvironment()->getSettings()->getDatabaseSettings( $name, $type );
+      if ( is_null( $connection ) ) {
+        throw Alert::alert( 'No such database type for given name in database settings.' )
+          ->culprit( 'name', $name )
+          ->culprit( 'type', $type );
+      }
+      self::$active_connections[ $connection_name ][ $type ] = $connection;
+    }
+    // Return the active connection.
+    return self::$active_connections[ $connection_name ][ $type ];
   }
 
   /**
@@ -167,6 +199,18 @@ abstract class Database extends \PDO {
     $quote_char = $this->quoteChar();
     $double_quote_char = $quote_char . $quote_char;
     return $quote_char . str_replace( $quote_char, $double_quote_char, $table ) . $quote_char;
+  }
+
+  /**
+   * Sets the active connection name, which will be used as the default
+   * connection name for establishing new connections.
+   *
+   * @param string $name the connection name, or 'default' for the default.
+   * @return self
+   */
+  protected static function setActiveConnectionName( $name = NULL ) {
+    $this->active_connection_name = $name;
+    return $this;
   }
 
   /**

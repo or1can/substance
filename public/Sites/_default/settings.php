@@ -8,7 +8,7 @@ use Substance\Core\Database\Drivers\MySQL\MySQLDatabase;
 
 class DefaultSettings extends Settings {
 
-  public function getDatabaseSettings( $name = NULL, $type = 'master' ) {
+  public function getDatabaseSettings( $name = 'default', $type = 'master' ) {
     switch ( $name ) {
       case 'named':
         if ( $type == 'master' ) {

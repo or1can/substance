@@ -41,7 +41,7 @@ $alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
 
 echo $alert;
 
-$connection = Database::getConnection( '*', 'master' );
+$connection = Database::getConnection();
 
 var_dump( $connection->listTables() );
 
