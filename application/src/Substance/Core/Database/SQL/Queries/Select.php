@@ -249,14 +249,17 @@ class Select extends Query {
   /**
    * Execute this select query on the specified database.
    *
-   * @param Database $database the database to run the query on.
+   * @param string $type the database type to execute on, either 'master' or
+   * 'slave'.
+   * @param string $name the connection name to execute on or NULL to use the
+   * default active connection.
    * @return Statement the result statement.
+   * @see Database::getConnection()
    */
-  public function execute( Database $database ) {
-    $sql = $this->build( $database );
-    $stmt = $database->prepare( $sql );
-    $result = $stmt->execute( $this->getArguments() );
-    return $stmt;
+  public function execute( $type = 'master', $name = NULL ) {
+    $database = Database::getConnection( $type, $name );
+    $statement = $database->execute( $this );
+    return $statement;
   }
 
   /**

@@ -20,12 +20,36 @@ namespace Substance\Core\Database;
 
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Schema\Table;
+use Substance\Core\Database\SQL\Query;
 use Substance\Core\Environment\Environment;
 
 /**
  * Represents a database in Substance.
+ *
+ * Each concrete database implementation can define its own options, with the
+ * core options and behaviours defined here.
+ *
+ * A database connection can optionally prefix one or more table names with a
+ * given value. Prefixing behaviour is controlled by the prefix property to the
+ * database constructor.
+ * The prefix property can be either a simple string value to be prepended to
+ * every table, e.g.
+ * @code
+ *   $prefix = 'prefix_';
+ * @endcode
+ * or it can be an array of table names and string prefixes to control the
+ * prefix used for individual tables. Using a '*' as the table name defines the
+ * default prefix for tables not explicitly specified. For example, the
+ * following prefix specification would prefix the 'Users' table to become
+ * 'shared_Users' and all other tables would have the 'mysite_' prefix.
+ * @code
+ *   'prefix' => array(
+ *     '*' => 'mysite_',
+ *     'Users' => 'shared_',
+ *   ),
+ * @endcode
  */
-abstract class Database extends \PDO {
+abstract class Database {
 
   /**
    * @var string the active connection name.
@@ -38,6 +62,11 @@ abstract class Database extends \PDO {
   protected static $active_connections = array();
 
   /**
+   * @var PDO the underlying database connection
+   */
+  protected $connection;
+
+  /**
    * @var string the database name.
    */
   protected $database_name;
@@ -46,7 +75,36 @@ abstract class Database extends \PDO {
 
   const INIT_COMMANDS = 'init_commands';
 
-  public function __construct( $dsn, $username, $password, $pdo_options = array()  ) {
+  /**
+   * Construct a new MySQL database connection.
+   *
+   * @param string $dsn the data source name.
+   * @param string $username the database username
+   * @param string $password the database password
+   * @param string|array $prefix a prefix that should be prepended to all
+   * tables. A string value will be prepended to all tables, while an array
+   * specifies prefixes for specific tables.
+   * The prefix property can be either a simple string value to be prepended to
+   * every table, e.g.
+   * @code
+   *   'prefix' => 'prefix_',
+   * @endcode
+   * or it can be an array of table names and string prefixes to control the
+   * prefix used for individual tables. The '*' element is mandatory in this
+   * case and defines the default prefix for tables not explicitly specified.
+   * For example, the following prefix specification would prefix the 'Users'
+   * table to become 'shared_Users' and all other tables would have the
+   * 'mysite_' prefix.
+   * @code
+   *   'prefix' => array(
+   *     '*' => 'mysite_',
+   *     'Users' => 'shared_',
+   *   ),
+   * @endcode
+   * @param array $pdo_options an associative array of PDO driver options, keyed
+   * by the PDO option with values appropriate to the option
+   */
+  public function __construct( $dsn, $username, $password, $prefix = '', $pdo_options = array()  ) {
     // Force error exceptions, always.
     $pdo_options[ \PDO::ATTR_ERRMODE ] = \PDO::ERRMODE_EXCEPTION;
 
@@ -60,7 +118,7 @@ abstract class Database extends \PDO {
     );
 
     // Create the PDO connection
-    parent::__construct( $dsn, $username, $password, $pdo_options );
+    $this->connection = new \PDO( $dsn, $username, $password, $pdo_options );
 
     // Execute init commands.
     $this->initaliseConnection();
@@ -83,6 +141,28 @@ abstract class Database extends \PDO {
   abstract public function createTable( $name );
 
   /**
+   * Execute the specified query on this database.
+   *
+   * @param Query $query the query to execute.
+   * @return Statement the result statement.
+   * @see Database::getConnection()
+   */
+  public function execute( Query $query ) {
+    $sql = $query->build( $this );
+    $statement = $this->connection->prepare( $sql );
+    $result = $statement->execute( $query->getArguments() );
+    if ( $result === FALSE ) {
+      $error_info = $statement->errorInfo();
+      throw Alert::alert( 'Failed to execute query' )
+        ->culprit( 'query', $query )
+        ->culprit( 'error code', $statement->errorCode() )
+        ->culprit( 'driver code', $error_info[ 1 ] )
+        ->culprit( 'driver message', $error_info[ 2 ] );
+    }
+    return $statement;
+  }
+
+  /**
    * Returns the active connection name, that is being used as the default
    * connection name for establishing new connections.
    *
@@ -97,27 +177,35 @@ abstract class Database extends \PDO {
    * Returns a database connection for the current active connection, or the
    * specified override.
    *
+   * @param string $type the database type, either 'master' or 'slave'.
    * @param string $name the connection name to use instead of the active
    * connection, or NULL to use the active connection.
-   * @param string $type the database type, either 'master' or 'slave'.
    * @return Database the database connection for the specified name and
    * type.
    */
-  public static function getConnection( $name = NULL, $type = 'master' ) {
+  public static function getConnection( $type = 'master', $name = NULL ) {
     // Use the active connection by default, but override with a supplied one.
-    $connection_name = self::$active_connection_name;
-    if ( isset( $name ) ) {
-      $connection_name = $name;
-    }
+    $connection_name = isset( $name ) ? $name : self::$active_connection_name;
     // Set a connection in the cache, if required.
     if ( !isset( self::$active_connections[ $connection_name ][ $type ] ) ) {
-      $connection = Environment::getEnvironment()->getSettings()->getDatabaseSettings( $name, $type );
-      if ( is_null( $connection ) ) {
+      $settings = Environment::getEnvironment()->getSettings();
+      switch ( $type ) {
+        case 'master':
+          self::$active_connections[ $connection_name ][ $type ] = $settings->getDatabaseMaster( $connection_name );
+          break;
+        case 'slave':
+          self::$active_connections[ $connection_name ][ $type ] = $settings->getDatabaseSlave( $connection_name );
+          break;
+        default:
+          throw Alert::alert( 'Unsupported database type', 'Database type must be either "master" or "slave"' )
+            ->culprit( 'type', $type );
+          break;
+      }
+      if ( !isset( self::$active_connections[ $connection_name ][ $type ] ) ) {
         throw Alert::alert( 'No such database type for given name in database settings.' )
-          ->culprit( 'name', $name )
+          ->culprit( 'name', $connection_name )
           ->culprit( 'type', $type );
       }
-      self::$active_connections[ $connection_name ][ $type ] = $connection;
     }
     // Return the active connection.
     return self::$active_connections[ $connection_name ][ $type ];
