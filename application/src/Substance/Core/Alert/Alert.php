@@ -245,7 +245,7 @@ class Alert extends \Exception implements Presentable {
       $method .= '(';
       $method .= array_key_exists( 'line', $trace ) ? $trace['line'] : 'unkown line';
       $method .= '): ';
-      if ( $trace['class'] != '' ) {
+      if ( array_key_exists( 'class', $trace ) && $trace['class'] != '' ) {
         $method .= $trace['class'];
         $method .= $trace['type'];
       }
