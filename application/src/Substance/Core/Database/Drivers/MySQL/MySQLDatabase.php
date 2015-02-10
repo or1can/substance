@@ -24,6 +24,7 @@ use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Queries\Select;
+use Substance\Core\Environment\Environment;
 
 /**
  * Represents a database connection in Substance, which is an extension of the
@@ -97,11 +98,13 @@ class MySQLDatabase extends Database {
         if ( $row->Database === $this->getDatabaseName() ) {
           $databases[ $row->Database ] = $this;
         } else {
-          // TODO - We need to associate the database name with a Database
-          // instance, but I'd rather create them lazily if possible to avoid
-          // the overhead of establishing a database connection unless it is
-          // necessary.
-          $databases[ $row->Database ] = NULL;
+          // For other databases, just copy this database object and change the
+          // copies database name. This avoids the overhead of establishing a
+          // database connection and the complexities of storing connection
+          // details to do that in a lazy fashion. If only private meant
+          // private...
+          $db = clone $this;
+          $databases[ $row->Database ] = $db->setDatabaseName( $row->Database );
         }
       }
     }
