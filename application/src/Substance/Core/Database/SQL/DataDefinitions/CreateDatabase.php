@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2014 - 2015 Kevin Rogers
+ * Copyright (C) 2015 Kevin Rogers
  *
  * Substance is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,53 +16,43 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\Schema;
+namespace Substance\Core\Database\SQL\DataDefinitions;
 
 use Substance\Core\Database\Database;
+use Substance\Core\Database\SQL\DataDefinition;
 
 /**
- * Abstract implementation of a schema Table.
+ * Represents a CREATE DATABASE query.
  */
-abstract class AbstractTable implements Table {
+class CreateDatabase extends DataDefinition {
 
   /**
-   * @var Database the database we are working with.
-   */
-  protected $connection;
-
-  /**
-   * @var string the table name.
+   * @var string the database name to create.
    */
   protected $name;
 
   /**
-   * Construct a new table object to work with the specified table in the
-   * database.
+   * Constructs a create database object to create a database with the
+   * specified name.
    *
-   * @param Database $database the database to work with
-   * @param string $name the table name.
+   * Although it seems odd, we do need a database to operate on here, even
+   * though we're creating a database.
+   *
+   * @param Database $database the database to operate on.
+   * @param string $name the name of the database to create.
    */
   public function __construct( Database $database, $name ) {
-    $this->connection = $database;
+    parent::__construct( $database );
     $this->name = $name;
   }
 
-  public function __toString() {
-    return 'TABLE<' . $this->name . '>';
-  }
-
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema\Table::getName()
+   * @see \Substance\Core\Database\SQL\Definition::build()
    */
-  public function getName() {
-    return $this->name;
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema\Table::setName()
-   */
-  public function setName( $name ) {
-    $this->name = $name;
+  public function build() {
+    $sql = 'CREATE DATABASE ';
+    $sql .= $this->database->quoteName( $this->name );
+    return $sql;
   }
 
 }

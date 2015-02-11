@@ -24,11 +24,62 @@ namespace Substance\Core\Database\Schema;
 interface Table {
 
   /**
+   * Adds the specified column to the table.
+   *
+   * @param Column $column the column to add to the table.
+   * @return self
+   */
+  public function addColumn( Column $column );
+
+  /**
+   * Adds the specified index to the table.
+   *
+   * @param Index $index the index to add to the table.
+   * @return self
+   */
+  public function addIndex( Index $index );
+
+  /**
+   * Drops this table.
+   *
+   * @return self
+   */
+  public function drop();
+
+  /**
+   * Returns the specified column.
+   *
+   * @param string $name the name of the column
+   */
+  public function getColumn( $name );
+
+  /**
+   * Returns the specified index.
+   *
+   * @param Index $name the name of the index
+   */
+  public function getIndex( $name );
+
+  /**
    * Returns the table name.
    *
    * @return string the table name.
    */
   public function getName();
+
+  /**
+   * Returns an array of this tables columns.
+   *
+   * @return Column[] an array of this tables columns.
+   */
+  public function listColumns();
+
+  /**
+   * Returns an array of this tables indexes.
+   *
+   * @return Index[] an array of this tables indexes.
+   */
+  public function listIndexes();
 
   /**
    * Sets the table name.

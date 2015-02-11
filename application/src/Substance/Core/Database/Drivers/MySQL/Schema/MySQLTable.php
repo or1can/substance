@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2014 - 2015 Kevin Rogers
+ * Copyright (C) 2015 Kevin Rogers
  *
  * Substance is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,53 +16,25 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\Schema;
+namespace Substance\Core\Database\Drivers\MySQL\Schema;
 
 use Substance\Core\Database\Database;
+use Substance\Core\Database\Schema\AbstractTable;
 
 /**
- * Abstract implementation of a schema Table.
+ * Concrete schema Table instance for working with a table in a MySQL database.
  */
-abstract class AbstractTable implements Table {
-
-  /**
-   * @var Database the database we are working with.
-   */
-  protected $connection;
-
-  /**
-   * @var string the table name.
-   */
-  protected $name;
+class MySQLTable extends AbstractTable {
 
   /**
    * Construct a new table object to work with the specified table in the
-   * database.
+   * connected database.
    *
-   * @param Database $database the database to work with
+   * @param Database $database the database to work with.
    * @param string $name the table name.
    */
   public function __construct( Database $database, $name ) {
-    $this->connection = $database;
-    $this->name = $name;
-  }
-
-  public function __toString() {
-    return 'TABLE<' . $this->name . '>';
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema\Table::getName()
-   */
-  public function getName() {
-    return $this->name;
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema\Table::setName()
-   */
-  public function setName( $name ) {
-    $this->name = $name;
+    parent::__construct( $database, $name );
   }
 
 }

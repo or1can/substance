@@ -16,28 +16,26 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\Drivers\MySQL;
-
-use Substance\Core\Database\Schema\AbstractTable;
+namespace Substance\Core\Database\Schema;
 
 /**
- * Concrete schema Table instance for working with a table in a MySQL database.
+ * Represents an index in a database table.
  */
-class MySQLTable extends AbstractTable {
-
-  protected $information_schema_row;
+interface Index {
 
   /**
-   * Construct a new table object to work with the specified table in the
-   * connected database.
+   * Returns the index name.
    *
-   * @param Connection $connection the database to work with.
-   * @param object $row the information_schema table row for this table.
+   * @return string the index name.
    */
-  public function __construct( $connection, $row ) {
-    parent::__construct( $connection );
-    $this->information_schema_row = $row;
-    $this->setName( $this->information_schema_row->TABLE_NAME );
-  }
+  public function getName();
+
+  /**
+   * Sets the index name.
+   *
+   * @param string $name the index name.
+   * @return self
+   */
+  public function setName( $name );
 
 }

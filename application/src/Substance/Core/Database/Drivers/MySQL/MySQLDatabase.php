@@ -19,12 +19,16 @@
 namespace Substance\Core\Database\Drivers\MySQL;
 
 use Substance\Core\Database\Database;
+use Substance\Core\Database\Drivers\MySQL\Schema\MySQLTable;
 use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Environment\Environment;
+use Substance\Core\Database\Drivers\MySQL\SQL\Definitions\CreateDatabase;
+use Substance\Core\Database\SQL\Definitions\CreateTable;
+use Substance\Core\Alert\Alert;
 
 /**
  * Represents a database connection in Substance, which is an extension of the
@@ -67,14 +71,71 @@ class MySQLDatabase extends Database {
    * @see \Substance\Core\Database\Database::createDatabases()
    */
   public function createDatabases( $name ) {
-    // TODO
+    if ( $this->databaseExists( $name ) ) {
+      throw Alert::alert( 'Database already exists', 'Cannot create new database with same name as an existing one' )
+        ->culprit( 'database', $name );
+    } else {
+      $db = new CreateDatabase( $this, $name );
+      $this->connection->exec( $db->build() );
+      return $this->getDatabase( $name );
+    }
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Database::createTable()
    */
   public function createTable( $name ) {
-    // TODO
+    if ( $this->tableExists( $name ) ) {
+      throw Alert::alert( 'Table already exists', 'Cannot create new table with same name as an existing one' )
+        ->culprit( 'database', $this->getDatabaseName() )
+        ->culprit( 'table', $name );
+    } else {
+      $table = new CreateTable( $this, $name );
+      $this->connection->exec( $table->build() );
+      return $this->getTable( $name );
+    }
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Database::databaseExists()
+   */
+  public function databaseExists( $name ) {
+    $select = Select::select('information_schema.SCHEMATA')
+      ->addColumnByName('SCHEMA_NAME')
+      ->where( new EqualsExpression( new ColumnNameExpression('SCHEMA_NAME'), new LiteralExpression( $name ) ) );
+    $statement = $this->execute( $select );
+    return $statement->rowCount() == 1;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Database::getDatabase()
+   */
+  public function getDatabase( $name ) {
+    if ( $this->databaseExists( $name ) ) {
+      // For other databases, just copy this database object and change the
+      // copies database name. This avoids the overhead of establishing a
+      // database connection and the complexities of storing connection
+      // details to do that in a lazy fashion. If only private meant
+      // private...
+      $db = clone $this;
+      return $db->setDatabaseName( $name );
+    } else {
+      throw Alert::alert( 'No such database', 'Can only get database object for databases that exist' )
+        ->culprit( 'name', $name );
+    }
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Database::getTable()
+   */
+  public function getTable( $name ) {
+    if ( $this->tableExists( $name ) ) {
+      return new MySQLTable( $this, $name );
+    } else {
+      throw Alert::alert( 'No such table', 'Can only get table object for tables that exist' )
+        ->culprit( 'database', $this->getDatabaseName() )
+        ->culprit( 'table', $name );
+    }
   }
 
   /* (non-PHPdoc)
@@ -98,13 +159,7 @@ class MySQLDatabase extends Database {
         if ( $row->Database === $this->getDatabaseName() ) {
           $databases[ $row->Database ] = $this;
         } else {
-          // For other databases, just copy this database object and change the
-          // copies database name. This avoids the overhead of establishing a
-          // database connection and the complexities of storing connection
-          // details to do that in a lazy fashion. If only private meant
-          // private...
-          $db = clone $this;
-          $databases[ $row->Database ] = $db->setDatabaseName( $row->Database );
+          $databases[ $row->Database ] = $this->getDatabase( $row->Database );
         }
       }
     }
@@ -121,7 +176,7 @@ class MySQLDatabase extends Database {
     $statement = $this->execute( $select );
     $tables = array();
     foreach ( $statement as $row ) {
-      $tables[ $row->TABLE_NAME ] = new MySQLTable( $this, $row );
+      $tables[ $row->TABLE_NAME ] = $this->getTable( $row->TABLE_NAME );
     }
     return $tables;
   }
@@ -144,6 +199,18 @@ class MySQLDatabase extends Database {
       $part = $quote_char . str_replace( $quote_char, $double_quote_char, $part ) . $quote_char;
     }
     return implode( '.', $parts );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Database::tableExists()
+   */
+  public function tableExists( $name ) {
+    $select = Select::select('information_schema.TABLES')
+      ->addColumnByName('TABLE_NAME')
+      ->where( new EqualsExpression( new ColumnNameExpression('TABLE_SCHEMA'), new LiteralExpression( $this->dbname ) ) )
+      ->where( new EqualsExpression( new ColumnNameExpression('TABLE_NAME'), new LiteralExpression( $name ) ) );
+    $statement = $this->execute( $select );
+    return $statement->rowCount() == 1;
   }
 
 }

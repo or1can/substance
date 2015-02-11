@@ -129,6 +129,7 @@ abstract class Database {
    * Schema's connection.
    *
    * @param string $name the new database name.
+   * @return Database the new database.
    */
   abstract public function createDatabases( $name );
 
@@ -137,8 +138,17 @@ abstract class Database {
    * Schema's connection.
    *
    * @param string $name the new table name.
+   * @return Table the new table.
    */
   abstract public function createTable( $name );
+
+  /**
+   * Checks if the specified database exists.
+   *
+   * @param string $name the database name to check.
+   * @return boolean TRUE if the specified database exists and FALSE otherwise.
+   */
+  abstract public function databaseExists( $name );
 
   /**
    * Execute the specified query on this database.
@@ -210,6 +220,22 @@ abstract class Database {
     // Return the active connection.
     return self::$active_connections[ $connection_name ][ $type ];
   }
+
+  /**
+   * Returns the database object for the database with the specified name.
+   *
+   * @param string $name the database name
+   * @return Database the database object for the specified database.
+   */
+  abstract public function getDatabase( $name );
+
+  /**
+   * Returns the table object for the table with the specified name.
+   *
+   * @param string $name the table name
+   * @return Table the table object for the specified table.
+   */
+  abstract public function getTable( $name );
 
   /**
    * Returns the database name for this connection. If the underlying database
@@ -311,5 +337,13 @@ abstract class Database {
     $this->database_name = $name;
     return $this;
   }
+
+  /**
+   * Checks if the specified table exists in the database.
+   *
+   * @param string $name the table name.
+   * @return boolean TRUE if the table exists and FALSE otherwise.
+   */
+  abstract public function tableExists( $name );
 
 }
