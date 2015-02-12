@@ -18,38 +18,24 @@
 
 namespace Substance\Core\Database\SQL\DataDefinitions;
 
-use Substance\Core\Database\Database;
-use Substance\Core\Database\SQL\DataDefinition;
+use Substance\Core\Database\AbstractDatabaseTest;
 
 /**
- * Represents a CREATE TABLE query.
+ * Tests the create table data definition.
  */
-class CreateTable extends DataDefinition {
+class CreateTableTest extends AbstractDatabaseTest {
 
   /**
-   * @var string the table name to create.
+   * Test the build with simple table names.
    */
-  protected $name;
+  public function testBuild() {
+    $definition = new CreateTable( $this->connection, 'table' );
+    $sql = $definition->build();
+    $this->assertEquals( 'CREATE TABLE `table`', $sql );
 
-  /**
-   * Constructs a create table object to create a table with the specified
-   * name.
-   *
-   * @param Database $database the database to create the table in.
-   * @param string $name the name of the table to create.
-   */
-  public function __construct( Database $database, $name ) {
-    parent::__construct( $database );
-    $this->name = $name;
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Definition::build()
-   */
-  public function build() {
-    $sql = 'CREATE TABLE ';
-    $sql .= $this->database->quoteName( $this->name );
-    return $sql;
+    $definition = new CreateTable( $this->connection, 'table.dot' );
+    $sql = $definition->build();
+    $this->assertEquals( 'CREATE TABLE `table.dot`', $sql );
   }
 
 }

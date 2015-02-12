@@ -16,7 +16,7 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\Drivers\MySQL\SQL\Definitions;
+namespace Substance\Core\Database\Drivers\MySQL\SQL\DataDefinitions;
 
 use Substance\Core\Database\Database;
 use Substance\Core\Database\SQL\DataDefinitions\CreateDatabase;
@@ -24,7 +24,7 @@ use Substance\Core\Database\SQL\DataDefinitions\CreateDatabase;
 /**
  * Represents a CREATE DATABASE query.
  */
-class CreateDatabase extends CreateDatabase {
+class MySQLCreateDatabase extends CreateDatabase {
 
   /**
    * Constructs a create database object to create a database with the

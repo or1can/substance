@@ -21,7 +21,7 @@ namespace Substance\Core\Database\Drivers\MySQL;
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Database;
 use Substance\Core\Database\Drivers\MySQL\Schema\MySQLTable;
-use Substance\Core\Database\Drivers\MySQL\SQL\Definitions\CreateDatabase;
+use Substance\Core\Database\Drivers\MySQL\SQL\DataDefinitions\MySQLCreateDatabase;
 use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Definitions\CreateTable;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
@@ -75,7 +75,7 @@ class MySQLDatabase extends Database {
       throw Alert::alert( 'Database already exists', 'Cannot create new database with same name as an existing one' )
         ->culprit( 'database', $name );
     } else {
-      $db = new CreateDatabase( $this, $name );
+      $db = new MySQLCreateDatabase( $this, $name );
       $this->connection->exec( $db->build() );
       return $this->getDatabase( $name );
     }
