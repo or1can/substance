@@ -16,18 +16,41 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\Schema;
+namespace Substance\Core\Database\Schema\Types;
+
+use Substance\Core\Database\Schema\Type;
 
 /**
  * Represents a data type.
  */
-interface Type {
+class Integer implements Type {
 
   /**
-   * Returns the type name.
-   *
-   * @return string the type name.
+   * @var Size the integer size.
    */
-  public function getName();
+  protected $size;
+
+  /**
+   * Constructs a new Integer type.
+   */
+  public function __construct() {
+    $this->size = Size::size( Size::NORMAL );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Type::getName()
+   */
+  public function getName() {
+    return 'INTEGER';
+  }
+
+  /**
+   * Sets this integers size.
+   *
+   * @param Size $size the size of this integer.
+   */
+  public function setSize( Size $size ) {
+    $this->size = $size;
+  }
 
 }

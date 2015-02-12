@@ -18,7 +18,9 @@
 
 namespace Substance\Core\Database\SQL\DataDefinitions;
 
+use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Database;
+use Substance\Core\Database\Schema\Column;
 use Substance\Core\Database\SQL\DataDefinition;
 
 /**
@@ -27,9 +29,19 @@ use Substance\Core\Database\SQL\DataDefinition;
 class CreateTable extends DataDefinition {
 
   /**
+   * @var Column[] the columns for this table.
+   */
+  protected $columns = array();
+
+  /**
    * @var string the table name to create.
    */
   protected $name;
+
+  /**
+   * @var boolean TRUE if this is a temporary table and FALSE otherwise.
+   */
+  protected $temporary;
 
   /**
    * Constructs a create table object to create a table with the specified
@@ -37,18 +49,45 @@ class CreateTable extends DataDefinition {
    *
    * @param Database $database the database to create the table in.
    * @param string $name the name of the table to create.
+   * @param boolean $temporary TRUE if this table is temporary and FALSE otherwise.
    */
-  public function __construct( Database $database, $name ) {
+  public function __construct( Database $database, $name, $temporary = FALSE ) {
     parent::__construct( $database );
     $this->name = $name;
+    $this->temporary = $temporary;
+  }
+
+  /**
+   * Adds the specified column to this table.
+   *
+   * @param Column $column the column to add.
+   */
+  public function addColumn( Column $column ) {
+    if ( array_key_exists( $column->getName(), $this->columns ) ) {
+      throw Alert::alert( 'Column already exists', 'Each column must have a unique name.' )
+        ->culprit( 'name', $column->getName() )
+        ->culprit( 'existing column', $this->columns[ $column->getName() ] )
+        ->culprit( 'duplicate column', $column );
+    } else {
+      $this->columns[ $column->getName() ] = $column;
+    }
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Definition::build()
    */
   public function build() {
-    $sql = 'CREATE TABLE ';
+    $sql = 'CREATE';
+    if ( $this->temporary ) {
+      $sql .= ' TEMPORARY';
+    }
+    $sql .= ' TABLE ';
     $sql .= $this->database->quoteName( $this->name );
+    $sql .= ' (';
+    foreach ( $this->columns as $column ) {
+      $sql .= $column->getName();
+    }
+    $sql .= ' )';
     return $sql;
   }
 

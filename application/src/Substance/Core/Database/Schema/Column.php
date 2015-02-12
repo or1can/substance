@@ -24,6 +24,13 @@ namespace Substance\Core\Database\Schema;
 interface Column {
 
   /**
+   * Returns TRUE if this column allows NULL values and FALSE otherwise.
+   *
+   * @return boolean TRUE if NULL values are allowed and FALSE otherwise.
+   */
+  public function allowsNull();
+
+  /**
    * Drop this column.
    *
    * @return self
@@ -50,6 +57,11 @@ interface Column {
    * @return Type the column type.
    */
   public function getType();
+
+  /**
+   * Removes this columns default value.
+   */
+  public function removeDefault();
 
   /**
    * Sets the default value for this column.

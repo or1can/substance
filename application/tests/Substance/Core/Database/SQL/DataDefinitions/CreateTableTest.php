@@ -31,11 +31,11 @@ class CreateTableTest extends AbstractDatabaseTest {
   public function testBuild() {
     $definition = new CreateTable( $this->connection, 'table' );
     $sql = $definition->build();
-    $this->assertEquals( 'CREATE TABLE `table`', $sql );
+    $this->assertEquals( 'CREATE TABLE `table` ( )', $sql );
 
     $definition = new CreateTable( $this->connection, 'table.dot' );
     $sql = $definition->build();
-    $this->assertEquals( 'CREATE TABLE `table.dot`', $sql );
+    $this->assertEquals( 'CREATE TABLE `table.dot` ( )', $sql );
   }
 
 }
