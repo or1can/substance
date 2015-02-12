@@ -18,17 +18,17 @@
 
 namespace Substance\Core\Database\Drivers\MySQL;
 
+use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Database;
 use Substance\Core\Database\Drivers\MySQL\Schema\MySQLTable;
+use Substance\Core\Database\Drivers\MySQL\SQL\Definitions\CreateDatabase;
 use Substance\Core\Database\SQL\Columns\AllColumns;
+use Substance\Core\Database\SQL\Definitions\CreateTable;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Environment\Environment;
-use Substance\Core\Database\Drivers\MySQL\SQL\Definitions\CreateDatabase;
-use Substance\Core\Database\SQL\Definitions\CreateTable;
-use Substance\Core\Alert\Alert;
 
 /**
  * Represents a database connection in Substance, which is an extension of the
