@@ -18,44 +18,45 @@
 
 namespace Substance\Core\Database\Schema\Types;
 
-use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Schema\Size;
-use Substance\Core\Database\Schema\Type;
 
 /**
- * Represents a data type.
+ * Tests the integer type schema element.
  */
-class Integer implements Type {
+class IntegerTest extends \PHPUnit_Framework_TestCase {
 
   /**
-   * @var Size the integer size.
+   * Test the integer get name.
    */
-  protected $size;
-
-  /**
-   * Constructs a new Integer type.
-   */
-  public function __construct() {
-    $this->size = Size::size( Size::NORMAL );
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema\Type::getName()
-   */
-  public function getName() {
-    return 'INTEGER';
+  public function testGetName() {
+    $integer = new Integer();
+    $this->assertEquals( 'INTEGER', $integer->getName() );
   }
 
   /**
-   * Sets this integers size.
+   * Test setting an integers size.
+   */
+  public function testSetSize() {
+    $integer = new Integer();
+    $integer->setSize( Size::size( Size::SMALL ) );
+  }
+
+  /**
+   * Test setting an integers size with illegal values.
    *
-   * @param Size $size the size of this integer.
+   * @expectedException Substance\Core\Alert\Alert
    */
-  public function setSize( Size $size ) {
-    if ( is_null( $size ) ) {
-      throw Alert::alert( 'Unexpected NULL', 'Supplied size must be an instance of Size' );
-    }
-    $this->size = $size;
+  public function testSetSizeIllegal() {
+    $size = Size::size( 'crap' );
+  }
+
+  /**
+   * Test setting an integers size with null.
+   *
+   * @expectedException Substance\Core\Alert\Alert
+   */
+  public function testSetSizeNull() {
+    $size = Size::size( NULL );
   }
 
 }

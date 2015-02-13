@@ -16,9 +16,7 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\SQL\DataDefinitions;
-
-use Substance\Core\Database\Schema\Size;
+namespace Substance\Core\Database\Schema;
 
 /**
  * Tests the size schema element.
