@@ -19,12 +19,10 @@
 namespace Substance\Core\Database;
 
 use Substance\Core\Alert\Alert;
-use Substance\Core\Database\Schema\Table;
-use Substance\Core\Database\SQL\Query;
 use Substance\Core\Environment\Environment;
 
 /**
- * Represents a database in Substance.
+ * Represents a database connection.
  *
  * Each concrete database implementation can define its own options, with the
  * core options and behaviours defined here.
@@ -49,7 +47,7 @@ use Substance\Core\Environment\Environment;
  *   ),
  * @endcode
  */
-abstract class Database {
+abstract class Connection extends \PDO {
 
   /**
    * @var string the active connection name.
@@ -62,23 +60,14 @@ abstract class Database {
   protected static $active_connections = array();
 
   /**
-   * @var PDO the underlying database connection
+   * @var Database[] this connections databases.
    */
-  protected $connection;
+  protected $databases = array();
 
   /**
-   * @var string the database name.
+   * @var string the connection name.
    */
   protected $name;
-
-  /**
-   * @var Table[] this databases tables.
-   */
-  protected $tables = array();
-
-  const DUMMY_CONNECTION = 'dummy_connection';
-
-  const INIT_COMMANDS = 'init_commands';
 
   /**
    * Construct a new MySQL database connection.
@@ -123,14 +112,14 @@ abstract class Database {
     );
 
     // Create the PDO connection
-    $this->connection = new \PDO( $dsn, $username, $password, $pdo_options );
+    parent::__construct( $dsn, $username, $passwd, $pdo_options );
 
     // Execute init commands.
     $this->initaliseConnection();
   }
 
   public function __toString() {
-    return 'DATABASE<' . $this->name . '>';
+    return 'CONNECTION<' . $this->name . '>';
   }
 
   /**
@@ -140,46 +129,7 @@ abstract class Database {
    * @param string $name the new database name.
    * @return Database the new database.
    */
-  abstract public function createDatabases( $name );
-
-  /**
-   * Creates a table with the specified name in the database specified in this
-   * Schema's connection.
-   *
-   * @param string $name the new table name.
-   * @return Table the new table.
-   */
-  abstract public function createTable( $name );
-
-  /**
-   * Checks if the specified database exists.
-   *
-   * @param string $name the database name to check.
-   * @return boolean TRUE if the specified database exists and FALSE otherwise.
-   */
-  abstract public function databaseExists( $name );
-
-  /**
-   * Execute the specified query on this database.
-   *
-   * @param Query $query the query to execute.
-   * @return Statement the result statement.
-   * @see Database::getConnection()
-   */
-  public function execute( Query $query ) {
-    $sql = $query->build( $this );
-    $statement = $this->connection->prepare( $sql );
-    $result = $statement->execute( $query->getArguments() );
-    if ( $result === FALSE ) {
-      $error_info = $statement->errorInfo();
-      throw Alert::alert( 'Failed to execute query' )
-        ->culprit( 'query', $query )
-        ->culprit( 'error code', $statement->errorCode() )
-        ->culprit( 'driver code', $error_info[ 1 ] )
-        ->culprit( 'driver message', $error_info[ 2 ] );
-    }
-    return $statement;
-  }
+  abstract public function createDatabase( $name );
 
   /**
    * Returns the active connection name, that is being used as the default
@@ -217,7 +167,7 @@ abstract class Database {
           break;
         default:
           throw Alert::alert( 'Unsupported database type', 'Database type must be either "master" or "slave"' )
-            ->culprit( 'type', $type );
+          ->culprit( 'type', $type );
           break;
       }
       if ( !isset( self::$active_connections[ $connection_name ][ $type ] ) ) {
@@ -236,57 +186,31 @@ abstract class Database {
    * @param string $name the database name
    * @return Database the database object for the specified database.
    */
-  abstract public function getDatabase( $name );
-
-  /**
-   * Returns the database name for this connection. If the underlying database
-   * does not allow access to multiple databases through a single connection,
-   * this will return NULL.
-   *
-   * @return string the database name or NULL if not applicable
-   */
-  public function getName() {
-    return $this->name;
-  }
-
-  /**
-   * Returns the specified table.
-   *
-   * This method will cause the table schema to be loaded and cached.
-   *
-   * @param string $name the name of the table.
-   * @return Table the table with the specified name.
-   * @throws Alert if there is no table with the specified name.
-   */
-  public function getTable( $name ) {
-    if ( $this->hasTableByName( $name ) ) {
-      return $this->tables[ $name ];
+  public function getDatabase( $name ) {
+    if ( $this->hasDatabaseByName( $name ) ) {
+      return $this->databases[ $name ];
     } else {
-      throw Alert::alert( 'No such table', 'There is no table with the specified name.' )
-        ->culprit( 'name', $name )
-        ->culprit( 'database', $this->getName() );
+      throw Alert::alert( 'No such database', 'There is no database with the specified name.' )
+        ->culprit( 'name', $name );
     }
   }
 
   /**
-   * Checks if a table with the specified name exists.
+   * Checks if the specified database exists.
    *
-   * This method will cause the table schema to be loaded and cached.
-   *
-   * @param string $name the name of the table.
-   * @return boolean TRUE if a table with the specified name exists and FALSE
-   * otherwise.
+   * @param string $name the database name to check.
+   * @return boolean TRUE if the specified database exists and FALSE otherwise.
    */
-  public function hasTableByName( $name ) {
-    if ( array_key_exists( $name, $this->tables ) ) {
+  public function hasDatabaseByName( $name ) {
+    if ( array_key_exists( $name, $this->databases ) ) {
       return TRUE;
     } else {
-      // The table schema may not have been loaded yet...
-      $table = $this->loadTable( $name );
-      if ( is_null( $table ) ) {
+      // The database schema may not have been loaded yet...
+      $database = $this->loadDatabase( $name );
+      if ( is_null( $database ) ) {
         return FALSE;
       } else {
-        $this->tables[ $name ] = $table;
+        $this->database[ $name ] = $database;
         return TRUE;
       }
     }
@@ -308,28 +232,17 @@ abstract class Database {
   abstract public function listDatabases();
 
   /**
-   * Lists the tables in the database.
+   * Load the specified database schema from the underlying database.
    *
-   * This method will cause the table schema to be loaded and cached for all
-   * tables in this database.
-   *
-   * @return Table[] associative array of table name to Table objects.
+   * @param string $name the name of the database to load.
+   * @return Table the loaded database or NULL if no database exists.
    */
-  abstract public function listTables();
+  abstract protected function loadDatabase( $name );
 
   /**
-   * Load the specified table schema from the underlying database.
+   * Returns the quote character for quoting identifiers.
    *
-   * @param string $name the name of the table to load.
-   * @return Table the loaded table or NULL if no table exits.
-   */
-  abstract protected function loadTable( $name );
-
-  /**
-   * Quote the specified table name for use in a query as an identifier.
-   *
-   * @param string $table the table name to quote
-   * @return string the quoted table name, ready for use as an identifier
+   * @return string the quot character for quoting identifiers.
    */
   public function quoteChar() {
     return '"';
@@ -377,20 +290,20 @@ abstract class Database {
    * @param string $name the connection name, or 'default' for the default.
    * @return self
    */
-  protected static function setActiveConnectionName( $name = NULL ) {
+  public static function setActiveConnectionName( $name = NULL ) {
     $this->active_connection_name = $name;
     return $this;
   }
 
   /**
-   * Sets the database name for this connection.
+   * Sets the connection name.
    *
-   * @param string $name the database name.
-   * @return self
+   * This is only really used for debugging.
+   *
+   * @param string $name the connection name.
    */
-  protected function setDatabaseName( $name ) {
+  protected function setName( $name ) {
     $this->name = $name;
-    return $this;
   }
 
 }

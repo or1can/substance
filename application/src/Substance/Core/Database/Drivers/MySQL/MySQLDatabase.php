@@ -19,67 +19,21 @@
 namespace Substance\Core\Database\Drivers\MySQL;
 
 use Substance\Core\Alert\Alert;
-use Substance\Core\Database\Database;
+use Substance\Core\Database\Connection;
 use Substance\Core\Database\Drivers\MySQL\Schema\MySQLTable;
-use Substance\Core\Database\Drivers\MySQL\SQL\DataDefinitions\MySQLCreateDatabase;
+use Substance\Core\Database\Schema\AbstractDatabase;
 use Substance\Core\Database\SQL\Columns\AllColumns;
-use Substance\Core\Database\SQL\Definitions\CreateTable;
+use Substance\Core\Database\SQL\DataDefinitions\CreateTable;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Queries\Select;
-use Substance\Core\Environment\Environment;
 
 /**
  * Represents a database connection in Substance, which is an extension of the
  * core PHP PDO class.
  */
-class MySQLDatabase extends Database {
-
-  /**
-   * Construct a new MySQL database connection.
-   *
-   * @param string $host the server host name or IP address.
-   * @param string $database the database name
-   * @param string $username the database username
-   * @param string $password the database password
-   * @param number $port the port the database server is running on
-   * @param string|array $prefix a prefix that should be prepended to all
-   * tables.
-   * @param array $pdo_options an associative array of PDO driver options, keyed
-   * by the PDO option with values appropriate to the option
-   */
-  public function __construct( $host, $database, $username, $password, $port = 3306, $prefix = '', $pdo_options = array() ) {
-    // Set default MySQL options
-    $pdo_options += array(
-      // Use buffered queries for consistency with other drivers.
-      \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => TRUE,
-    );
-
-    $dsn = array();
-    $dsn[] = 'host=' . $host;
-    $dsn[] = 'port=' . $port;
-    $dsn[] = 'dbname=' . $database;
-    $dsn = 'mysql:' . implode( ';', $dsn );
-
-    parent::__construct( $dsn, $username, $password, $prefix, $pdo_options );
-
-    $this->setDatabaseName( $database );
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Database::createDatabases()
-   */
-  public function createDatabases( $name ) {
-    if ( $this->databaseExists( $name ) ) {
-      throw Alert::alert( 'Database already exists', 'Cannot create new database with same name as an existing one' )
-        ->culprit( 'database', $name );
-    } else {
-      $db = new MySQLCreateDatabase( $this, $name );
-      $this->connection->exec( $db->build() );
-      return $this->getDatabase( $name );
-    }
-  }
+class MySQLDatabase extends AbstractDatabase {
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Database::createTable()
@@ -94,77 +48,6 @@ class MySQLDatabase extends Database {
       $this->connection->exec( $table->build() );
       return $this->getTable( $name );
     }
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Database::databaseExists()
-   */
-  public function databaseExists( $name ) {
-    $select = Select::select('information_schema.SCHEMATA')
-      ->addColumnByName('SCHEMA_NAME')
-      ->where( new EqualsExpression( new ColumnNameExpression('SCHEMA_NAME'), new LiteralExpression( $name ) ) );
-    $statement = $this->execute( $select );
-    return $statement->rowCount() == 1;
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Database::getDatabase()
-   */
-  public function getDatabase( $name ) {
-    if ( $this->databaseExists( $name ) ) {
-      // For other databases, just copy this database object and change the
-      // copies database name. This avoids the overhead of establishing a
-      // database connection and the complexities of storing connection
-      // details to do that in a lazy fashion. If only private meant
-      // private...
-      $db = clone $this;
-      return $db->setDatabaseName( $name );
-    } else {
-      throw Alert::alert( 'No such database', 'Can only get database object for databases that exist' )
-        ->culprit( 'name', $name );
-    }
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Database::getTable()
-   */
-  public function getTable( $name ) {
-    // TODO - Replace this method...
-    if ( $this->hasTableByName( $name ) ) {
-      return new MySQLTable( $this, $name );
-    } else {
-      throw Alert::alert( 'No such table', 'Can only get table object for tables that exist' )
-        ->culprit( 'database', $this->getName() )
-        ->culprit( 'table', $name );
-    }
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Database::initaliseConnection()
-   */
-  public function initaliseConnection() {
-    $this->connection->exec( "SET sql_mode = 'ANSI,STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER'" );
-    $this->connection->exec( "SET NAMES utf8" );
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Database::listDatabases()
-   */
-  public function listDatabases() {
-    $databases = array();
-    // We would use SHOW DATABASES LIKE or SHOW DATABASES WHERE here, but for
-    // some reason, $this->query() returns false for either, so we must do the
-    // same in PHP instead.
-    foreach ( $this->connection->query('SHOW DATABASES') as $row ) {
-      if ( $row->Database != 'information_schema' ) {
-        if ( $row->Database === $this->getName() ) {
-          $databases[ $row->Database ] = $this;
-        } else {
-          $databases[ $row->Database ] = $this->getDatabase( $row->Database );
-        }
-      }
-    }
-    return $databases;
   }
 
   /* (non-PHPdoc)
@@ -184,9 +67,9 @@ class MySQLDatabase extends Database {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Database::loadTable()
+   * @see \Substance\Core\Database\AbstractDatabase::loadTable()
    */
-  protected  function loadTable( $name ) {
+  protected function loadTable( $name ) {
     $select = Select::select('information_schema.TABLES')
       ->addColumnByName('TABLE_NAME')
       ->where( new EqualsExpression( new ColumnNameExpression('TABLE_SCHEMA'), new LiteralExpression( $this->dbname ) ) )
@@ -198,26 +81,6 @@ class MySQLDatabase extends Database {
     } else {
       return NULL;
     }
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Database::quoteChar()
-   */
-  public function quoteChar() {
-    return '`';
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Database::quoteTable()
-   */
-  public function quoteTable( $table ) {
-    $quote_char = $this->quoteChar();
-    $double_quote_char = $quote_char . $quote_char;
-    $parts = explode( '.', $table );
-    foreach ( $parts as &$part ) {
-      $part = $quote_char . str_replace( $quote_char, $double_quote_char, $part ) . $quote_char;
-    }
-    return implode( '.', $parts );
   }
 
   /* (non-PHPdoc)
