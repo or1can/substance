@@ -85,9 +85,9 @@ class MySQLDatabase extends Database {
    * @see \Substance\Core\Database\Database::createTable()
    */
   public function createTable( $name ) {
-    if ( $this->tableExists( $name ) ) {
+    if ( $this->hasTableByName( $name ) ) {
       throw Alert::alert( 'Table already exists', 'Cannot create new table with same name as an existing one' )
-        ->culprit( 'database', $this->getDatabaseName() )
+        ->culprit( 'database', $this->getName() )
         ->culprit( 'table', $name );
     } else {
       $table = new CreateTable( $this, $name );
@@ -129,11 +129,12 @@ class MySQLDatabase extends Database {
    * @see \Substance\Core\Database\Database::getTable()
    */
   public function getTable( $name ) {
-    if ( $this->tableExists( $name ) ) {
+    // TODO - Replace this method...
+    if ( $this->hasTableByName( $name ) ) {
       return new MySQLTable( $this, $name );
     } else {
       throw Alert::alert( 'No such table', 'Can only get table object for tables that exist' )
-        ->culprit( 'database', $this->getDatabaseName() )
+        ->culprit( 'database', $this->getName() )
         ->culprit( 'table', $name );
     }
   }
@@ -156,7 +157,7 @@ class MySQLDatabase extends Database {
     // same in PHP instead.
     foreach ( $this->connection->query('SHOW DATABASES') as $row ) {
       if ( $row->Database != 'information_schema' ) {
-        if ( $row->Database === $this->getDatabaseName() ) {
+        if ( $row->Database === $this->getName() ) {
           $databases[ $row->Database ] = $this;
         } else {
           $databases[ $row->Database ] = $this->getDatabase( $row->Database );
@@ -172,13 +173,31 @@ class MySQLDatabase extends Database {
   public function listTables() {
     $select = Select::select('information_schema.TABLES')
       ->addColumn( new AllColumns() )
-      ->where( new EqualsExpression( new ColumnNameExpression('TABLE_SCHEMA'), new LiteralExpression( $this->getDatabaseName() ) ) );
+      ->where( new EqualsExpression( new ColumnNameExpression('TABLE_SCHEMA'), new LiteralExpression( $this->getName() ) ) );
     $statement = $this->execute( $select );
-    $tables = array();
     foreach ( $statement as $row ) {
-      $tables[ $row->TABLE_NAME ] = $this->getTable( $row->TABLE_NAME );
+      if ( !array_key_exists( $row->TABLE_NAME, $this->tables ) ) {
+        $this->tables[ $row->TABLE_NAME ] = new MySQLTable( $this, $row->TABLE_NAME );
+      }
     }
-    return $tables;
+    return $this->tables;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Database::loadTable()
+   */
+  protected  function loadTable( $name ) {
+    $select = Select::select('information_schema.TABLES')
+      ->addColumnByName('TABLE_NAME')
+      ->where( new EqualsExpression( new ColumnNameExpression('TABLE_SCHEMA'), new LiteralExpression( $this->dbname ) ) )
+      ->where( new EqualsExpression( new ColumnNameExpression('TABLE_NAME'), new LiteralExpression( $name ) ) );
+    $statement = $this->execute( $select );
+    if ( $statement->rowCount() == 1 ) {
+      $record = $statement->fetchObject();
+      return new MySQLTable( $this, $record->TABLE_NAME );
+    } else {
+      return NULL;
+    }
   }
 
   /* (non-PHPdoc)

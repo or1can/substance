@@ -66,7 +66,7 @@ class SQLiteDatabase extends Database {
   public function listTables() {
     // SQLite stores schema information in a hidden sqlite_master table in each
     // database. The first database in a connection has the name "main".
-    $select = new Select( $this->getDatabaseName() . '.sqlite_master' );
+    $select = new Select( $this->getName() . '.sqlite_master' );
     $select->addColumn( new ColumnNameExpression('name') );
     $select->where( new EqualsExpression( new ColumnNameExpression('type'), new ColumnNameExpression('table') ) );
     $sql = $select->build( $this );

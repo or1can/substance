@@ -19,12 +19,12 @@
 namespace Substance\Core\Database\Drivers\MySQL\Schema;
 
 use Substance\Core\Database\Database;
-use Substance\Core\Database\Schema\AbstractTable;
+use Substance\Core\Database\Schema\BasicTable;
 
 /**
  * Concrete schema Table instance for working with a table in a MySQL database.
  */
-class MySQLTable extends AbstractTable {
+class MySQLTable extends BasicTable {
 
   /**
    * Construct a new table object to work with the specified table in the

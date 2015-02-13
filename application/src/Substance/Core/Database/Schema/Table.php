@@ -18,6 +18,8 @@
 
 namespace Substance\Core\Database\Schema;
 
+use Substance\Core\Alert\Alert;
+
 /**
  * Represents a database table in Substance.
  */
@@ -49,14 +51,18 @@ interface Table {
   /**
    * Returns the specified column.
    *
-   * @param string $name the name of the column
+   * @param string $name the name of the column.
+   * @return Column the column with the specified name.
+   * @throws Alert if there is no column with the specified name.
    */
   public function getColumn( $name );
 
   /**
    * Returns the specified index.
    *
-   * @param Index $name the name of the index
+   * @param string $name the name of the index
+   * @return Index the index with the specified name.
+   * @throws Alert if there is no index with the specified name.
    */
   public function getIndex( $name );
 
@@ -66,6 +72,24 @@ interface Table {
    * @return string the table name.
    */
   public function getName();
+
+  /**
+   * Checks if a column with the specified name exists.
+   *
+   * @param string $name the name of the column.
+   * @return boolean TRUE if a column with the specified name exists and FALSE
+   * otherwise.
+   */
+  public function hasColumnByName( $name );
+
+  /**
+   * Checks if an index with the specified name exists.
+   *
+   * @param string $name the name of the index.
+   * @return boolean TRUE if an index with the specified name exists and FALSE
+   * otherwise.
+   */
+  public function hasIndexByName( $name );
 
   /**
    * Returns an array of this tables columns.

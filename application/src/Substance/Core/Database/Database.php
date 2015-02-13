@@ -69,7 +69,12 @@ abstract class Database {
   /**
    * @var string the database name.
    */
-  protected $database_name;
+  protected $name;
+
+  /**
+   * @var Table[] this databases tables.
+   */
+  protected $tables = array();
 
   const DUMMY_CONNECTION = 'dummy_connection';
 
@@ -122,6 +127,10 @@ abstract class Database {
 
     // Execute init commands.
     $this->initaliseConnection();
+  }
+
+  public function __toString() {
+    return 'DATABASE<' . $this->name . '>';
   }
 
   /**
@@ -230,22 +239,57 @@ abstract class Database {
   abstract public function getDatabase( $name );
 
   /**
-   * Returns the table object for the table with the specified name.
-   *
-   * @param string $name the table name
-   * @return Table the table object for the specified table.
-   */
-  abstract public function getTable( $name );
-
-  /**
    * Returns the database name for this connection. If the underlying database
    * does not allow access to multiple databases through a single connection,
    * this will return NULL.
    *
    * @return string the database name or NULL if not applicable
    */
-  public function getDatabaseName() {
-    return $this->database_name;
+  public function getName() {
+    return $this->name;
+  }
+
+  /**
+   * Returns the specified table.
+   *
+   * This method will cause the table schema to be loaded and cached.
+   *
+   * @param string $name the name of the table.
+   * @return Table the table with the specified name.
+   * @throws Alert if there is no table with the specified name.
+   */
+  public function getTable( $name ) {
+    if ( $this->hasTableByName( $name ) ) {
+      return $this->tables[ $name ];
+    } else {
+      throw Alert::alert( 'No such table', 'There is no table with the specified name.' )
+        ->culprit( 'name', $name )
+        ->culprit( 'database', $this->getName() );
+    }
+  }
+
+  /**
+   * Checks if a table with the specified name exists.
+   *
+   * This method will cause the table schema to be loaded and cached.
+   *
+   * @param string $name the name of the table.
+   * @return boolean TRUE if a table with the specified name exists and FALSE
+   * otherwise.
+   */
+  public function hasTableByName( $name ) {
+    if ( array_key_exists( $name, $this->tables ) ) {
+      return TRUE;
+    } else {
+      // The table schema may not have been loaded yet...
+      $table = $this->loadTable( $name );
+      if ( is_null( $table ) ) {
+        return FALSE;
+      } else {
+        $this->tables[ $name ] = $table;
+        return TRUE;
+      }
+    }
   }
 
   /**
@@ -266,9 +310,20 @@ abstract class Database {
   /**
    * Lists the tables in the database.
    *
+   * This method will cause the table schema to be loaded and cached for all
+   * tables in this database.
+   *
    * @return Table[] associative array of table name to Table objects.
    */
   abstract public function listTables();
+
+  /**
+   * Load the specified table schema from the underlying database.
+   *
+   * @param string $name the name of the table to load.
+   * @return Table the loaded table or NULL if no table exits.
+   */
+  abstract protected function loadTable( $name );
 
   /**
    * Quote the specified table name for use in a query as an identifier.
@@ -334,16 +389,8 @@ abstract class Database {
    * @return self
    */
   protected function setDatabaseName( $name ) {
-    $this->database_name = $name;
+    $this->name = $name;
     return $this;
   }
-
-  /**
-   * Checks if the specified table exists in the database.
-   *
-   * @param string $name the table name.
-   * @return boolean TRUE if the table exists and FALSE otherwise.
-   */
-  abstract public function tableExists( $name );
 
 }
