@@ -24,6 +24,7 @@ use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Database\SQL\TableReferences\TableName;
+use Substance\Core\Database\Drivers\Unconnected\UnconnectedDatabase;
 
 /**
  * Represents a database query.
@@ -38,6 +39,11 @@ abstract class Query {
    * @var array the array of argument placeholders to values.
    */
   protected $arguments = array();
+
+  public function __toString() {
+    $unconnected = UnconnectedDatabase::getInstance();
+    return $this->build( $unconnected );
+  }
 
   /**
    * Builds this query for the specified database connection.

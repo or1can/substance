@@ -105,41 +105,6 @@ class Select extends Query {
     $this->table->define( $this );
   }
 
-  public function __toString() {
-    $sql = 'SELECT ';
-    if ( $this->distinct ) {
-      $sql .= 'DISTINCT ';
-    }
-    $sql .= (string) $this->select_list;
-    $sql .= ' FROM ';
-    $sql .= (string) $this->table;
-    if ( !is_null( $this->where ) ) {
-      $sql .= ' WHERE ';
-      $sql .= (string) $this->where;
-    }
-    if ( !is_null( $this->group_by ) ) {
-      $sql .= ' GROUP BY ';
-      $sql .= (string) $this->group_by;
-      if ( !is_null( $this->having ) ) {
-        $sql .= ' HAVING ';
-        $sql .= (string) $this->having;
-      }
-    }
-    if ( !is_null( $this->order_by ) ) {
-      $sql .= ' ORDER BY ';
-      $sql .= (string) $this->order_by;
-    }
-    if ( isset( $this->limit ) ) {
-      $sql .= ' LIMIT ';
-      $sql .= $this->limit;
-      if ( isset( $this->offset ) ) {
-        $sql .= ' OFFSET ';
-        $sql .= $this->offset;
-      }
-    }
-    return $sql;
-  }
-
   /**
    * Adds a column to the select list.
    *
