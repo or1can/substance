@@ -18,64 +18,58 @@
 
 namespace Substance\Core\Database\Drivers\SQLite;
 
-use Substance\Core\Database\Schema\Database;
+use Substance\Core\Alert\Alert;
+use Substance\Core\Database\Schema\AbstractDatabase;
+use Substance\Core\Database\Schema\BasicTable;
+use Substance\Core\Database\SQL\DataDefinitions\CreateTable;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
-use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Queries\Select;
 
 /**
- * Concrete instance of the Schema class for working with SQLite databases.
+ * A SQLite database schema object, handling SQLite database level
+ * functionality.
  */
-class SQLiteDatabase extends Database {
-
-  /**
-   * Construct a new schema object to work with the specified connected
-   * database.
-   *
-   * @param Connection $connection the database to work with
-   */
-  public function __construct( Connection $connection ) {
-    parent::__construct( $connection );
-  }
+class SQLiteDatabase extends AbstractDatabase {
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema::createDatabases()
-   */
-  public function createDatabases( $name ) {
-    // TODO
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema::createTable()
+   * @see \Substance\Core\Database\Schema\Database::createTable()
    */
   public function createTable( $name ) {
-    // TODO
+    if ( $this->hasTableByName( $name ) ) {
+      throw Alert::alert( 'Table already exists', 'Cannot create new table with same name as an existing one' )
+        ->culprit( 'database', $this->getName() )
+        ->culprit( 'table', $name );
+    } else {
+      $table = new CreateTable( $this, $name );
+      $this->connection->exec( $table->build() );
+      return $this->getTable( $name );
+    }
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema::listDatabases()
-   */
-  public function listDatabases() {
-    // TODO
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema::listTables()
+   * @see \Substance\Core\Database\Schema\Database::listTables()
    */
   public function listTables() {
     // SQLite stores schema information in a hidden sqlite_master table in each
     // database. The first database in a connection has the name "main".
-    $select = new Select( $this->getName() . '.sqlite_master' );
-    $select->addColumn( new ColumnNameExpression('name') );
-    $select->where( new EqualsExpression( new ColumnNameExpression('type'), new ColumnNameExpression('table') ) );
-    $sql = $select->build( $this );
-    echo $sql, "\n\n";
-    $tables = array();
-    foreach ( $this->query( $sql ) as $row ) {
-      $tables[ $row->name ] = new MySQLTable( $this, $row->name );
+    $select = Select::select( $this->getName() . '.sqlite_master' )
+      ->addColumn( new ColumnNameExpression('name') )
+      ->where( new EqualsExpression( new ColumnNameExpression('type'), new ColumnNameExpression('table') ) );
+    $statement = $this->execute( $select );
+    foreach ( $statement as $row ) {
+      if ( !array_key_exists( $row->name, $this->tables ) ) {
+        $this->tables[ $row->name ] = new BasicTable( $this, $row->name );
+      }
     }
-    return $tables;
+    return $this->tables;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\AbstractDatabase::loadTable()
+   */
+  protected function loadTable( $name ) {
+
   }
 
 }

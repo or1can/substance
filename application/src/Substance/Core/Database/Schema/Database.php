@@ -37,6 +37,14 @@ interface Database {
   public function createTable( $name );
 
   /**
+   * Drops the specified table.
+   *
+   * @param Table $table the table to drop.
+   * @return self
+   */
+  public function dropTable( Table $table );
+
+  /**
    * Execute the specified query on this database.
    *
    * @param Query $query the query to execute.

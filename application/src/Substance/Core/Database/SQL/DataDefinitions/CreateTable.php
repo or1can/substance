@@ -19,6 +19,7 @@
 namespace Substance\Core\Database\SQL\DataDefinitions;
 
 use Substance\Core\Alert\Alert;
+use Substance\Core\Alert\Alerts\IllegalStateAlert;
 use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\Schema\Column;
 use Substance\Core\Database\SQL\DataDefinition;
@@ -84,6 +85,10 @@ class CreateTable extends DataDefinition {
     $sql .= ' TABLE ';
     $sql .= $this->database->quoteName( $this->name );
     $sql .= ' (';
+    if ( count( $this->columns ) == 0 ) {
+      throw IllegalStateAlert::illegalState( 'Cannot create a table without any columns' )
+        ->culprit( 'table', $this->name );
+    }
     foreach ( $this->columns as $column ) {
       $sql .= $column->getName();
     }

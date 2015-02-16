@@ -21,6 +21,7 @@ namespace Substance\Core\Database\Schema;
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
+use Substance\Core\Database\SQL\DataDefinitions\DropTable;
 use Substance\Core\Database\SQL\Query;
 
 /**
@@ -56,6 +57,15 @@ abstract class AbstractDatabase implements Database {
 
   public function __toString() {
     return 'DATABASE<' . $this->name . '>';
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::dropTable()
+   */
+  public function dropTable( Table $table ) {
+    $drop = new DropTable( $this, $table->getName() );
+    $this->connection->exec( $drop->build() );
+    return $this;
   }
 
   /* (non-PHPdoc)

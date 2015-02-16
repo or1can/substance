@@ -46,7 +46,11 @@ var_dump( $connection );
 
 var_dump( $connection->listDatabases() );
 
-$database = $connection->getDatabase( 'mydb' );
+$database = $connection->getDatabase();
+
+var_dump( $database->listTables() );
+
+$database->createTable( 'sample' );
 
 var_dump( $database->listTables() );
 

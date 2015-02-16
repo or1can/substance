@@ -18,26 +18,38 @@
 
 namespace Substance\Core\Database\SQL\DataDefinitions;
 
-use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\Schema\Database;
+use Substance\Core\Database\SQL\DataDefinition;
 
 /**
- * Tests the create table data definition.
+ * Represents a DROP TABLE query.
  */
-class CreateTableTest extends AbstractDatabaseTest {
+class DropTable extends DataDefinition {
 
   /**
-   * Test the build with simple table names.
-   *
-   * @expectedException Substance\Core\Alert\Alerts\IllegalStateAlert
+   * @var string the table name to create.
    */
-  public function testBuild() {
-    $definition = new CreateTable( $this->connection, 'table' );
-    $sql = $definition->build();
-    $this->assertEquals( 'CREATE TABLE `table` ( )', $sql );
+  protected $name;
 
-    $definition = new CreateTable( $this->connection, 'table.dot' );
-    $sql = $definition->build();
-    $this->assertEquals( 'CREATE TABLE `table.dot` ( )', $sql );
+  /**
+   * Constructs a drop table object to drop a table with the specified
+   * name.
+   *
+   * @param Database $database the database to drop the table from.
+   * @param string $name the name of the table to create.
+   */
+  public function __construct( Database $database, $name ) {
+    parent::__construct( $database );
+    $this->name = $name;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Definition::build()
+   */
+  public function build() {
+    $sql = 'DROP TABLE ';
+    $sql .= $this->database->quoteName( $this->name );
+    return $sql;
   }
 
 }

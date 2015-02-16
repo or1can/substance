@@ -19,7 +19,6 @@
 namespace Substance\Core\Database\Drivers\MySQL;
 
 use Substance\Core\Alert\Alert;
-use Substance\Core\Database\Connection;
 use Substance\Core\Database\Drivers\MySQL\Schema\MySQLTable;
 use Substance\Core\Database\Schema\AbstractDatabase;
 use Substance\Core\Database\SQL\Columns\AllColumns;
@@ -30,8 +29,7 @@ use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Queries\Select;
 
 /**
- * Represents a database connection in Substance, which is an extension of the
- * core PHP PDO class.
+ * A MySQL database schema object, handling MySQL database level functionality.
  */
 class MySQLDatabase extends AbstractDatabase {
 
@@ -81,18 +79,6 @@ class MySQLDatabase extends AbstractDatabase {
     } else {
       return NULL;
     }
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Database::tableExists()
-   */
-  public function tableExists( $name ) {
-    $select = Select::select('information_schema.TABLES')
-      ->addColumnByName('TABLE_NAME')
-      ->where( new EqualsExpression( new ColumnNameExpression('TABLE_SCHEMA'), new LiteralExpression( $this->dbname ) ) )
-      ->where( new EqualsExpression( new ColumnNameExpression('TABLE_NAME'), new LiteralExpression( $name ) ) );
-    $statement = $this->execute( $select );
-    return $statement->rowCount() == 1;
   }
 
 }

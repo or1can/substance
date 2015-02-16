@@ -19,6 +19,7 @@
 namespace Substance\Core\Database;
 
 use Substance\Core\Alert\Alert;
+use Substance\Core\Database\Schema\Database;
 use Substance\Core\Environment\Environment;
 
 /**
@@ -60,9 +61,19 @@ abstract class Connection extends \PDO {
   protected static $active_connections = array();
 
   /**
+   * @var string the active database name.
+   */
+  protected $active_database_name;
+
+  /**
    * @var Database[] this connections databases.
    */
   protected $databases = array();
+
+  /**
+   * @var string the default database name.
+   */
+  protected $default_database_name;
 
   /**
    * @var string the connection name.
@@ -73,6 +84,7 @@ abstract class Connection extends \PDO {
    * Construct a new MySQL database connection.
    *
    * @param string $dsn the data source name.
+   * @param string $default_database the default database name.
    * @param string $username the database username
    * @param string $password the database password
    * @param string|array $prefix a prefix that should be prepended to all
@@ -98,7 +110,10 @@ abstract class Connection extends \PDO {
    * @param array $pdo_options an associative array of PDO driver options, keyed
    * by the PDO option with values appropriate to the option
    */
-  public function __construct( $dsn, $username, $password, $prefix = '', $pdo_options = array()  ) {
+  public function __construct( $dsn, $default_database, $username, $password, $prefix = '', $pdo_options = array()  ) {
+    $this->default_database_name = $default_database;
+    $this->active_database_name = $default_database;
+
     // Force error exceptions, always.
     $pdo_options[ \PDO::ATTR_ERRMODE ] = \PDO::ERRMODE_EXCEPTION;
 
@@ -143,6 +158,16 @@ abstract class Connection extends \PDO {
   }
 
   /**
+   * Returns the active database name, that is being used as the default
+   * connection name.
+   *
+   * @return string the active database name.
+   */
+  public function getActiveDatabaseName() {
+    return $this->active_database_name;
+  }
+
+  /**
    * Returns a database connection for the current active connection, or the
    * specified override.
    *
@@ -183,15 +208,19 @@ abstract class Connection extends \PDO {
   /**
    * Returns the database object for the database with the specified name.
    *
-   * @param string $name the database name
+   * @param string $name the database name, or NULL to get the active database.
    * @return Database the database object for the specified database.
    */
-  public function getDatabase( $name ) {
-    if ( $this->hasDatabaseByName( $name ) ) {
-      return $this->databases[ $name ];
+  public function getDatabase( $name = NULL ) {
+    $db_name = $name;
+    if ( is_null( $db_name ) ) {
+      $db_name = $this->getActiveDatabaseName();
+    }
+    if ( $this->hasDatabaseByName( $db_name ) ) {
+      return $this->databases[ $db_name ];
     } else {
       throw Alert::alert( 'No such database', 'There is no database with the specified name.' )
-        ->culprit( 'name', $name );
+        ->culprit( 'name', $db_name );
     }
   }
 
@@ -290,8 +319,20 @@ abstract class Connection extends \PDO {
    * @param string $name the connection name, or 'default' for the default.
    * @return self
    */
-  public static function setActiveConnectionName( $name = NULL ) {
+  public static function setActiveConnectionName( $name = 'default' ) {
     $this->active_connection_name = $name;
+    return $this;
+  }
+
+  /**
+   * Sets the active database name, which will be used as the default
+   * database name.
+   *
+   * @param string $name the database name, or NULL for the default.
+   * @return self
+   */
+  public static function setActiveDatabaseName( $name = NULL ) {
+    $this->active_database_name = $name;
     return $this;
   }
 

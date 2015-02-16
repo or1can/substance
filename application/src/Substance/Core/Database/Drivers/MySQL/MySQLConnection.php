@@ -63,7 +63,7 @@ class MySQLConnection extends Connection {
     $dsn[] = 'dbname=' . $database;
     $dsn = 'mysql:' . implode( ';', $dsn );
 
-    parent::__construct( $dsn, $username, $password, $prefix, $pdo_options );
+    parent::__construct( $dsn, $database, $username, $password, $prefix, $pdo_options );
 
     $this->information_schema = new MySQLDatabase( $this, 'information_schema' );
   }

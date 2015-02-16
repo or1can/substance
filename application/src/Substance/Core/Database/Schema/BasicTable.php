@@ -90,6 +90,13 @@ class BasicTable implements Table {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Table::drop()
+   */
+  public function drop() {
+    $this->database->dropTable( $this );
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\Table::getColumn()
    */
   public function getColumn( $name ) {
