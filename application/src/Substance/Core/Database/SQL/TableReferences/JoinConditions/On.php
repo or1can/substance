@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\SQL\TableReferences\JoinConditions;
 
-use Substance\Core\Database\Database;
+use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\SQL\Expression;
 use Substance\Core\Database\SQL\Query;
 use Substance\Core\Database\SQL\TableReferences\JoinCondition;

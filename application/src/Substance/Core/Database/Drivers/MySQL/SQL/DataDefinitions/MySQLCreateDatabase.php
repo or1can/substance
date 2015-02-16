@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\Drivers\MySQL\SQL\DataDefinitions;
 
-use Substance\Core\Database\Database;
+use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\SQL\DataDefinitions\CreateDatabase;
 
 /**

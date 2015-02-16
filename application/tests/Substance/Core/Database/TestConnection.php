@@ -18,15 +18,16 @@
 
 namespace Substance\Core\Database;
 
-use Substance\Core\Database\Drivers\MySQL\MySQLDatabase;
+use Substance\Core\Database\Drivers\MySQL\MySQLConnection;
 
 /**
  * Provides a dummy connection that can be used for tests.
  */
-class TestDatabase extends MySQLDatabase {
+class TestConnection extends MySQLConnection {
 
   public function __construct() {
-
+    // Override the default constructor and do nothing.
+    // TODO - We'll need better than this for testing schema functions, etc.
   }
 
 }

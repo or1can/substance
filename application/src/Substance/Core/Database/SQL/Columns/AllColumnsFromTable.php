@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\SQL\Columns;
 
-use Substance\Core\Database\Database;
+use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\SQL\Column;
 use Substance\Core\Database\SQL\Query;
 

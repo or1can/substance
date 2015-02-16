@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database;
 
-use Substance\Core\Database\TestDatabase;
+use Substance\Core\Database\Drivers\MySQL\MySQLDatabase;
 
 /**
  * Abstract database test.
@@ -31,7 +31,7 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
    * @see PHPUnit_Framework_TestCase::setUp()
    */
   public function setUp() {
-    $this->connection = new TestDatabase();
+    $this->connection = new MySQLDatabase( new TestConnection(), 'test' );
   }
 
 }

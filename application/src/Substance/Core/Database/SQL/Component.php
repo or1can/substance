@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\SQL;
 
-use Substance\Core\Database\Database;
+use Substance\Core\Database\Schema\Database;
 
 /**
  * Represents a component part of an SQL query.

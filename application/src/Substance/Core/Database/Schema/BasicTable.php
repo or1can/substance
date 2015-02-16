@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\Schema;
 
-use Substance\Core\Database\Database;
+use Substance\Core\Database\Schema\Database;
 
 /**
  * Basic implementation of a schema Table.

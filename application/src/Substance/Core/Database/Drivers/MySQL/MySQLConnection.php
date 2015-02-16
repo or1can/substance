@@ -25,7 +25,6 @@ use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Queries\Select;
-use Substance\Core\Database\Database;
 
 /**
  * Represents a database connection in Substance, which is an extension of the

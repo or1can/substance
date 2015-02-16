@@ -28,7 +28,7 @@ require dirname( __DIR__ ) . '/vendor/autoload.php';
 
 use Substance\Core\Alert\Alert;
 use Substance\Core\Bootstrap;
-use Substance\Core\Database\Database;
+use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Environment\Environment;
 use Substance\Core\Module;

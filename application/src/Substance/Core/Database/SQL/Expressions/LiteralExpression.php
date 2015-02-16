@@ -19,7 +19,7 @@
 namespace Substance\Core\Database\SQL\Expressions;
 
 use Substance\Core\Alert\Alert;
-use Substance\Core\Database\Database;
+use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\SQL\Query;
 
 /**

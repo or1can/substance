@@ -19,6 +19,7 @@
 namespace Substance\Core\Database\Schema;
 
 use Substance\Core\Alert\Alert;
+use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
 use Substance\Core\Database\SQL\Query;
 
