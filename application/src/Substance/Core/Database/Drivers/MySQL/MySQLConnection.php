@@ -86,8 +86,8 @@ class MySQLConnection extends Connection {
    * @see \Substance\Core\Database\Connection::initaliseConnection()
    */
   public function initaliseConnection() {
-    $this->connection->exec( "SET sql_mode = 'ANSI,STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER'" );
-    $this->connection->exec( "SET NAMES utf8" );
+    $this->exec( "SET sql_mode = 'ANSI,STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER'" );
+    $this->exec( "SET NAMES utf8" );
   }
 
   /* (non-PHPdoc)

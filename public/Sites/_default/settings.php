@@ -2,9 +2,9 @@
 
 namespace Sites\_default;
 
+use Substance\Core\Database\Drivers\MySQL\MySQLConnection;
 use Substance\Core\Environment\Environment;
 use Substance\Core\Settings;
-use Substance\Core\Database\Drivers\MySQL\MySQLDatabase;
 
 class DefaultSettings extends Settings {
 
@@ -14,10 +14,10 @@ class DefaultSettings extends Settings {
   public function getDatabaseMaster( $name = 'default' ) {
     switch ( $name ) {
       case 'named':
-        return new MySQLDatabase( '127.0.0.1', 'mydb', 'myuser', 'mypass' );
+        return new MySQLConnection( '127.0.0.1', 'mydb', 'myuser', 'mypass' );
         break;
       case 'default':
-        return new MySQLDatabase( '127.0.0.1', 'mydb', 'myuser', 'mypass' );
+        return new MySQLConnection( '127.0.0.1', 'mydb', 'myuser', 'mypass' );
         break;
       default:
         // TODO - This default case is important, as putting the default
@@ -34,10 +34,10 @@ class DefaultSettings extends Settings {
   public function getDatabaseSlave( $name = 'default' ) {
     switch ( $name ) {
       case 'named':
-        return new MySQLDatabase( '127.0.0.1', 'mydb', 'myuser', 'mypass' );
+        return new MySQLConnection( '127.0.0.1', 'mydb', 'myuser', 'mypass' );
         break;
       case 'default':
-        return new MySQLDatabase( '127.0.0.1', 'mydb', 'myuser', 'mypass' );
+        return new MySQLConnection( '127.0.0.1', 'mydb', 'myuser', 'mypass' );
         break;
       default:
         // TODO - This default case is important, as putting the default

@@ -27,9 +27,7 @@ require dirname( __DIR__ ) . '/vendor/autoload.php';
 
 use Substance\Core\Alert\Alert;
 use Substance\Core\Bootstrap;
-use Substance\Core\Database\Schema\Database;
-use Substance\Core\Database\SQL\Queries\Select;
-use Substance\Core\Environment\Environment;
+use Substance\Core\Database\Connection;
 use Substance\Core\Module;
 
 // Bootstap the system.
@@ -41,11 +39,14 @@ $alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
 
 echo $alert;
 
-$connection = Database::getConnection();
+$connection = Connection::getConnection();
 
-var_dump( $connection->listTables() );
+var_dump( $connection );
 
 var_dump( $connection->listDatabases() );
 
+$database = $connection->getDatabase( 'mydb' );
+
+var_dump( $database->listTables() );
 
 throw $alert;

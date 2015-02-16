@@ -19,7 +19,7 @@
 namespace Substance\Core;
 
 use Substance\Core\Alert\Alert;
-use Substance\Core\Database\Schema\Database;
+use Substance\Core\Database\Connection;
 use Substance\Core\Environment\Environment;
 
 /**
@@ -43,7 +43,7 @@ abstract class Settings {
    * If you have multiple masters, simply return a connection to a random one.
    *
    * @param string $name the connection name.
-   * @return Database the master database connection.
+   * @return Connection the master database connection.
    */
   public function getDatabaseMaster( $name = 'default' ) {
     throw Alert::alert(
@@ -62,7 +62,7 @@ abstract class Settings {
    * If you have multiple slaves, simply return a connection to a random one.
    *
    * @param string $name the connection name.
-   * @return Database the slave database connection.
+   * @return Connection the slave database connection.
    */
   public function getDatabaseSlave( $name = 'default' ) {
     return $this->getDatabaseMaster( $name );

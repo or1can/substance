@@ -25,12 +25,12 @@ namespace Substance\Core\Database;
 class Statement extends \PDOStatement {
 
   /**
-   * @var Database
+   * @var Connection
    */
-  protected $database;
+  protected $connection;
 
-  protected function __construct( Database $database ) {
-    $this->database = $database;
+  protected function __construct( Connection $connection ) {
+    $this->connection = $connection;
     $this->setFetchMode( \PDO::FETCH_OBJ );
   }
 

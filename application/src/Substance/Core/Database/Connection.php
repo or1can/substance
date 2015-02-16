@@ -112,7 +112,7 @@ abstract class Connection extends \PDO {
     );
 
     // Create the PDO connection
-    parent::__construct( $dsn, $username, $passwd, $pdo_options );
+    parent::__construct( $dsn, $username, $password, $pdo_options );
 
     // Execute init commands.
     $this->initaliseConnection();
@@ -149,7 +149,7 @@ abstract class Connection extends \PDO {
    * @param string $type the database type, either 'master' or 'slave'.
    * @param string $name the connection name to use instead of the active
    * connection, or NULL to use the active connection.
-   * @return Database the database connection for the specified name and
+   * @return Connection the database connection for the specified name and
    * type.
    */
   public static function getConnection( $type = 'master', $name = NULL ) {
