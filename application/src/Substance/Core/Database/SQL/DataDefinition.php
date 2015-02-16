@@ -18,6 +18,7 @@
 
 namespace Substance\Core\Database\SQL;
 
+use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Schema\Database;
 
 /**
@@ -45,5 +46,14 @@ abstract class DataDefinition {
    * @return string the data definition SQL
    */
   abstract public function build();
+
+  /**
+   * Checks the data definition and throws an exception if it should not be
+   * executed.
+   *
+   * @return void
+   * @throws Alert if the data definition is no good.
+   */
+  abstract public function check();
 
 }

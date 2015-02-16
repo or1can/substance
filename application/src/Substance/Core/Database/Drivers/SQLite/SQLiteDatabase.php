@@ -42,7 +42,7 @@ class SQLiteDatabase extends AbstractDatabase {
         ->culprit( 'table', $name );
     } else {
       $table = new CreateTable( $this, $name );
-      $this->connection->exec( $table->build() );
+      $this->executeDataDefinition( $table );
       return $this->getTable( $name );
     }
   }

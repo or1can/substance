@@ -20,6 +20,7 @@ namespace Substance\Core\Database;
 
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Schema\Database;
+use Substance\Core\Database\SQL\DataDefinition;
 use Substance\Core\Environment\Environment;
 
 /**
@@ -145,6 +146,27 @@ abstract class Connection extends \PDO {
    * @return Database the new database.
    */
   abstract public function createDatabase( $name );
+
+  /**
+   * Execute the specified data definition on this connection.
+   *
+   * @param DataDefinition $data_definition the data definition to execute.
+   * @return void
+   * @throws Alert if the data definition fails.
+   */
+  public function executeDataDefinition( DataDefinition $data_definition ) {
+    $data_definition->check();
+    $sql = $data_definition->build();
+    $result = $this->exec( $sql );
+    if ( $result === FALSE ) {
+      $error_info = $this->errorInfo();
+      throw Alert::alert( 'Failed to execute data definition query' )
+        ->culprit( 'query', $query )
+        ->culprit( 'error code', $this->errorCode() )
+        ->culprit( 'driver code', $error_info[ 1 ] )
+        ->culprit( 'driver message', $error_info[ 2 ] );
+    }
+  }
 
   /**
    * Returns the active connection name, that is being used as the default

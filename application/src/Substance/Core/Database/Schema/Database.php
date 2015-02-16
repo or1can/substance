@@ -20,7 +20,9 @@ namespace Substance\Core\Database\Schema;
 
 use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
+use Substance\Core\Database\SQL\DataDefinition;
 use Substance\Core\Database\SQL\Query;
+use Substance\Core\Alert\Alert;
 
 /**
  * Represents a database schema.
@@ -43,6 +45,11 @@ interface Database {
    * @return self
    */
   public function dropTable( Table $table );
+
+  /**
+   * @see Connection::executeDataDefinition
+   */
+  public function executeDataDefinition( DataDefinition $data_definition );
 
   /**
    * Execute the specified query on this database.

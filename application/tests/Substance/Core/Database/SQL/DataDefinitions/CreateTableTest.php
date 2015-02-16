@@ -27,8 +27,6 @@ class CreateTableTest extends AbstractDatabaseTest {
 
   /**
    * Test the build with simple table names.
-   *
-   * @expectedException Substance\Core\Alert\Alerts\IllegalStateAlert
    */
   public function testBuild() {
     $definition = new CreateTable( $this->connection, 'table' );

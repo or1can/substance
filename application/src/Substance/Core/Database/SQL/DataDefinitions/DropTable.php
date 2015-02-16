@@ -52,4 +52,11 @@ class DropTable extends DataDefinition {
     return $sql;
   }
 
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\DataDefinition::check()
+   */
+  public function check() {
+    // OK
+  }
+
 }

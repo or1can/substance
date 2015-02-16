@@ -77,7 +77,7 @@ class MySQLConnection extends Connection {
         ->culprit( 'database', $name );
     } else {
       $db = new MySQLCreateDatabase( $this, $name );
-      $this->exec( $db->build() );
+      $this->executeDataDefinition( $db );
       return $this->getDatabase( $name );
     }
   }

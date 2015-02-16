@@ -85,15 +85,21 @@ class CreateTable extends DataDefinition {
     $sql .= ' TABLE ';
     $sql .= $this->database->quoteName( $this->name );
     $sql .= ' (';
-    if ( count( $this->columns ) == 0 ) {
-      throw IllegalStateAlert::illegalState( 'Cannot create a table without any columns' )
-        ->culprit( 'table', $this->name );
-    }
     foreach ( $this->columns as $column ) {
       $sql .= $column->getName();
     }
     $sql .= ' )';
     return $sql;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\DataDefinition::check()
+   */
+  public function check() {
+    if ( count( $this->columns ) == 0 ) {
+      throw IllegalStateAlert::illegalState( 'Cannot create a table without any columns' )
+      ->culprit( 'table', $this->name );
+    }
   }
 
 }
