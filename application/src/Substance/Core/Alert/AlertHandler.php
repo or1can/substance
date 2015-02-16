@@ -89,8 +89,13 @@ class AlertHandler {
   public function handleShutdown() {
     $error = error_get_last();
     if ( $error['type'] == E_ERROR ) {
-      $alert = ErrorAlert::errorAlert( $error );
-      $this->handleException( $alert );
+      try {
+        $alert = ErrorAlert::errorAlert( $error );
+        $this->handleException( $alert );
+      } catch ( Exception $ex ) {
+        echo "INTERNAL ALERT HANDLER SHUTDOWN ERROR:\n";
+        echo $ex;
+      }
     }
   }
 
