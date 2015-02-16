@@ -38,6 +38,8 @@ use Substance\Themes\Text\TextTheme;
  */
 class Alert extends \Exception implements Presentable {
 
+  protected $code;
+
   /**
    * This indicates if the alert was constructed in the alert, e.g. in a static
    * method like Alert::alert(). This matters because the location of the
@@ -76,7 +78,8 @@ class Alert extends \Exception implements Presentable {
    * @param string $previous the previous exception in the chain.
    */
   public function __construct( $message, $explanation = '', $code = 0, \Exception $previous = NULL ) {
-    parent::__construct( $message, $code, $previous );
+    $this->code = $code;
+    parent::__construct( $message, 0, $previous );
     $this->explanation = $explanation;
   }
 
