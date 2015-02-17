@@ -107,7 +107,7 @@ class AlertHandler {
       set_error_handler( array( $this, 'handleError' ) );
       set_exception_handler( array( $this, 'handleException' ) );
       register_shutdown_function( array( $this, 'handleShutdown' ) );
-      $this->is_registered = FALSE;
+      $this->not_registered = FALSE;
     }
   }
 
