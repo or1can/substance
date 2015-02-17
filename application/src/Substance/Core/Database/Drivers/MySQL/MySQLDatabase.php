@@ -53,7 +53,7 @@ class MySQLDatabase extends AbstractDatabase {
   protected function loadTable( $name ) {
     $select = Select::select('information_schema.TABLES')
       ->addColumnByName('TABLE_NAME')
-      ->where( new EqualsExpression( new ColumnNameExpression('TABLE_SCHEMA'), new LiteralExpression( $this->dbname ) ) )
+      ->where( new EqualsExpression( new ColumnNameExpression('TABLE_SCHEMA'), new LiteralExpression( $this->name ) ) )
       ->where( new EqualsExpression( new ColumnNameExpression('TABLE_NAME'), new LiteralExpression( $name ) ) );
     $statement = $this->execute( $select );
     if ( $statement->rowCount() == 1 ) {
