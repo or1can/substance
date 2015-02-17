@@ -110,6 +110,13 @@ class BasicTable implements Table {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Table::getDatabase()
+   */
+  public function getDatabase() {
+    return $this->database;
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\Table::getIndex()
    */
   public function getIndex( $name ) {

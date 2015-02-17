@@ -58,6 +58,13 @@ interface Table {
   public function getColumn( $name );
 
   /**
+   * Returns the database this table belongs to.
+   *
+   * @return Database the parent database for this table.
+   */
+  public function getDatabase();
+
+  /**
    * Returns the specified index.
    *
    * @param string $name the name of the index
