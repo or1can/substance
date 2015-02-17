@@ -19,6 +19,7 @@
 namespace Substance\Core\Database;
 
 use Substance\Core\Alert\Alert;
+use Substance\Core\Alert\Alerts\UnsupportedOperationAlert;
 use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\SQL\DataDefinition;
 use Substance\Core\Environment\Environment;
@@ -145,7 +146,11 @@ abstract class Connection extends \PDO {
    * @param string $name the new database name.
    * @return Database the new database.
    */
-  abstract public function createDatabase( $name );
+  public function createDatabase( $name ) {
+    throw UnsupportedOperationAlert::unsupportedOperation('Driver does not support creating databases')
+      ->culprit( 'driver', __CLASS__ )
+      ->culprit( 'name', $name );
+  }
 
   /**
    * Execute the specified data definition on this connection.

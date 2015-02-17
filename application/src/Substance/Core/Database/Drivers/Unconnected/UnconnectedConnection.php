@@ -40,14 +40,6 @@ class UnconnectedConnection extends Connection {
   public function __construct() {
   }
 
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Connection::createDatabase()
-   */
-  public function createDatabase( $name ) {
-    throw UnsupportedOperationAlert::unsupportedOperation( 'Unconnected connections cannot create databases' )
-      ->culprit( 'name', $name );
-  }
-
   /**
    * Returns a unique instance of this unconnected connection.
    *

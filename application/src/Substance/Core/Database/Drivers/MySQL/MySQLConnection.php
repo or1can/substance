@@ -20,7 +20,6 @@ namespace Substance\Core\Database\Drivers\MySQL;
 
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Connection;
-use Substance\Core\Database\Drivers\MySQL\SQL\DataDefinitions\MySQLCreateDatabase;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
@@ -76,8 +75,10 @@ class MySQLConnection extends Connection {
       throw Alert::alert( 'Database already exists', 'Cannot create new database with same name as an existing one' )
         ->culprit( 'database', $name );
     } else {
-      $db = new MySQLCreateDatabase( $this, $name );
-      $this->executeDataDefinition( $db );
+      $sql = 'CREATE DATABASE ';
+      $sql .= $this->database->quoteName( $this->name );
+      $sql .= ' DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci';
+      $this->exec( $sql );
       return $this->getDatabase( $name );
     }
   }
