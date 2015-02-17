@@ -186,7 +186,7 @@ abstract class AbstractDatabase implements Database {
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\Database::queueDataDefinition()
    */
-  protected function queueDataDefinition( DataDefinition $data_definition ) {
+  public function queueDataDefinition( DataDefinition $data_definition ) {
     $this->initialiseDataDefinitionQueue();
     $this->data_definition_queue->push( $data_definition );
   }

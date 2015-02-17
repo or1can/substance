@@ -32,7 +32,7 @@ interface Database {
   /**
    * Applies any outstanding data definitions.
    */
-  protected function applyDataDefinitions();
+  public function applyDataDefinitions();
 
   /**
    * Creates a table with the specified name in the database specified in this
@@ -115,7 +115,7 @@ interface Database {
    *
    * @param DataDefinition $data_definition the data definition to queue.
    */
-  protected function queueDataDefinition( DataDefinition $data_definition );
+  public function queueDataDefinition( DataDefinition $data_definition );
 
   /**
    * @see Connection::quoteChar()
