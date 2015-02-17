@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2014 - 2015 Kevin Rogers
+ * Copyright (C) 2015 Kevin Rogers
  *
  * Substance is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,49 +22,38 @@ use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Schema\Database;
 
 /**
- * Represents a database definition.
+ * Represents a queue of database definitions.
  */
-abstract class DataDefinition {
+class DataDefinitionQueue {
 
   /**
-   * @var Database the database this operation affects.
+   * @var \SplDoublyLinkedList the queue of database definitions.
    */
-  protected $database;
+  protected $queue;
 
   /**
    * Constructs a new data definition operating on the specified database.
-   *
-   * @param Database $database the database to operate on.
    */
-  public function __construct( Database $database ) {
-    $this->database = $database;
+  public function __construct() {
+    $this->queue = new \SplDoublyLinkedList();
   }
 
   /**
-   * Apply this database definition to the underlying database.
-   *
-   * @throws Alert if something goes wrong.
+   * Apply the data definitions in this queue.
    */
   public function apply() {
-    $this->check();
-    $sql = $this->build();
-    $this->database->getConnection()->execute( $sql );
+    while ( $data_definition = $this->queue->shift() ) {
+      $data_definition->apply();
+    }
   }
 
   /**
-   * Builds this data definition for the database we are operating on.
+   * Push the specified data definition on to the end of the queue.
    *
-   * @return string the data definition SQL
+   * @param DataDefinition $data_definition the item to add.
    */
-  abstract public function build();
-
-  /**
-   * Checks the data definition and throws an exception if it should not be
-   * executed.
-   *
-   * @return void
-   * @throws Alert if the data definition is no good.
-   */
-  abstract public function check();
+  public function push( DataDefinition $data_definition ) {
+    $this->queue->push( $data_definition );
+  }
 
 }

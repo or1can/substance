@@ -18,11 +18,9 @@
 
 namespace Substance\Core\Database\Drivers\MySQL;
 
-use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Drivers\MySQL\Schema\MySQLTable;
 use Substance\Core\Database\Schema\AbstractDatabase;
 use Substance\Core\Database\SQL\Columns\AllColumns;
-use Substance\Core\Database\SQL\DataDefinitions\CreateTable;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
@@ -32,21 +30,6 @@ use Substance\Core\Database\SQL\Queries\Select;
  * A MySQL database schema object, handling MySQL database level functionality.
  */
 class MySQLDatabase extends AbstractDatabase {
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Database::createTable()
-   */
-  public function createTable( $name ) {
-    if ( $this->hasTableByName( $name ) ) {
-      throw Alert::alert( 'Table already exists', 'Cannot create new table with same name as an existing one' )
-        ->culprit( 'database', $this->getName() )
-        ->culprit( 'table', $name );
-    } else {
-      $table = new CreateTable( $this, $name );
-      $this->executeDataDefinition( $table );
-      return $this->getTable( $name );
-    }
-  }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Database::listTables()

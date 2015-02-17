@@ -153,15 +153,13 @@ abstract class Connection extends \PDO {
   }
 
   /**
-   * Execute the specified data definition on this connection.
+   * Execute the supplied SQL returning the number of affected rows.
    *
-   * @param DataDefinition $data_definition the data definition to execute.
-   * @return void
-   * @throws Alert if the data definition fails.
+   * @param string $sql the SQL to execute.
+   * @return int the number of rows affected.
+   * @throws Alert if there is an error
    */
-  public function executeDataDefinition( DataDefinition $data_definition ) {
-    $data_definition->check();
-    $sql = $data_definition->build();
+  public function execute( $sql ) {
     $result = $this->exec( $sql );
     if ( $result === FALSE ) {
       $error_info = $this->errorInfo();
@@ -170,6 +168,8 @@ abstract class Connection extends \PDO {
         ->culprit( 'error code', $this->errorCode() )
         ->culprit( 'driver code', $error_info[ 1 ] )
         ->culprit( 'driver message', $error_info[ 2 ] );
+    } else {
+      return $result;
     }
   }
 

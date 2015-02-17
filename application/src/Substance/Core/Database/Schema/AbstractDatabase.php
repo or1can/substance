@@ -22,6 +22,8 @@ use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
 use Substance\Core\Database\SQL\DataDefinition;
+use Substance\Core\Database\SQL\DataDefinitionQueue;
+use Substance\Core\Database\SQL\DataDefinitions\CreateTable;
 use Substance\Core\Database\SQL\DataDefinitions\DropTable;
 use Substance\Core\Database\SQL\Query;
 
@@ -34,6 +36,11 @@ abstract class AbstractDatabase implements Database {
    * @var Connection the underlying database connection
    */
   protected $connection;
+
+  /**
+   * @var DataDefinitionQueue a queue of outstanding data definitions.
+   */
+  protected $data_definition_queue;
 
   /**
    * @var string the database name.
@@ -61,25 +68,45 @@ abstract class AbstractDatabase implements Database {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema\Database::dropTable()
+   * @see \Substance\Core\Database\Schema\Database::applyDataDefinitions()
    */
-  public function dropTable( Table $table ) {
-    $drop = new DropTable( $this, $table->getName() );
-    $this->connection->exec( $drop->build() );
-    return $this;
+  public function applyDataDefinitions() {
+    if ( isset( $this->data_definition_queue ) ) {
+      $this->data_definition_queue->apply();
+    }
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema\Database::executeDataDefinition()
+   * @see \Substance\Core\Database\Schema\Database::createTable()
    */
-  public function executeDataDefinition( DataDefinition $data_definition ) {
-    $this->connection->executeDataDefinition( $data_definition );
+  public function createTable( $name ) {
+    if ( $this->hasTableByName( $name ) ) {
+      throw Alert::alert( 'Table already exists', 'Cannot create new table with same name as an existing one' )
+        ->culprit( 'database', $this->getName() )
+        ->culprit( 'table', $name );
+    } else {
+      $this->queueDataDefinition( new CreateTable( $this, $name ) );
+      $this->applyDataDefinitions();
+      return $this->getTable( $name );
+    }
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::dropTable()
+   */
+  public function dropTable( Table $table ) {
+    $this->queueDataDefinition( new DropTable( $this, $table->getName() ) );
+    $this->applyDataDefinitions();
+    return $this;
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Database::execute()
    */
   public function execute( Query $query ) {
+    // Apply any outstanding data definitions before running a query.
+    $this->applyDataDefinitions();
+    // Now build the query and execute it.
     $sql = $query->build( $this );
     $statement = $this->connection->prepare( $sql );
     $result = $statement->execute( $query->getArguments() );
@@ -92,6 +119,13 @@ abstract class AbstractDatabase implements Database {
         ->culprit( 'driver message', $error_info[ 2 ] );
     }
     return $statement;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::getConnection()
+   */
+  public function getConnection() {
+    return $this->connection;
   }
 
   /* (non-PHPdoc)
@@ -133,12 +167,29 @@ abstract class AbstractDatabase implements Database {
   }
 
   /**
+   * Initialises the data definition queue.
+   */
+  protected function initialiseDataDefinitionQueue() {
+    if ( is_null( $this->data_definition_queue ) ) {
+      $this->data_definition_queue = new DataDefinitionQueue();
+    }
+  }
+
+  /**
    * Load the specified table schema from the underlying database.
    *
    * @param string $name the name of the table to load.
    * @return Table the loaded table or NULL if no table exists.
    */
   abstract protected function loadTable( $name );
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::queueDataDefinition()
+   */
+  protected function queueDataDefinition( DataDefinition $data_definition ) {
+    $this->initialiseDataDefinitionQueue();
+    $this->data_definition_queue->push( $data_definition );
+  }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Database::quoteChar()

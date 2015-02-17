@@ -18,10 +18,8 @@
 
 namespace Substance\Core\Database\Drivers\SQLite;
 
-use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Schema\AbstractDatabase;
 use Substance\Core\Database\Schema\BasicTable;
-use Substance\Core\Database\SQL\DataDefinitions\CreateTable;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Queries\Select;
@@ -31,21 +29,6 @@ use Substance\Core\Database\SQL\Queries\Select;
  * functionality.
  */
 class SQLiteDatabase extends AbstractDatabase {
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema\Database::createTable()
-   */
-  public function createTable( $name ) {
-    if ( $this->hasTableByName( $name ) ) {
-      throw Alert::alert( 'Table already exists', 'Cannot create new table with same name as an existing one' )
-        ->culprit( 'database', $this->getName() )
-        ->culprit( 'table', $name );
-    } else {
-      $table = new CreateTable( $this, $name );
-      $this->executeDataDefinition( $table );
-      return $this->getTable( $name );
-    }
-  }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\Database::listTables()

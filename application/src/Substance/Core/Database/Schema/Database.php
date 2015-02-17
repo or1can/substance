@@ -18,16 +18,21 @@
 
 namespace Substance\Core\Database\Schema;
 
+use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
 use Substance\Core\Database\SQL\DataDefinition;
 use Substance\Core\Database\SQL\Query;
-use Substance\Core\Alert\Alert;
 
 /**
  * Represents a database schema.
  */
 interface Database {
+
+  /**
+   * Applies any outstanding data definitions.
+   */
+  protected function applyDataDefinitions();
 
   /**
    * Creates a table with the specified name in the database specified in this
@@ -47,11 +52,6 @@ interface Database {
   public function dropTable( Table $table );
 
   /**
-   * @see Connection::executeDataDefinition
-   */
-  public function executeDataDefinition( DataDefinition $data_definition );
-
-  /**
    * Execute the specified query on this database.
    *
    * @param Query $query the query to execute.
@@ -59,6 +59,13 @@ interface Database {
    * @see Database::getConnection()
    */
   public function execute( Query $query );
+
+  /**
+   * Returns the connection to this database.
+   *
+   * @return Connection the underlying connection.
+   */
+  public function getConnection();
 
   /**
    * Returns the name of this database. If the underlying database system does
@@ -99,6 +106,16 @@ interface Database {
    * @return Table[] associative array of table name to Table objects.
    */
   public function listTables();
+
+  /**
+   * Queue the specified data definition for later application.
+   *
+   * This allows for mulitiple data definitions to be combined into a single
+   * operation.
+   *
+   * @param DataDefinition $data_definition the data definition to queue.
+   */
+  protected function queueDataDefinition( DataDefinition $data_definition );
 
   /**
    * @see Connection::quoteChar()
