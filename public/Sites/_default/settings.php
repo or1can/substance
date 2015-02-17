@@ -3,6 +3,7 @@
 namespace Sites\_default;
 
 use Substance\Core\Database\Drivers\MySQL\MySQLConnection;
+use Substance\Core\Database\Drivers\SQLite\SQLiteConnection;
 use Substance\Core\Environment\Environment;
 use Substance\Core\Settings;
 
@@ -15,6 +16,9 @@ class DefaultSettings extends Settings {
     switch ( $name ) {
       case 'named':
         return new MySQLConnection( '127.0.0.1', 'mydb', 'myuser', 'mypass' );
+        break;
+      case 'sqlite':
+        return new SQLiteConnection( '/tmp/temp.db' );
         break;
       case 'default':
         return new MySQLConnection( '127.0.0.1', 'mydb', 'myuser', 'mypass' );
@@ -36,6 +40,8 @@ class DefaultSettings extends Settings {
       case 'named':
         return new MySQLConnection( '127.0.0.1', 'mydb', 'myuser', 'mypass' );
         break;
+      case 'sqlite':
+        return new SQLiteConnection( '/tmp/temp.db' );
       case 'default':
         return new MySQLConnection( '127.0.0.1', 'mydb', 'myuser', 'mypass' );
         break;
