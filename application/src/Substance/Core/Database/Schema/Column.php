@@ -52,6 +52,13 @@ interface Column {
   public function getName();
 
   /**
+   * Returns the table this column belongs to.
+   *
+   * @return Table the parent table for this column.
+   */
+  public function getTable();
+
+  /**
    * Returns this columns type.
    *
    * @return Type the column type.
