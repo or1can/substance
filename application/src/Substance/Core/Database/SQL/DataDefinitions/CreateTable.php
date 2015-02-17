@@ -23,6 +23,7 @@ use Substance\Core\Alert\Alerts\IllegalStateAlert;
 use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\Schema\Column;
 use Substance\Core\Database\SQL\DataDefinition;
+use Substance\Core\Database\Schema\Table;
 
 /**
  * Represents a CREATE TABLE query.
@@ -30,14 +31,9 @@ use Substance\Core\Database\SQL\DataDefinition;
 class CreateTable extends DataDefinition {
 
   /**
-   * @var Column[] the columns for this table.
+   * @var Table the table to create.
    */
-  protected $columns = array();
-
-  /**
-   * @var string the table name to create.
-   */
-  protected $name;
+  protected $table;
 
   /**
    * @var boolean TRUE if this is a temporary table and FALSE otherwise.
@@ -49,29 +45,13 @@ class CreateTable extends DataDefinition {
    * name.
    *
    * @param Database $database the database to create the table in.
-   * @param string $name the name of the table to create.
+   * @param Table $table the table to create.
    * @param boolean $temporary TRUE if this table is temporary and FALSE otherwise.
    */
-  public function __construct( Database $database, $name, $temporary = FALSE ) {
+  public function __construct( Database $database, Table $table, $temporary = FALSE ) {
     parent::__construct( $database );
-    $this->name = $name;
+    $this->table = $table;
     $this->temporary = $temporary;
-  }
-
-  /**
-   * Adds the specified column to this table.
-   *
-   * @param Column $column the column to add.
-   */
-  public function addColumn( Column $column ) {
-    if ( array_key_exists( $column->getName(), $this->columns ) ) {
-      throw Alert::alert( 'Column already exists', 'Each column must have a unique name.' )
-        ->culprit( 'name', $column->getName() )
-        ->culprit( 'existing column', $this->columns[ $column->getName() ] )
-        ->culprit( 'duplicate column', $column );
-    } else {
-      $this->columns[ $column->getName() ] = $column;
-    }
   }
 
   /* (non-PHPdoc)
@@ -83,9 +63,9 @@ class CreateTable extends DataDefinition {
       $sql .= ' TEMPORARY';
     }
     $sql .= ' TABLE ';
-    $sql .= $this->database->quoteName( $this->name );
+    $sql .= $this->database->quoteName( $this->table->getName() );
     $sql .= ' (';
-    foreach ( $this->columns as $column ) {
+    foreach ( $this->table->listColumns() as $column ) {
       $sql .= $column->getName();
     }
     $sql .= ' )';
@@ -96,9 +76,9 @@ class CreateTable extends DataDefinition {
    * @see \Substance\Core\Database\SQL\DataDefinition::check()
    */
   public function check() {
-    if ( count( $this->columns ) == 0 ) {
+    if ( count( $this->table->listColumns() ) == 0 ) {
       throw IllegalStateAlert::illegalState( 'Cannot create a table without any columns' )
-      ->culprit( 'table', $this->name );
+        ->culprit( 'table', $this->table->getName() );
     }
   }
 

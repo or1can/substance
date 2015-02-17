@@ -30,6 +30,7 @@ use Substance\Core\Alert\Alert;
 use Substance\Core\Bootstrap;
 use Substance\Core\Database\Connection;
 use Substance\Core\Module;
+use Substance\Core\Database\Schema\BasicTable;
 
 // Bootstap the system.
 Bootstrap::initialise();
@@ -50,7 +51,9 @@ $database = $connection->getDatabase();
 
 var_dump( $database->listTables() );
 
-$database->createTable( 'sample' );
+$sample = $database->createTable( 'sample' );
+
+var_dump( $sample );
 
 var_dump( $database->listTables() );
 

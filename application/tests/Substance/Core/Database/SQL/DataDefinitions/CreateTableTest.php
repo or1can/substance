@@ -19,6 +19,7 @@
 namespace Substance\Core\Database\SQL\DataDefinitions;
 
 use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\Schema\BasicTable;
 
 /**
  * Tests the create table data definition.
@@ -29,11 +30,13 @@ class CreateTableTest extends AbstractDatabaseTest {
    * Test the build with simple table names.
    */
   public function testBuild() {
-    $definition = new CreateTable( $this->connection, 'table' );
+    $table = new BasicTable( $this->connection, 'table' );
+    $definition = new CreateTable( $this->connection, $table );
     $sql = $definition->build();
     $this->assertEquals( 'CREATE TABLE `table` ( )', $sql );
 
-    $definition = new CreateTable( $this->connection, 'table.dot' );
+    $table = new BasicTable( $this->connection, 'table.dot' );
+    $definition = new CreateTable( $this->connection, $table );
     $sql = $definition->build();
     $this->assertEquals( 'CREATE TABLE `table.dot` ( )', $sql );
   }

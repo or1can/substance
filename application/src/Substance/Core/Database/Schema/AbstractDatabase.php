@@ -85,9 +85,9 @@ abstract class AbstractDatabase implements Database {
         ->culprit( 'database', $this->getName() )
         ->culprit( 'table', $name );
     } else {
-      $this->queueDataDefinition( new CreateTable( $this, $name ) );
-      $this->applyDataDefinitions();
-      return $this->getTable( $name );
+      $table = new BasicTable( $this, $name );
+      $this->queueDataDefinition( new CreateTable( $this, $table ) );
+      return $table;
     }
   }
 
@@ -96,7 +96,6 @@ abstract class AbstractDatabase implements Database {
    */
   public function dropTable( Table $table ) {
     $this->queueDataDefinition( new DropTable( $this, $table->getName() ) );
-    $this->applyDataDefinitions();
     return $this;
   }
 
