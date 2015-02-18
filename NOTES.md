@@ -28,6 +28,12 @@ Drupal-like modules.
 * Modules MUST provide a settings/configuration.
 * Modules MUST be defined in their own namespace.
 
+Debugging
+=========
+
+var_export does not work with recursive dependencies, e.g. our
+connection/database objects - use var_dump instead.
+
 Database management
 ===================
 
