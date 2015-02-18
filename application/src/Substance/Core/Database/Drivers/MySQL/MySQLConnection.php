@@ -76,9 +76,9 @@ class MySQLConnection extends Connection {
         ->culprit( 'database', $name );
     } else {
       $sql = 'CREATE DATABASE ';
-      $sql .= $this->database->quoteName( $this->name );
+      $sql .= $this->quoteName( $name );
       $sql .= ' DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci';
-      $this->exec( $sql );
+      $this->execute( $sql );
       return $this->getDatabase( $name );
     }
   }
