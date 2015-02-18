@@ -266,7 +266,7 @@ abstract class Connection extends \PDO {
       if ( is_null( $database ) ) {
         return FALSE;
       } else {
-        $this->database[ $name ] = $database;
+        $this->databases[ $name ] = $database;
         return TRUE;
       }
     }
@@ -343,11 +343,15 @@ abstract class Connection extends \PDO {
    * Sets the active connection name, which will be used as the default
    * connection name for establishing new connections.
    *
-   * @param string $name the connection name, or 'default' for the default.
+   * @param string $name the connection name, or NULL for the default.
    * @return self
    */
-  public static function setActiveConnectionName( $name = 'default' ) {
-    $this->active_connection_name = $name;
+  public static function setActiveConnectionName( $name = NULL ) {
+    if ( is_null( $name ) ) {
+      $this->active_database_name = $this->default_database_name;
+    } else {
+      $this->active_connection_name = $name;
+    }
     return $this;
   }
 
