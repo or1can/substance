@@ -21,6 +21,7 @@ namespace Substance\Core\Database\Schema\Types;
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Schema\Size;
 use Substance\Core\Database\Schema\Type;
+use Substance\Core\Alert\Alerts\NullValueAlert;
 
 /**
  * Represents a data type.
@@ -53,7 +54,7 @@ class Integer implements Type {
    */
   public function setSize( Size $size ) {
     if ( is_null( $size ) ) {
-      throw Alert::alert( 'Unexpected NULL', 'Supplied size must be an instance of Size' );
+      throw NullValueAlert::nullValue('Supplied size must be an instance of Size');
     }
     $this->size = $size;
   }

@@ -27,22 +27,21 @@ use Substance\Core\Database\Schema\Database;
 class DataDefinitionQueue {
 
   /**
-   * @var \SplDoublyLinkedList the queue of database definitions.
+   * @var array the queue of database definitions.
    */
-  protected $queue;
+  protected $queue = array();
 
   /**
    * Constructs a new data definition operating on the specified database.
    */
   public function __construct() {
-    $this->queue = new \SplDoublyLinkedList();
   }
 
   /**
    * Apply the data definitions in this queue.
    */
   public function apply() {
-    while ( $data_definition = $this->queue->shift() ) {
+    while ( $data_definition = array_shift( $this->queue ) ) {
       $data_definition->apply();
     }
   }
@@ -53,7 +52,7 @@ class DataDefinitionQueue {
    * @param DataDefinition $data_definition the item to add.
    */
   public function push( DataDefinition $data_definition ) {
-    $this->queue->push( $data_definition );
+    $this->queue[] = $data_definition;
   }
 
 }

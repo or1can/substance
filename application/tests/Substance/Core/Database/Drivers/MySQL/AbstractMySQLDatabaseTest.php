@@ -26,7 +26,7 @@ use Substance\Core\Database\Schema\Database;
 abstract class AbstractMySQLDatabaseTest extends AbstractMySQLConnectionTest {
 
   /**
-   * @var Database the database to test.
+   * @var Database the default database for testing.
    */
   protected $database;
 

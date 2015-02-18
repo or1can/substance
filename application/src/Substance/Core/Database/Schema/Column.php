@@ -66,11 +66,6 @@ interface Column {
   public function getType();
 
   /**
-   * Removes this columns default value.
-   */
-  public function removeDefault();
-
-  /**
    * Sets the default value for this column.
    *
    * @param mixed $value the default value for this column.

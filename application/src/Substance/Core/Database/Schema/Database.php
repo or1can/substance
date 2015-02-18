@@ -40,6 +40,7 @@ interface Database {
    *
    * @param string $name the new table name.
    * @return Table the new table.
+   * @see Database::applyDataDefinitions
    */
   public function createTable( $name );
 
@@ -48,6 +49,7 @@ interface Database {
    *
    * @param Table $table the table to drop.
    * @return self
+   * @see Database::applyDataDefinitions
    */
   public function dropTable( Table $table );
 
