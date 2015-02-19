@@ -47,7 +47,9 @@ class IllegalStateAlert extends Alert {
    * @return UnsupportedOperationAlert
    */
   public static function illegalState( $explanation = '', $code = 0, \Exception $previous = NULL ) {
-    return new IllegalStateAlert( $explanation, $code, $previous );
+    $alert = new IllegalStateAlert( $explanation, $code, $previous );
+    $alert->constructed_in_alert = TRUE;
+    return $alert;
   }
 
 }

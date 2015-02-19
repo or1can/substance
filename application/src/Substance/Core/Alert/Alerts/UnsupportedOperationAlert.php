@@ -47,7 +47,9 @@ class UnsupportedOperationAlert extends Alert {
    * @return UnsupportedOperationAlert
    */
   public static function unsupportedOperation( $explanation = '', $code = 0, \Exception $previous = NULL ) {
-    return new UnsupportedOperationAlert( $explanation, $code, $previous );
+    $alert = new UnsupportedOperationAlert( $explanation, $code, $previous );
+    $alert->constructed_in_alert = TRUE;
+    return $alert;
   }
 
 }

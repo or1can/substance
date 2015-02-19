@@ -47,7 +47,9 @@ class NullValueAlert extends Alert {
    * @return UnsupportedOperationAlert
    */
   public static function nullValue( $explanation = '', $code = 0, \Exception $previous = NULL ) {
-    return new NullValueAlert( $explanation, $code, $previous );
+    $alert = new NullValueAlert( $explanation, $code, $previous );
+    $alert->constructed_in_alert = TRUE;
+    return $alert;
   }
 
 }
