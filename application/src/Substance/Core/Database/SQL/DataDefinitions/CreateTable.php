@@ -65,7 +65,10 @@ class CreateTable extends DataDefinition {
     $sql .= ' TABLE ';
     $sql .= $this->database->quoteName( $this->table->getName() );
     $sql .= ' (';
+    $separator = '';
     foreach ( $this->table->listColumns() as $column ) {
+      $sql .= $separator;
+      $separator = ', ';
       $sql .= $this->database->quoteName( $column->getName() );
       $sql .= ' ';
       $sql .= $column->getType()->getName();
