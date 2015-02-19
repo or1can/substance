@@ -34,6 +34,17 @@ interface Table {
   public function addColumn( Column $column );
 
   /**
+   * Adds the specified column to the table.
+   *
+   * @param string $name the column name.
+   * @param Type $type the columns type.
+   * @param mixed $default the columns default value.
+   * @param boolean $allows_null TRUE if the column allows NULL values and FALSE otherwise.
+   * @return Column the new column.
+   */
+  public function addColumnByName( $name, Type $type, $default = NULL, $allows_null = TRUE  );
+
+  /**
    * Adds the specified index to the table.
    *
    * @param Index $index the index to add to the table.

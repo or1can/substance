@@ -28,12 +28,12 @@ class ColumnImpl implements Column {
   /**
    * @var boolean TRUE if the column allows NULL values and FALSE otherwise.
    */
-  protected $allows_null = TRUE;
+  protected $allows_null;
 
   /**
    * @var mixed the columns default value.
    */
-  protected $default = NULL;
+  protected $default;
 
   /**
    * @var string the columns name.
@@ -56,8 +56,12 @@ class ColumnImpl implements Column {
    * @param Table $table the columns parent table.
    * @param string $name the column name.
    * @param Type $type the columns type.
+   * @param mixed $default the columns default value.
+   * @param boolean $allows_null TRUE if the column allows NULL values and FALSE otherwise.
    */
-  public function __construct( Table $table, $name, Type $type ) {
+  public function __construct( Table $table, $name, Type $type, $default = NULL, $allows_null = TRUE ) {
+    $this->allows_null = $allows_null;
+    $this->default = $default;
     $this->name = $name;
     $this->table = $table;
     $this->type = $type;

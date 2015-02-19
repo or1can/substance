@@ -76,6 +76,13 @@ class BasicTable implements Table {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Table::addColumnByName()
+   */
+  public function addColumnByName( $name, Type $type, $default = NULL, $allows_null = TRUE ) {
+    $this->addColumn( new ColumnImpl( $this, $name, $type, $default, $allows_null ) );
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\Table::addIndex()
    */
   public function addIndex( Index $index ) {
