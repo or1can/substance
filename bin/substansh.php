@@ -29,10 +29,11 @@ require dirname( __DIR__ ) . '/vendor/autoload.php';
 use Substance\Core\Alert\Alert;
 use Substance\Core\Bootstrap;
 use Substance\Core\Database\Connection;
-use Substance\Core\Module;
 use Substance\Core\Database\Schema\BasicTable;
 use Substance\Core\Database\Schema\ColumnImpl;
+use Substance\Core\Database\Schema\Size;
 use Substance\Core\Database\Schema\Types\Integer;
+use Substance\Core\Module;
 
 // Bootstap the system.
 Bootstrap::initialise();
@@ -56,6 +57,9 @@ var_dump( $database->listTables() );
 $sample = $database->createTable( 'sample' );
 $column = new ColumnImpl( $sample, 'col', new Integer() );
 $sample->addColumn( $column );
+$sample->addColumnByName( 'col2', new Integer() );
+$sample->addColumnByName( 'col3', new Integer( Size::size( Size::TINY ) ) );
+$sample->addColumnByName( 'col4', new Integer( Size::size( Size::BIG ) ) );
 $database->applyDataDefinitions();
 
 var_dump( $sample );
