@@ -19,6 +19,7 @@
 namespace Substance\Core\Database\SQL;
 
 use Substance\Core\Alert\Alert;
+use Substance\Core\Database\Alerts\DatabaseAlert;
 use Substance\Core\Database\Schema\Database;
 
 /**
@@ -48,7 +49,13 @@ abstract class DataDefinition {
   public function apply() {
     $this->check();
     $sql = $this->build();
-    $this->database->getConnection()->execute( $sql );
+    try {
+      $this->database->getConnection()->execute( $sql );
+    } catch ( \PDOException $pdoe ) {
+      throw DatabaseAlert::database('Failed to apply database schema change.')
+        ->culprit( 'data definiton', $sql )
+        ->culprit( 'PDO message', $pdoe->getMessage() );
+    }
   }
 
   /**
