@@ -20,6 +20,7 @@ namespace Substance\Core\Presentation\Elements;
 
 use Substance\Core\Presentation\Element;
 use Substance\Core\Presentation\Theme;
+use Substance\Core\Util\String;
 
 /**
  * A simple markup element.
@@ -29,7 +30,7 @@ class Markup extends Element {
   /**
    * The markup contents.
    *
-   * @var string
+   * @var mixed
    */
   protected $markup;
 
@@ -50,7 +51,7 @@ class Markup extends Element {
       }
       // Check for the required #markup, as this contains the markup.
       if ( array_key_exists( '#markup', $element ) ) {
-        return Markup::create()->setMarkup( $element['#markup'] );
+        return Markup::create()->setMarkup( String::toString( $element['#markup'] ) );
       } else {
         throw Alert::alert('Markup build array requires #markup property');
       }
@@ -70,6 +71,15 @@ class Markup extends Element {
     return $this->markup;
   }
 
+  /**
+   * Returns this elements markup as a string.
+   *
+   * @return string the markup as a string.
+   */
+  public function getMarkupAsString() {
+    return String::toString( $this->getMarkup() );
+  }
+
   /* (non-PHPdoc)
    * @see \Substance\Core\Presentation\Element::render()
    */
@@ -87,6 +97,5 @@ class Markup extends Element {
     $this->markup = $markup;
     return $this;
   }
-
 
 }

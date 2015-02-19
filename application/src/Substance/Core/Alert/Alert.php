@@ -26,6 +26,7 @@ use Substance\Core\Presentation\Elements\TableRow;
 use Substance\Core\Presentation\Elements\TableCell;
 use Substance\Core\Presentation\Elements\TextField;
 use Substance\Core\Presentation\Presentable;
+use Substance\Core\Util\String;
 use Substance\Themes\Text\TextTheme;
 
 /**
@@ -258,15 +259,7 @@ class Alert extends \Exception implements Presentable {
         $method .= implode(
           ', ',
           array_map(
-            function( $value ) {
-              if ( is_object( $value ) && !method_exists( $value, '__toString' ) ) {
-                return 'CLASS[' . get_class( $value ) . ']';
-              } else if ( is_array( $value ) ) {
-                return 'Array';
-              } else {
-           	    return (string) $value;
-              }
-            },
+            'Substance\Core\Util\String::toString',
             $trace['args']
           )
         );

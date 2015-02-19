@@ -81,7 +81,7 @@ abstract class AbstractTheme implements Theme {
    * @see \Substance\Core\Presentation\Theme::renderMarkup()
    */
   public function renderMarkup( Markup $markup ) {
-    return $markup->getMarkup();
+    return $markup->getMarkupAsString();
   }
 
   /* (non-PHPdoc)

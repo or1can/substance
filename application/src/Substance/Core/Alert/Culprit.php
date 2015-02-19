@@ -18,6 +18,8 @@
 
 namespace Substance\Core\Alert;
 
+use Substance\Core\Util\String;
+
 /**
  * An Alert Culprit, or a simple key-value pair of information that can be
  * attached to an Alert.
@@ -71,7 +73,7 @@ class Culprit {
    * @return string the string representation of this culprit.
    */
   public function __toString() {
-    return mb_strtoupper( $this->type ) . " : $this->value";
+    return mb_strtoupper( $this->type ) . ' : ' . String::toString( $this->value );
   }
 
 }
