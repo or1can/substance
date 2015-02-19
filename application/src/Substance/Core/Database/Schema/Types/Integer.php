@@ -35,9 +35,15 @@ class Integer implements Type {
 
   /**
    * Constructs a new Integer type.
+   *
+   * @param Size $size the integer size or NULL for the default
    */
-  public function __construct() {
-    $this->size = Size::size( Size::NORMAL );
+  public function __construct( Size $size = NULL ) {
+    if ( is_null( $size ) ) {
+      $this->size = Size::size( Size::NORMAL );
+    } else {
+      $this->size = $size;
+    }
   }
 
   /* (non-PHPdoc)
