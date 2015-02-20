@@ -23,6 +23,7 @@ use Substance\Core\Alert\Alerts\UnsupportedOperationAlert;
 use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\SQL\DataDefinition;
 use Substance\Core\Environment\Environment;
+use Substance\Core\Database\Alerts\DatabaseAlert;
 
 /**
  * Represents a database connection.
@@ -50,17 +51,7 @@ use Substance\Core\Environment\Environment;
  *   ),
  * @endcode
  */
-abstract class Connection extends \PDO {
-
-  /**
-   * @var string the active connection name.
-   */
-  protected static $active_connection_name = 'default';
-
-  /**
-   * @var Database[] active connections.
-   */
-  protected static $active_connections = array();
+abstract class Connection {
 
   /**
    * @var string the active database name.
@@ -85,10 +76,7 @@ abstract class Connection extends \PDO {
   /**
    * Construct a new MySQL database connection.
    *
-   * @param string $dsn the data source name.
    * @param string $default_database the default database name.
-   * @param string $username the database username
-   * @param string $password the database password
    * @param string|array $prefix a prefix that should be prepended to all
    * tables. A string value will be prepended to all tables, while an array
    * specifies prefixes for specific tables.
@@ -109,27 +97,10 @@ abstract class Connection extends \PDO {
    *     'Users' => 'shared_',
    *   ),
    * @endcode
-   * @param array $pdo_options an associative array of PDO driver options, keyed
-   * by the PDO option with values appropriate to the option
    */
-  public function __construct( $dsn, $default_database, $username, $password, $prefix = '', $pdo_options = array()  ) {
+  public function __construct( $default_database, $prefix = '' ) {
     $this->default_database_name = $default_database;
     $this->active_database_name = $default_database;
-
-    // Force error exceptions, always.
-    $pdo_options[ \PDO::ATTR_ERRMODE ] = \PDO::ERRMODE_EXCEPTION;
-
-    // Set default options.
-    $pdo_options += array(
-      // Use our default statement class for all statements.
-      \PDO::ATTR_STATEMENT_CLASS => array( '\Substance\Core\Database\Statement', array( $this ) ),
-      // Emulate prepared statements until we know that we'll be running the
-      // same statements *lots* of times.
-      \PDO::ATTR_EMULATE_PREPARES => TRUE,
-    );
-
-    // Create the PDO connection
-    parent::__construct( $dsn, $username, $password, $pdo_options );
 
     // Execute init commands.
     $this->initaliseConnection();
@@ -159,30 +130,7 @@ abstract class Connection extends \PDO {
    * @return int the number of rows affected.
    * @throws Alert if there is an error
    */
-  public function execute( $sql ) {
-    $result = $this->exec( $sql );
-    if ( $result === FALSE ) {
-      $error_info = $this->errorInfo();
-      throw Alert::alert( 'Failed to execute data definition query' )
-        ->culprit( 'query', $query )
-        ->culprit( 'error code', $this->errorCode() )
-        ->culprit( 'driver code', $error_info[ 1 ] )
-        ->culprit( 'driver message', $error_info[ 2 ] );
-    } else {
-      return $result;
-    }
-  }
-
-  /**
-   * Returns the active connection name, that is being used as the default
-   * connection name for establishing new connections.
-   *
-   * @return string the active connection name, or 'default' for default
-   * connection.
-   */
-  public static function getActiveConnectionName() {
-    return $this->active_connection_name;
-  }
+  abstract public function execute( $sql );
 
   /**
    * Returns the active database name, that is being used as the default
@@ -192,44 +140,6 @@ abstract class Connection extends \PDO {
    */
   public function getActiveDatabaseName() {
     return $this->active_database_name;
-  }
-
-  /**
-   * Returns a database connection for the current active connection, or the
-   * specified override.
-   *
-   * @param string $type the database type, either 'master' or 'slave'.
-   * @param string $name the connection name to use instead of the active
-   * connection, or NULL to use the active connection.
-   * @return Connection the database connection for the specified name and
-   * type.
-   */
-  public static function getConnection( $type = 'master', $name = NULL ) {
-    // Use the active connection by default, but override with a supplied one.
-    $connection_name = isset( $name ) ? $name : self::$active_connection_name;
-    // Set a connection in the cache, if required.
-    if ( !isset( self::$active_connections[ $connection_name ][ $type ] ) ) {
-      $settings = Environment::getEnvironment()->getSettings();
-      switch ( $type ) {
-        case 'master':
-          self::$active_connections[ $connection_name ][ $type ] = $settings->getDatabaseMaster( $connection_name );
-          break;
-        case 'slave':
-          self::$active_connections[ $connection_name ][ $type ] = $settings->getDatabaseSlave( $connection_name );
-          break;
-        default:
-          throw Alert::alert( 'Unsupported database type', 'Database type must be either "master" or "slave"' )
-          ->culprit( 'type', $type );
-          break;
-      }
-      if ( !isset( self::$active_connections[ $connection_name ][ $type ] ) ) {
-        throw Alert::alert( 'No such database type for given name in database settings.' )
-          ->culprit( 'name', $connection_name )
-          ->culprit( 'type', $type );
-      }
-    }
-    // Return the active connection.
-    return self::$active_connections[ $connection_name ][ $type ];
   }
 
   /**
@@ -296,6 +206,25 @@ abstract class Connection extends \PDO {
   abstract protected function loadDatabase( $name );
 
   /**
+   * Prepare the specified SQL to be executed by the Statement::execute()
+   * method.
+   *
+   * @param string $sql a valid SQL statement.
+   * @return Statement the prepared statement.
+   * @throws DatabaseAlert if the preparation fails.
+   */
+  abstract public function prepare( $sql );
+
+  /**
+   * Executes the specified SQL statement, returning a Statement object.
+   *
+   * @param string $sql a valid SQL statement.
+   * @return Statement the result statement.
+   * @throws DatabaseAlert if the execution fails.
+   */
+  abstract public function query( $sql );
+
+  /**
    * Returns the quote character for quoting identifiers.
    *
    * @return string the quot character for quoting identifiers.
@@ -340,22 +269,6 @@ abstract class Connection extends \PDO {
   }
 
   /**
-   * Sets the active connection name, which will be used as the default
-   * connection name for establishing new connections.
-   *
-   * @param string $name the connection name, or NULL for the default.
-   * @return self
-   */
-  public static function setActiveConnectionName( $name = NULL ) {
-    if ( is_null( $name ) ) {
-      $this->active_database_name = $this->default_database_name;
-    } else {
-      $this->active_connection_name = $name;
-    }
-    return $this;
-  }
-
-  /**
    * Sets the active database name, which will be used as the default
    * database name.
    *
@@ -363,7 +276,11 @@ abstract class Connection extends \PDO {
    * @return self
    */
   public static function setActiveDatabaseName( $name = NULL ) {
-    $this->active_database_name = $name;
+    if ( is_null( $name ) ) {
+      $this->active_database_name = $this->default_database_name;
+    } else {
+      $this->active_database_name = $name;
+    }
     return $this;
   }
 

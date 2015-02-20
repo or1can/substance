@@ -28,8 +28,7 @@ require dirname( __DIR__ ) . '/vendor/autoload.php';
 
 use Substance\Core\Alert\Alert;
 use Substance\Core\Bootstrap;
-use Substance\Core\Database\Connection;
-use Substance\Core\Database\Schema\BasicTable;
+use Substance\Core\Database\ConnectionFactory;
 use Substance\Core\Database\Schema\ColumnImpl;
 use Substance\Core\Database\Schema\Size;
 use Substance\Core\Database\Schema\Types\Integer;
@@ -44,7 +43,7 @@ $alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
 
 echo $alert;
 
-$connection = Connection::getConnection();
+$connection = ConnectionFactory::getConnection();
 
 var_dump( $connection );
 

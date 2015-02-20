@@ -19,13 +19,13 @@
 namespace Substance\Core\Database\Drivers\SQLite;
 
 use Substance\Core\Alert\Alert;
-use Substance\Core\Database\Connection;
+use Substance\Core\Database\PDOConnection;
 
 /**
  * A SQLite database connection object, handling SQLite database connection
  * level functionality.
  */
-class SQLiteConnection extends Connection {
+class SQLiteConnection extends PDOConnection {
 
   /**
    * Construct a new MySQL database connection.

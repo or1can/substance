@@ -35,11 +35,11 @@ abstract class AbstractMySQLConnectionTest extends \PHPUnit_Framework_TestCase {
     // Clear out mydb.
     $sql = "SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'mydb'";
     foreach ( $this->connection->query( $sql ) as $row ) {
-      $this->connection->exec( 'DROP TABLE ' . $this->connection->quoteTable( $row->TABLE_NAME ) );
+      $this->connection->execute( 'DROP TABLE ' . $this->connection->quoteTable( $row->TABLE_NAME ) );
     }
     // Remove known test databases.
     foreach ( $this->test_database_names as $database ) {
-      $this->connection->exec( 'DROP DATABASE IF EXISTS' . $this->connection->quoteName( $database ) );
+      $this->connection->execute( 'DROP DATABASE IF EXISTS' . $this->connection->quoteName( $database ) );
     }
   }
 

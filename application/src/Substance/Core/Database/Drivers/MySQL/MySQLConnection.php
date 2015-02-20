@@ -19,7 +19,7 @@
 namespace Substance\Core\Database\Drivers\MySQL;
 
 use Substance\Core\Alert\Alert;
-use Substance\Core\Database\Connection;
+use Substance\Core\Database\PDOConnection;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
@@ -29,7 +29,7 @@ use Substance\Core\Database\SQL\Queries\Select;
  * Represents a database connection in Substance, which is an extension of the
  * core PHP PDO class.
  */
-class MySQLConnection extends Connection {
+class MySQLConnection extends PDOConnection {
 
   /**
    * @var Database the MySQL information schema database.
@@ -87,8 +87,8 @@ class MySQLConnection extends Connection {
    * @see \Substance\Core\Database\Connection::initaliseConnection()
    */
   public function initaliseConnection() {
-    $this->exec( "SET sql_mode = 'ANSI,STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER'" );
-    $this->exec( "SET NAMES utf8" );
+    $this->pdo->exec( "SET sql_mode = 'ANSI,STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER'" );
+    $this->pdo->exec( "SET NAMES utf8" );
   }
 
   /* (non-PHPdoc)
@@ -98,7 +98,7 @@ class MySQLConnection extends Connection {
     // We would use SHOW DATABASES LIKE or SHOW DATABASES WHERE here, but for
     // some reason, $this->query() returns false for either, so we must do the
     // same in PHP instead.
-    foreach ( $this->query('SHOW DATABASES') as $row ) {
+    foreach ( $this->pdo->query('SHOW DATABASES') as $row ) {
       if ( $row->Database != 'information_schema' ) {
         if ( !array_key_exists( $row->Database, $this->databases ) ) {
           $this->databases[ $row->Database ] = new MySQLDatabase( $this, $row->Database );
