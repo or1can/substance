@@ -19,4 +19,4 @@ TODO
   * Update
   * Delete
   * Transactions
-  
+  * Consider using the presentation layer as a base, rather than mirroring it
