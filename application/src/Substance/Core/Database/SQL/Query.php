@@ -29,7 +29,7 @@ use Substance\Core\Database\SQL\TableReferences\TableName;
 /**
  * Represents a database query.
  */
-abstract class Query {
+abstract class Query implements Buildable {
 
   protected $aliases_column = array();
 
@@ -44,15 +44,6 @@ abstract class Query {
     $unconnected = UnconnectedDatabase::getInstance();
     return $this->build( $unconnected );
   }
-
-  /**
-   * Builds this query for the specified database connection.
-   *
-   * @param Database $database the database connection to build the query
-   * for
-   * @return string the built query as a string.
-   */
-  abstract public function build( Database $database );
 
   /**
    * Defines the specifed argument for this query, returning the unique alias

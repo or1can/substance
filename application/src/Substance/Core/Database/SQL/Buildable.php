@@ -21,16 +21,17 @@ namespace Substance\Core\Database\SQL;
 use Substance\Core\Database\Schema\Database;
 
 /**
- * Represents a component part of an SQL query.
+ * A buildable object is an object that knows how to "build" itself inclusion
+ * in a query for a specific database.
  */
-interface Component extends Buildable {
+interface Buildable {
 
   /**
-   * Defines this component in the specifed query. This will usually be called
-   * before the component is added.
+   * Builds this component for inclusion in a query on the given database.
    *
-   * @param Query $query the query to define this table reference in.
+   * @param Database $database the database to build the component for
+   * @return string the built component as a string.
    */
-  public function define( Query $query );
+  public function build( Database $database );
 
 }

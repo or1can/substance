@@ -57,10 +57,16 @@ class AllColumnsFromTable implements Column {
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
-    // FIXME - This needs to support aliases and tables.
-    $string = $database->quoteTable( $this->table );
-    $string .= '.*';
-    return $string;
+    return $database->buildAllColumnsFromTableColumn( $this );
+  }
+
+  /**
+   * Return the name of the table to select all columns from.
+   *
+   * @return string the table name.
+   */
+  public function getTable() {
+    return $this->table;
   }
 
   /* (non-PHPdoc)

@@ -26,6 +26,10 @@ use Substance\Core\Database\SQL\DataDefinitionQueue;
 use Substance\Core\Database\SQL\DataDefinitions\CreateTable;
 use Substance\Core\Database\SQL\DataDefinitions\DropTable;
 use Substance\Core\Database\SQL\Query;
+use Substance\Core\Database\SQL\Component;
+use Substance\Core\Database\SQL\Columns\AllColumns;
+use Substance\Core\Database\SQL\Columns\AllColumnsFromTable;
+use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
 
 /**
  * An abstract database schema implementation.
@@ -74,6 +78,40 @@ abstract class AbstractDatabase implements Database {
     if ( isset( $this->data_definition_queue ) ) {
       $this->data_definition_queue->apply();
     }
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::build()
+   */
+  public function build( Component $component ) {
+    return $component->build( $this );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildAllColumnsColumn()
+   */
+  public function buildAllColumnsColumn( AllColumns $all_columns ) {
+    return '*';
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildAllColumnsFromTableColumn()
+   */
+  public function buildAllColumnsFromTableColumn( AllColumnsFromTable $all_columns_from_table ) {
+    // FIXME - This needs to support aliases and tables.
+    $string = $this->quoteTable( $all_columns_from_table->getTable() );
+    $string .= '.*';
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildColumnWithAliasColumn()
+   */
+  public function buildColumnWithAliasColumn( ColumnWithAlias $column_with_alias ) {
+    $string = $this->build( $column_with_alias->getExpression() );
+    $string .= ' AS ';
+    $string .= $this->quoteName( $column_with_alias->getAlias() );
+    return $string;
   }
 
   /* (non-PHPdoc)

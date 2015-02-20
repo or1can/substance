@@ -35,7 +35,7 @@ class AllColumns implements Column {
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
-  	return '*';
+    return $database->buildAllColumnsColumn( $this );
   }
 
   /* (non-PHPdoc)

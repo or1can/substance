@@ -18,19 +18,16 @@
 
 namespace Substance\Core\Database\SQL;
 
-use Substance\Core\Database\Schema\Database;
-
 /**
- * Represents a component part of an SQL query.
+ * A composable object knows how to compose itself for a database query.
  */
-interface Component extends Buildable {
+interface Composable {
 
   /**
-   * Defines this component in the specifed query. This will usually be called
-   * before the component is added.
+   * Returns a component for building a query.
    *
-   * @param Query $query the query to define this table reference in.
+   * @return Component the buildable Component for this object.
    */
-  public function define( Query $query );
+  public function compose();
 
 }

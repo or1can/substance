@@ -65,10 +65,7 @@ class ColumnWithAlias implements Column {
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
-    $string = $this->left->build( $database );
-    $string .= ' AS ';
-    $string .= $database->quoteName( $this->alias );
-    return $string;
+    return $database->buildColumnWithAliasColumn( $this );
   }
 
   /**
@@ -78,6 +75,15 @@ class ColumnWithAlias implements Column {
    */
   public function getAlias() {
     return $this->alias;
+  }
+
+  /**
+   * Returns the columns expression.
+   *
+   * @return Expression the columns expression.
+   */
+  public function getExpression() {
+    return $this->left;
   }
 
   /* (non-PHPdoc)
