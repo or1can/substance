@@ -18,19 +18,20 @@
 
 namespace Substance\Core\Database\Schema\Types;
 
+use Substance\Core\Database\AbstractDatabaseTest;
 use Substance\Core\Database\Schema\Size;
 
 /**
  * Tests the integer type schema element.
  */
-class IntegerTest extends \PHPUnit_Framework_TestCase {
+class IntegerTest extends AbstractDatabaseTest {
 
   /**
    * Test the integer get name.
    */
   public function testGetName() {
     $integer = new Integer();
-    $this->assertEquals( 'INTEGER', $integer->getName() );
+    $this->assertEquals( 'INTEGER', $integer->build( $this->connection ) );
   }
 
   /**

@@ -18,16 +18,11 @@
 
 namespace Substance\Core\Database\Schema;
 
+use Substance\Core\Database\SQL\Buildable;
+
 /**
  * Represents a data type.
  */
-interface Type {
-
-  /**
-   * Returns the type name.
-   *
-   * @return string the type name.
-   */
-  public function getName();
+interface Type extends Buildable {
 
 }

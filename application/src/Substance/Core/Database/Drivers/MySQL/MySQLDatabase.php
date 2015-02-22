@@ -20,6 +20,8 @@ namespace Substance\Core\Database\Drivers\MySQL;
 
 use Substance\Core\Database\Drivers\MySQL\Schema\MySQLTable;
 use Substance\Core\Database\Schema\AbstractDatabase;
+use Substance\Core\Database\Schema\Size;
+use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
@@ -30,6 +32,29 @@ use Substance\Core\Database\SQL\Queries\Select;
  * A MySQL database schema object, handling MySQL database level functionality.
  */
 class MySQLDatabase extends AbstractDatabase {
+
+  public function buildInteger( Integer $integer ) {
+    switch ( $integer->getSize()->getValue() ) {
+      case Size::TINY:
+        return 'TINYINT';
+        break;
+      case Size::SMALL:
+        return 'SMALLINT';
+        break;
+      case Size::MEDIUM:
+        return 'MEDIUMINT';
+        break;
+      case Size::NORMAL:
+        return 'INTEGER';
+        break;
+      case Size::BIG:
+        return 'BIGINT';
+        break;
+      default:
+        throw IllegalValueAlert::illegal_value('Only tiny, small, medium, normal and big sizes are supported')
+        ->culprit( 'size', $integer->getSize() );
+    }
+  }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Database::listTables()

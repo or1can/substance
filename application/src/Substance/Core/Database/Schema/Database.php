@@ -21,6 +21,7 @@ namespace Substance\Core\Database\Schema;
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
+use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Database\SQL\Buildable;
 use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Columns\AllColumnsFromTable;
@@ -154,6 +155,14 @@ interface Database {
    * @return string the built InnerJoin.
    */
   public function buildInnerJoin( InnerJoin $inner_join );
+
+  /**
+   * Build the specified Integer object.
+   *
+   * @param Integer $integer the Integer to build.
+   * @return string the built Integer.
+   */
+  public function buildInteger( Integer $integer );
 
   /**
    * Build the specified LeftJoin object.

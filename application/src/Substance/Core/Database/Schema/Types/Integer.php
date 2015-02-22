@@ -22,6 +22,7 @@ use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Schema\Size;
 use Substance\Core\Database\Schema\Type;
 use Substance\Core\Alert\Alerts\NullValueAlert;
+use Substance\Core\Database\Schema\Database;
 
 /**
  * Represents a data type.
@@ -47,10 +48,19 @@ class Integer implements Type {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema\Type::getName()
+   * @see \Substance\Core\Database\SQL\Buildable::build()
    */
-  public function getName() {
-    return 'INTEGER';
+  public function build( Database $database ) {
+    return $database->buildInteger( $this );
+  }
+
+  /**
+   * Returns this integers size.
+   *
+   * @return Size this integers size.
+   */
+  public function getSize() {
+    return $this->size;
   }
 
   /**

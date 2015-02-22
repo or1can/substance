@@ -21,6 +21,7 @@ namespace Substance\Core\Database\Schema;
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
+use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Database\SQL\Buildable;
 use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Columns\AllColumnsFromTable;
@@ -174,7 +175,7 @@ abstract class AbstractDatabase implements Database {
       $separator = ', ';
       $sql .= $this->quoteName( $column->getName() );
       $sql .= ' ';
-      $sql .= $column->getType()->getName();
+      $sql .= $column->getType()->build( $this );
     }
     $sql .= ' )';
     return $sql;
@@ -216,6 +217,14 @@ abstract class AbstractDatabase implements Database {
       $string .= $condition->build( $this );
     }
     return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildInteger()
+   */
+  public function buildInteger( Integer $integer ) {
+    // For the default implementation, we ignore the integer size.
+    return 'INTEGER';
   }
 
   /* (non-PHPdoc)
