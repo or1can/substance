@@ -99,10 +99,7 @@ class Using implements JoinCondition {
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
-    $string = 'USING ( ';
-    $string .= $this->columns->build( $database );
-    $string .= ' )';
-    return $string;
+    return $database->buildUsing( $this );
   }
 
   /* (non-PHPdoc)
@@ -110,6 +107,15 @@ class Using implements JoinCondition {
    */
   public function define( Query $query ) {
     // Nothing to do.
+  }
+
+  /**
+   * Return the using conditions columns.
+   *
+   * @return ComponentList the using conditions columns.
+   */
+  public function getColumns() {
+    return $this->columns;
   }
 
 }

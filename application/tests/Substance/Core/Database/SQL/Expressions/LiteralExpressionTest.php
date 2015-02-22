@@ -36,16 +36,6 @@ class LiteralExpressionTest extends AbstractDatabaseTest {
   }
 
   /**
-   * Test a boolean false literal expression with an alias.
-   */
-  public function testBuildBooleanFalseWithAlias() {
-    $literal = new LiteralExpression( FALSE, 'alias' );
-    $sql = $literal->build( $this->connection );
-
-    $this->assertEquals( 'FALSE AS `alias`', $sql );
-  }
-
-  /**
    * Test a boolean true literal expression.
    */
   public function testBuildBooleanTrueNoAlias() {
@@ -53,16 +43,6 @@ class LiteralExpressionTest extends AbstractDatabaseTest {
     $sql = $literal->build( $this->connection );
 
     $this->assertEquals( 'TRUE', $sql );
-  }
-
-  /**
-   * Test a boolean true literal expression with an alias.
-   */
-  public function testBuildBooleanTrueWithAlias() {
-    $literal = new LiteralExpression( TRUE, 'alias' );
-    $sql = $literal->build( $this->connection );
-
-    $this->assertEquals( 'TRUE AS `alias`', $sql );
   }
 
   /**
@@ -76,16 +56,6 @@ class LiteralExpressionTest extends AbstractDatabaseTest {
   }
 
   /**
-   * Test a float literal expression with an alias.
-   */
-  public function testBuildFloatWithAlias() {
-    $literal = new LiteralExpression( 5.345, 'alias' );
-    $sql = $literal->build( $this->connection );
-
-    $this->assertEquals( '5.345 AS `alias`', $sql );
-  }
-
-  /**
    * Test an integer literal expression.
    */
   public function testBuildIntegerNoAlias() {
@@ -93,16 +63,6 @@ class LiteralExpressionTest extends AbstractDatabaseTest {
     $sql = $literal->build( $this->connection );
 
     $this->assertEquals( '5', $sql );
-  }
-
-  /**
-   * Test an integer literal expression with an alias.
-   */
-  public function testBuildIntegerWithAlias() {
-    $literal = new LiteralExpression( 5, 'alias' );
-    $sql = $literal->build( $this->connection );
-
-    $this->assertEquals( '5 AS `alias`', $sql );
   }
 
   /**
@@ -122,16 +82,6 @@ class LiteralExpressionTest extends AbstractDatabaseTest {
     $sql = $literal->build( $this->connection );
 
     $this->assertEquals( '\'string\'', $sql );
-  }
-
-  /**
-   * Test a string literal expression with an alias.
-   */
-  public function testBuildStringWithAlias() {
-    $literal = new LiteralExpression( 'string', 'alias' );
-    $sql = $literal->build( $this->connection );
-
-    $this->assertEquals( '\'string\' AS `alias`', $sql );
   }
 
 }

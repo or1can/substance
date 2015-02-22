@@ -28,11 +28,6 @@ use Substance\Core\Database\SQL\Query;
 class LiteralExpression extends AbstractExpression {
 
   /**
-   * @var string the column alias.
-   */
-  protected $alias;
-
-  /**
    * @var string the argument placeholder.
    */
   protected $placeholder;
@@ -42,8 +37,7 @@ class LiteralExpression extends AbstractExpression {
    */
   protected $value;
 
-  public function __construct( $value, $alias = NULL ) {
-    $this->alias = $alias;
+  public function __construct( $value ) {
     if ( self::is_supported( $value ) ) {
       $this->value = $value;
     } else {
@@ -64,10 +58,6 @@ class LiteralExpression extends AbstractExpression {
     } elseif ( is_float( $this->value ) ) {
       $string = $this->value;
     }
-    if ( isset( $this->alias ) ) {
-      $string .= ' AS ';
-      $string .= $this->alias;
-    }
     return $string;
   }
 
@@ -75,23 +65,7 @@ class LiteralExpression extends AbstractExpression {
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
-  	$string = '';
-  	if ( isset( $this->placeholder ) ) {
-  	  $string = $this->placeholder;
-  	} elseif ( is_bool( $this->value ) ) {
-      $string = $this->value ? 'TRUE' : 'FALSE';
-    } elseif ( is_string( $this->value ) ) {
-      $string = $database->quoteString( $this->value );
-    } elseif ( is_int( $this->value ) ) {
-      $string = $this->value;
-    } elseif ( is_float( $this->value ) ) {
-      $string = $this->value;
-    }
-    if ( isset( $this->alias ) ) {
-      $string .= ' AS ';
-      $string .= $database->quoteName( $this->alias );
-    }
-    return $string;
+    return $database->buildLiteralExpression( $this );
   }
 
   /* (non-PHPdoc)
@@ -99,6 +73,18 @@ class LiteralExpression extends AbstractExpression {
    */
   public function define( Query $query ) {
     $this->placeholder = $query->defineArgument( $this );
+  }
+
+  /**
+   * Returns the placeholder for this literal expression.
+   *
+   * The placeholder is used for dynamic values in queries, where the database
+   * handles quoting and escaping values to avoid SQL injection issues.
+   *
+   * @return string the placeholder or NULL if there is no placeholder.
+   */
+  public function getPlaceHolder() {
+    return $this->placeholder;
   }
 
   /**

@@ -60,4 +60,13 @@ class On implements JoinCondition {
     // Nothing to do.
   }
 
+  /**
+   * Returns the on condition expression.
+   *
+   * @return Expression the on condition expression.
+   */
+  public function getExpression() {
+    return $this->expression;
+  }
+
 }

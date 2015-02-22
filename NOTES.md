@@ -56,7 +56,7 @@ The database API consists of the following four types of object:
   A Component is a building block of any kind of database query.
 * Composable
   (Analogous to an Presentable in the presentation API)
-  A composable object can represent itself as a Component. This allows non-Core
+  A composable object can represent itself as a Buildable. This allows non-Core
   classes to be included in queries.
 * Buildable
   (Analogous to an Renderable in the presentation API)

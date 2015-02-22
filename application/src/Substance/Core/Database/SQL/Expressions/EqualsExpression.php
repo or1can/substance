@@ -20,18 +20,14 @@ namespace Substance\Core\Database\SQL\Expressions;
 
 use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\SQL\Expression;
+use Substance\Core\Database\SQL\InfixExpression;
 use Substance\Core\Database\SQL\Query;
 
 /**
  * A equals expression, representing an equality test of a left and right
  * expression.
  */
-class EqualsExpression extends AbstractExpression {
-
-  /**
-   * @var string the expression alias.
-   */
-  protected $alias;
+class EqualsExpression extends AbstractExpression implements InfixExpression {
 
   /**
    * @var Expression the left expression.
@@ -43,8 +39,7 @@ class EqualsExpression extends AbstractExpression {
    */
   protected $right;
 
-  public function __construct( Expression $left, Expression $right, $alias = NULL ) {
-    $this->alias = $alias;
+  public function __construct( Expression $left, Expression $right ) {
     $this->left = $left;
     $this->right = $right;
   }
@@ -54,10 +49,6 @@ class EqualsExpression extends AbstractExpression {
     $string .= $this->left;
     $string .= ' = ';
     $string .= $this->right;
-    if ( isset( $this->alias ) ) {
-      $string .= ' AS ';
-      $string .= $this->alias;
-    }
     return $string;
   }
 
@@ -65,15 +56,7 @@ class EqualsExpression extends AbstractExpression {
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
-  	$string = '';
-    $string .= $this->left->build( $database );
-    $string .= ' = ';
-    $string .= $this->right->build( $database );
-  	if ( isset( $this->alias ) ) {
-  	  $string .= ' AS ';
-      $string .= $database->quoteName( $this->alias );
-  	}
-  	return $string;
+    return $database->buildInfixExpression( $this );
   }
 
   /* (non-PHPdoc)
@@ -82,6 +65,34 @@ class EqualsExpression extends AbstractExpression {
   public function define( Query $query ) {
     $this->left->define( $query );
     $this->right->define( $query );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\InfixExpression::getLeftExpression()
+   */
+  public function getLeftExpression() {
+    return $this->left;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\InfixExpression::getRightExpression()
+   */
+  public function getRightExpression() {
+    return $this->right;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\InfixExpression::getSymbol()
+   */
+  public function getSymbol() {
+    return '=';
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\InfixExpression::toArray()
+   */
+  public function toArray() {
+    return array( $this->left, $this->right );
   }
 
 }

@@ -24,9 +24,9 @@ namespace Substance\Core\Database\SQL;
 interface Composable {
 
   /**
-   * Returns a component for building a query.
+   * Returns a buildable object for this object.
    *
-   * @return Component the buildable Component for this object.
+   * @return Buildable the buildable for this object.
    */
   public function compose();
 

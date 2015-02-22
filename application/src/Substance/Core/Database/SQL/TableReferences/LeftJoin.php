@@ -76,15 +76,7 @@ class LeftJoin extends AbstractTableReference {
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
-    $string = '';
-    $string .= $this->left->build( $database );
-    $string .= ' LEFT JOIN ';
-    $string .= $this->right->build( $database );
-    if ( isset( $this->condition ) ) {
-      $string .= ' ';
-      $string .= $this->condition->build( $database );
-    }
-    return $string;
+    return $database->buildLeftJoin( $this );
   }
 
   /* (non-PHPdoc)
@@ -97,9 +89,18 @@ class LeftJoin extends AbstractTableReference {
   }
 
   /**
+   * Returns the join condition.
+   *
+   * @return JoinCondition the join condition.
+   */
+  public function getJoinCondition() {
+    return $this->condition;
+  }
+
+  /**
    * Returns the left hand side table reference.
    *
-   * @return \Substance\Core\Database\SQL\TableReference
+   * @return TableReference the left hand side table reference.
    */
   public function getLeftTableReference() {
     return $this->left;
@@ -108,7 +109,7 @@ class LeftJoin extends AbstractTableReference {
   /**
    * Returns the right hand side table reference.
    *
-   * @return \Substance\Core\Database\SQL\TableReference
+   * @return TableReference the right hand side table reference.
    */
   public function getRightTableReference() {
     return $this->right;

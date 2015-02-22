@@ -42,7 +42,7 @@ class NameExpression extends AbstractExpression {
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
-    return $database->quoteName( $this->name );
+    return $database->buildNameExpression( $this );
   }
 
   /**

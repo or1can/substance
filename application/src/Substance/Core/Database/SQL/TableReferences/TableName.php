@@ -83,13 +83,7 @@ class TableName extends AbstractTableReference {
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
-    $string = '';
-    $string .= $database->quoteTable( $this->table );
-    if ( $this->alias !== $this->table ) {
-      $string .= ' AS ';
-      $string .= $database->quoteName( $this->alias );
-    }
-    return $string;
+    return $database->buildTableName( $this );
   }
 
   /**

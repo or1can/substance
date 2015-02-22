@@ -21,12 +21,26 @@ namespace Substance\Core\Database\Schema;
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
-use Substance\Core\Database\SQL\DataDefinition;
-use Substance\Core\Database\SQL\Query;
-use Substance\Core\Database\SQL\Component;
+use Substance\Core\Database\SQL\Buildable;
 use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Columns\AllColumnsFromTable;
 use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
+use Substance\Core\Database\SQL\DataDefinition;
+use Substance\Core\Database\SQL\Query;
+use Substance\Core\Database\SQL\Components\ComponentList;
+use Substance\Core\Database\SQL\Components\OrderBy;
+use Substance\Core\Database\SQL\Expressions\NameExpression;
+use Substance\Core\Database\SQL\Expressions\LiteralExpression;
+use Substance\Core\Database\SQL\PrefixExpression;
+use Substance\Core\Database\SQL\PostfixExpression;
+use Substance\Core\Database\SQL\InfixExpression;
+use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
+use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
+use Substance\Core\Database\SQL\TableReferences\LeftJoin;
+use Substance\Core\Database\SQL\TableReferences\InnerJoin;
+use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
+use Substance\Core\Database\SQL\TableReferences\TableName;
+use Substance\Core\Database\SQL\Queries\Select;
 
 /**
  * Represents a database schema.
@@ -39,31 +53,31 @@ interface Database {
   public function applyDataDefinitions();
 
   /**
-   * Builds the specified component.
+   * Builds the specified buildable.
    *
-   * This method allows the Database control over how each Component is built.
-   * The core database implementations ask each Component how to build itself,
-   * and each Component calls back to a Database method for that specific type
-   * of Component.
+   * This method allows the Database control over how each Buildable is built.
+   * The core database implementations ask each Buildable how to build itself,
+   * and each Buildable calls back to a Database method for that specific type
+   * of Buildable.
    *
-   * A Database could take control over this process by examining the Component
+   * A Database could take control over this process by examining the Buildable
    * and choosing different Database methods, e.g.
    *
-   * switch ( get_class( $component ) ) {
+   * switch ( get_class( $buildable ) ) {
    *   case 'Substance\Core\Database\SQL\Expressions\NameExpression':
    *     // Build a NameExpression as a LiteralExpression.
-   *     return $this->renderLiteral( $component );
+   *     return $this->renderLiteral( $buildable );
    *     break;
    *   default:
-   *     // Build other Components using their default behaviour.
-   *     return $component->render( $this );
+   *     // Build other Buildables using their default behaviour.
+   *     return $buildable->render( $this );
    *     break;
    * }
    *
-   * @param Component $component the Component to build.
-   * @return string the built component.
+   * @param Buildable $buildable the Buildable to build.
+   * @return string the built buildable.
    */
-  public function build( Component $component );
+  public function build( Buildable $buildable );
 
   /**
    * Build the specified AllColumns object.
@@ -71,7 +85,7 @@ interface Database {
    * @param AllColumns $all_columns the AllColumns to build.
    * @return string the built AllColumns.
    */
-  public function buildAllColumnsColumn( AllColumns $all_columns );
+  public function buildAllColumns( AllColumns $all_columns );
 
   /**
    * Build the specified AllColumnsFromTable object.
@@ -80,17 +94,132 @@ interface Database {
    * to build.
    * @return string the built AllColumnsFromTable.
    */
-  public function buildAllColumnsFromTableColumn( AllColumnsFromTable $all_columns_from_table );
+  public function buildAllColumnsFromTable( AllColumnsFromTable $all_columns_from_table );
 
-    /**
+  /**
+   * Build the specified ColumnNameExpression object.
+   *
+   * @param ColumnNameExpression $column_name_expression the
+   * ColumnNameExpression to build.
+   * @return string the built ColumnNameExpression.
+   */
+  public function buildColumnNameExpression( ColumnNameExpression $column_name_expression );
+
+  /**
    * Build the specified ColumnWithAlias object.
    *
    * @param ColumnWithAlias $column_with_alias the ColumnWithAlias to build.
    * @return string the built ColumnWithAlias.
    */
-  public function buildColumnWithAliasColumn( ColumnWithAlias $column_with_alias );
+  public function buildColumnWithAlias( ColumnWithAlias $column_with_alias );
 
-/**
+  /**
+   * Build the specified ComponentList object.
+   *
+   * @param ComponentList $comonent_list the ComponentList to build.
+   * @return string the built ComponentList.
+   */
+  public function buildComponentList( ComponentList $comonent_list );
+
+  /**
+   * Build the specified InfixExpression object.
+   *
+   * @param InfixExpression $infix_expression the InfixExpression to build.
+   * @return string the built InfixExpression.
+   */
+  public function buildInfixExpression( InfixExpression $infix_expression );
+
+  /**
+   * Build the specified InnerJoin object.
+   *
+   * @param InnerJoin $inner_join the InnerJoin to build.
+   * @return string the built InnerJoin.
+   */
+  public function buildInnerJoin( InnerJoin $inner_join );
+
+  /**
+   * Build the specified LeftJoin object.
+   *
+   * @param LeftJoin $left_join the LeftJoin to build.
+   * @return string the built LeftJoin.
+   */
+  public function buildLeftJoin( LeftJoin $left_join );
+
+  /**
+   * Build the specified LiteralExpression object.
+   *
+   * @param LiteralExpression $literal_expression the LiteralExpression to
+   * build.
+   * @return string the built LiteralExpression.
+   */
+  public function buildLiteralExpression( LiteralExpression $literal_expression );
+
+  /**
+   * Build the specified NameExpression object.
+   *
+   * @param NameExpression $name_expression the NameExpression to build.
+   * @return string the built NameExpression.
+   */
+  public function buildNameExpression( NameExpression $name_expression );
+
+  /**
+   * Build the specified On object.
+   *
+   * @param On $on the On to build.
+   * @return string the built On.
+   */
+  public function buildOn( On $on );
+
+  /**
+   * Build the specified OrderBy object.
+   *
+   * @param OrderBy $order_by the OrderBy to build.
+   * @return string the built OrderBy.
+   */
+  public function buildOrderBy( OrderBy $order_by );
+
+  /**
+   * Build the specified PostfixExpression object.
+   *
+   * @param PostfixExpression $postfix_expression the PostfixExpression to
+   * build.
+   * @return string the built PostfixExpression.
+   */
+  public function buildPostfixExpression( PostfixExpression $postfix_expression );
+
+  /**
+   * Build the specified PrefixExpression object.
+   *
+   * @param PrefixExpression $prefix_expression the PrefixExpression to build.
+   * @return string the built PrefixExpression.
+   */
+  public function buildPrefixExpression( PrefixExpression $prefix_expression );
+
+  /**
+   * Build the specified Select object.
+   *
+   * @param Select $select the Select to build.
+   * @return string the built Select.
+   */
+  public function buildSelect( Select $select );
+
+  /**
+   * Build the specified TableName object.
+   *
+   * @param TableName $table_name the TableName to build.
+   * @return string the built TableName.
+   */
+  public function buildTableName( TableName $table_name );
+
+  /**
+   * Build the specified Using object.
+   *
+   * @param Using $using the Using to build.
+   * @return string the built Using.
+   */
+  public function buildUsing( Using $using );
+
+  /**
    * Creates a table with the specified name in the database specified in this
    * Schema's connection.
    *

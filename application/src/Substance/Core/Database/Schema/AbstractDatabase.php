@@ -21,15 +21,29 @@ namespace Substance\Core\Database\Schema;
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
+use Substance\Core\Database\SQL\Buildable;
+use Substance\Core\Database\SQL\Columns\AllColumns;
+use Substance\Core\Database\SQL\Columns\AllColumnsFromTable;
+use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
 use Substance\Core\Database\SQL\DataDefinition;
 use Substance\Core\Database\SQL\DataDefinitionQueue;
 use Substance\Core\Database\SQL\DataDefinitions\CreateTable;
 use Substance\Core\Database\SQL\DataDefinitions\DropTable;
 use Substance\Core\Database\SQL\Query;
-use Substance\Core\Database\SQL\Component;
-use Substance\Core\Database\SQL\Columns\AllColumns;
-use Substance\Core\Database\SQL\Columns\AllColumnsFromTable;
-use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
+use Substance\Core\Database\SQL\Components\ComponentList;
+use Substance\Core\Database\SQL\Components\OrderBy;
+use Substance\Core\Database\SQL\Expressions\NameExpression;
+use Substance\Core\Database\SQL\Expressions\LiteralExpression;
+use Substance\Core\Database\SQL\PrefixExpression;
+use Substance\Core\Database\SQL\PostfixExpression;
+use Substance\Core\Database\SQL\InfixExpression;
+use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
+use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
+use Substance\Core\Database\SQL\TableReferences\LeftJoin;
+use Substance\Core\Database\SQL\TableReferences\InnerJoin;
+use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
+use Substance\Core\Database\SQL\TableReferences\TableName;
+use Substance\Core\Database\SQL\Queries\Select;
 
 /**
  * An abstract database schema implementation.
@@ -83,21 +97,21 @@ abstract class AbstractDatabase implements Database {
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\Database::build()
    */
-  public function build( Component $component ) {
-    return $component->build( $this );
+  public function build( Buildable $buildable ) {
+    return $buildable->build( $this );
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\Database::buildAllColumnsColumn()
    */
-  public function buildAllColumnsColumn( AllColumns $all_columns ) {
+  public function buildAllColumns( AllColumns $all_columns ) {
     return '*';
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\Database::buildAllColumnsFromTableColumn()
    */
-  public function buildAllColumnsFromTableColumn( AllColumnsFromTable $all_columns_from_table ) {
+  public function buildAllColumnsFromTable( AllColumnsFromTable $all_columns_from_table ) {
     // FIXME - This needs to support aliases and tables.
     $string = $this->quoteTable( $all_columns_from_table->getTable() );
     $string .= '.*';
@@ -105,12 +119,224 @@ abstract class AbstractDatabase implements Database {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildColumnNameExpression()
+   */
+  public function buildColumnNameExpression( ColumnNameExpression $column_name_expression ) {
+    $string = '';
+    $table_name = $column_name_expression->getTableName();
+    if ( isset( $table_name ) ) {
+      $string .= $table_name->buildReference( $this );
+      $string .= '.';
+    }
+    $string .= $this->buildNameExpression( $column_name_expression );
+    return $string;
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\Database::buildColumnWithAliasColumn()
    */
-  public function buildColumnWithAliasColumn( ColumnWithAlias $column_with_alias ) {
+  public function buildColumnWithAlias( ColumnWithAlias $column_with_alias ) {
     $string = $this->build( $column_with_alias->getExpression() );
     $string .= ' AS ';
     $string .= $this->quoteName( $column_with_alias->getAlias() );
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildComponentList()
+   */
+  public function buildComponentList( ComponentList $comonent_list ) {
+    $string = '';
+    $glue = '';
+    foreach ( $comonent_list->getComponents() as $component ) {
+      $string .= $glue;
+      $string .= $component->build( $this );
+      $glue = ', ';
+    }
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildInfixExpression()
+   */
+  public function buildInfixExpression( InfixExpression $infix_expression ) {
+    $string = '';
+    $string .= $infix_expression->getLeftExpression()->build( $this );
+    $string .= ' ';
+    $string .= $infix_expression->getSymbol();
+    $string .= ' ';
+    $string .= $infix_expression->getRightExpression()->build( $this );
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildInnerJoin()
+   */
+  public function buildInnerJoin( InnerJoin $inner_join ) {
+    $string = '';
+    $string .= $inner_join->getLeftTableReference()->build( $this );
+    $string .= ' INNER JOIN ';
+    $string .= $inner_join->getRightTableReference()->build( $this );
+    $condition = $inner_join->getJoinCondition();
+    if ( isset( $condition ) ) {
+      $string .= ' ';
+      $string .= $condition->build( $this );
+    }
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildLeftJoin()
+   */
+  public function buildLeftJoin( LeftJoin $left_join ) {
+    $string = '';
+    $string .= $left_join->getLeftTableReference()->build( $this );
+    $string .= ' LEFT JOIN ';
+    $string .= $left_join->getRightTableReference()->build( $this );
+    $condition = $left_join->getJoinCondition();
+    if ( isset( $condition ) ) {
+      $string .= ' ';
+      $string .= $condition->build( $this );
+    }
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildLiteralExpression()
+   */
+  public function buildLiteralExpression( LiteralExpression $literal_expression ) {
+    $string = '';
+    $placeholder = $literal_expression->getPlaceHolder();
+    if ( isset( $placeholder ) ) {
+      $string = $placeholder;
+    } else {
+      $value = $literal_expression->getValue();
+      if ( is_bool( $value ) ) {
+        $string = $value ? 'TRUE' : 'FALSE';
+      } elseif ( is_string( $value ) ) {
+        $string = $this->quoteString( $value );
+      } elseif ( is_int( $value ) ) {
+        $string = $value;
+      } elseif ( is_float( $value ) ) {
+        $string = $value;
+      }
+    }
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildNameExpression()
+   */
+  public function buildNameExpression( NameExpression $name_expression ) {
+    return $this->quoteName( $name_expression->getName() );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildOn()
+   */
+  public function buildOn( On $on ) {
+    $string = 'ON ';
+    // FIXME - This should probably be wrapped in parenthesis.
+    $string .= $on->getExpression()->build( $this );
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildOrderBy()
+   */
+  public function buildOrderBy( OrderBy $order_by ) {
+    $string = '';
+    $string .= $order_by->getLeftExpression()->build( $this );
+    $string .= ' ';
+    $string .= $order_by->getSymbol();
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildPostfixExpression()
+   */
+  public function buildPostfixExpression( PostfixExpression $postfix_expression ) {
+    $string = '';
+    $string .= $postfix_expression->getLeftExpression()->build( $this );
+    $string .= ' ';
+    $string .= $postfix_expression->getSymbol();
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildPrefixExpression()
+   */
+  public function buildPrefixExpression( PrefixExpression $prefix_expression ) {
+    $string = $prefix_expression->getSymbol();
+    $string .= ' ';
+    $string .= $prefix_expression->getRightExpression()->build( $this );
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildSelect()
+   */
+  public function buildSelect( Select $select ) {
+    $sql = "SELECT ";
+    if ( $select->isDistinct() ) {
+      $sql .= 'DISTINCT ';
+    }
+    $sql .= $select->getSelectList()->build( $this );
+    $sql .= ' FROM ';
+    $sql .= $select->getTable()->build( $this );
+    $where = $select->getWhere();
+    if ( !is_null( $where ) ) {
+      $sql .= ' WHERE ';
+      $sql .= $where->build( $this );
+    }
+    $group_by = $select->getGroupBy();
+    if ( !is_null( $group_by ) ) {
+      $sql .= ' GROUP BY ';
+      $sql .= $group_by->build( $this );
+      $having = $select->getHaving();
+      if ( !is_null( $having ) ) {
+        $sql .= ' HAVING ';
+        $sql .= $having->build( $this );
+      }
+    }
+    $order_by = $select->getOrderBy();
+    if ( !is_null( $order_by ) ) {
+      $sql .= ' ORDER BY ';
+      $sql .= $order_by->build( $this );
+    }
+    $limit = $select->getLimit();
+    if ( isset( $limit ) ) {
+      $sql .= ' LIMIT ';
+      $sql .= $limit;
+      $offset = $select->getOffset();
+      if ( isset( $offset ) ) {
+        $sql .= ' OFFSET ';
+        $sql .= $offset;
+      }
+    }
+    return $sql;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildTableName($table_name)
+   */
+  public function buildTableName( TableName $table_name ) {
+    $string = '';
+    $string .= $this->quoteTable( $table_name->getName() );
+    if ( $table_name->getAlias() !== $table_name->getName() ) {
+      $string .= ' AS ';
+      $string .= $this->quoteName( $table_name->getAlias() );
+    }
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildUsing()
+   */
+  public function buildUsing( Using $using ) {
+    $string = 'USING ( ';
+    $string .= $using->getColumns()->build( $this );
+    $string .= ' )';
     return $string;
   }
 

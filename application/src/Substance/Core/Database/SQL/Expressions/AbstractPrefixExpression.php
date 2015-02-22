@@ -48,10 +48,7 @@ abstract class AbstractPrefixExpression extends AbstractExpression implements Pr
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
-    $string = $this->getSymbol();
-    $string .= ' ';
-    $string .= $this->right->build( $database );
-    return $string;
+    return $database->buildPrefixExpression( $this );
   }
 
   /* (non-PHPdoc)

@@ -30,12 +30,6 @@ use Substance\Core\Database\SQL\Query;
 abstract class AbstractInfixExpression extends AbstractExpression implements InfixExpression {
 
   /**
-   * @var boolean TRUE if a space should appear before the symbol and FALSE
-   * otherwise.
-   */
-  protected $has_space_before = TRUE;
-
-  /**
    * @var Expression the left expression.
    */
   protected $left;
@@ -53,9 +47,6 @@ abstract class AbstractInfixExpression extends AbstractExpression implements Inf
   public function __toString() {
     $string = '';
     $string .= $this->left;
-    if ( $this->has_space_before ) {
-      $string .= ' ';
-    }
     $string .= $this->getSymbol();
     $string .= ' ';
     $string .= $this->right;
@@ -101,15 +92,7 @@ abstract class AbstractInfixExpression extends AbstractExpression implements Inf
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
-    $string = '';
-    $string .= $this->left->build( $database );
-    if ( $this->has_space_before ) {
-      $string .= ' ';
-    }
-    $string .= $this->getSymbol();
-    $string .= ' ';
-    $string .= $this->right->build( $database );
-    return $string;
+    return $database->buildInfixExpression( $this );
   }
 
   /* (non-PHPdoc)

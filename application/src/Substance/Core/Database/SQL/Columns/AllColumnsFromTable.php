@@ -54,10 +54,10 @@ class AllColumnsFromTable implements Column {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Component::build()
+   * @see \Substance\Core\Database\SQL\Buildable::build()
    */
   public function build( Database $database ) {
-    return $database->buildAllColumnsFromTableColumn( $this );
+    return $database->buildAllColumnsFromTable( $this );
   }
 
   /**

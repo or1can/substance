@@ -62,10 +62,10 @@ class ColumnWithAlias implements Column {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Component::build()
+   * @see \Substance\Core\Database\SQL\Buildable::build()
    */
   public function build( Database $database ) {
-    return $database->buildColumnWithAliasColumn( $this );
+    return $database->buildColumnWithAlias( $this );
   }
 
   /**

@@ -160,38 +160,7 @@ class Select extends Query {
    * @see \Substance\Core\Database\SQL\Query::build()
    */
   public function build( Database $database ) {
-    $sql = "SELECT ";
-    if ( $this->distinct ) {
-      $sql .= 'DISTINCT ';
-    }
-    $sql .= $this->select_list->build( $database );
-    $sql .= ' FROM ';
-    $sql .= $this->table->build( $database );
-    if ( !is_null( $this->where ) ) {
-      $sql .= ' WHERE ';
-      $sql .= $this->where->build( $database );
-    }
-    if ( !is_null( $this->group_by ) ) {
-      $sql .= ' GROUP BY ';
-      $sql .= $this->group_by->build( $database );
-      if ( !is_null( $this->having ) ) {
-        $sql .= ' HAVING ';
-        $sql .= $this->having->build( $database );
-      }
-    }
-    if ( !is_null( $this->order_by ) ) {
-      $sql .= ' ORDER BY ';
-      $sql .= $this->order_by->build( $database );
-    }
-    if ( isset( $this->limit ) ) {
-      $sql .= ' LIMIT ';
-      $sql .= $this->limit;
-      if ( isset( $this->offset ) ) {
-        $sql .= ' OFFSET ';
-        $sql .= $this->offset;
-      }
-    }
-    return $sql;
+    return $database->buildSelect( $this );
   }
 
   /**
@@ -225,6 +194,83 @@ class Select extends Query {
     $database = Database::getConnection( $type, $name );
     $statement = $database->execute( $this );
     return $statement;
+  }
+
+  /**
+   * Returns this select queries group by column list.
+   *
+   * @return ComponentList this select queries group by column list or NULL if
+   * there is not one.
+   */
+  public function getGroupBy() {
+    return $this->group_by;
+  }
+
+  /**
+   * Returns this select queries having expression.
+   *
+   * @return Expression this select queries where having or NULL if there is
+   * not one.
+   */
+  public function getHaving() {
+    return $this->having;
+  }
+
+  /**
+   * Returns this select queries limit.
+   *
+   * @return Expression this select queries limit or NULL if there is not one.
+   */
+  public function getLimit() {
+    return $this->limit;
+  }
+
+  /**
+   * Returns this select queries offset.
+   *
+   * @return Expression this select queries offset or NULL if there is not one.
+   */
+  public function getOffset() {
+    return $this->offset;
+  }
+
+  /**
+   * Returns this select queries order by column list.
+   *
+   * @return ComponentList this select queries order by column list or NULL if
+   * there is not one.
+   */
+  public function getOrderBy() {
+    return $this->order_by;
+  }
+
+  /**
+   * Returns this select queries select list.
+   *
+   * @return ComponentList this select queries select list.
+   */
+  public function getSelectList() {
+    return $this->select_list;
+  }
+
+  /**
+   * Returns the table reference this select query is selecting from.
+   *
+   * @return TableReference the table reference this select query is selecting
+   * from.
+   */
+  public function getTable() {
+    return $this->table;
+  }
+
+  /**
+   * Returns this select queries where expression.
+   *
+   * @return Expression this select queries where expression or NULL if there is
+   * not one.
+   */
+  public function getWhere() {
+    return $this->where;
   }
 
   /**
@@ -357,6 +403,15 @@ class Select extends Query {
     array_shift( $names );
     $this->innerJoin( $table, Using::usingArray( $names ) );
     return $this;
+  }
+
+  /**
+   * Checks if this is a distinct select or not.
+   *
+   * @return TRUE if this is a distinct select and FALSE otherwise.
+   */
+  public function isDistinct() {
+    return $this->distinct;
   }
 
   /**

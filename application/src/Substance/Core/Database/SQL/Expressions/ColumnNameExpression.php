@@ -57,13 +57,17 @@ class ColumnNameExpression extends NameExpression {
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
-  	$string = '';
-  	if ( isset( $this->table_name ) ) {
-      $string .= $this->table_name->buildReference( $database );
-  	  $string .= '.';
-  	}
-    $string .= parent::build( $database );
-  	return $string;
+    return $database->buildColumnNameExpression( $this );
+  }
+
+  /**
+   * Returns the table this column should be selected from, if specified.
+   *
+   * @return TableName the table this column should be selection from, or NULL
+   * if not specified.
+   */
+  public function getTableName() {
+    return $this->table_name;
   }
 
 }

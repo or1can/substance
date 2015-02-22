@@ -38,16 +38,4 @@ class EqualsExpressionTest extends AbstractDatabaseTest {
     $this->assertEquals( '`column1` = `column2`', $sql );
   }
 
-  /**
-   * Test an equals expression with an alias.
-   */
-  public function testBuildWithAlias() {
-    $left = new ColumnNameExpression('column1');
-    $right = new ColumnNameExpression('column2');
-    $equals = new EqualsExpression( $left, $right, 'alias' );
-    $sql = $equals->build( $this->connection );
-
-    $this->assertEquals( '`column1` = `column2` AS `alias`', $sql );
-  }
-
 }

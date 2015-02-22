@@ -49,11 +49,7 @@ abstract class AbstractPostfixExpression extends AbstractExpression implements P
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
-    $string = '';
-    $string .= $this->left->build( $database );
-    $string .= ' ';
-    $string .= $this->getSymbol();
-    return $string;
+    return $database->buildPostfixExpression( $this );
   }
 
   /* (non-PHPdoc)

@@ -59,14 +59,16 @@ class ComponentList implements Component {
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
-    $string = '';
-    $glue = '';
-    foreach ( $this->components as $component ) {
-      $string .= $glue;
-      $string .= $component->build( $database );
-      $glue = ', ';
-    }
-    return $string;
+    return $database->buildComponentList( $this );
+  }
+
+  /**
+   * Returns this component lists components.
+   *
+   * @return Component[] an array of this compenent lists components.
+   */
+  public function getComponents() {
+    return $this->components;
   }
 
   /* (non-PHPdoc)

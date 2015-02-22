@@ -32,10 +32,10 @@ class AllColumns implements Column {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Component::build()
+   * @see \Substance\Core\Database\SQL\Buildable::build()
    */
   public function build( Database $database ) {
-    return $database->buildAllColumnsColumn( $this );
+    return $database->buildAllColumns( $this );
   }
 
   /* (non-PHPdoc)

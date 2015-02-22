@@ -64,11 +64,7 @@ class OrderBy implements Component {
    * @see \Substance\Core\Database\SQL\Component::build()
    */
   public function build( Database $database ) {
-    $string = '';
-    $string .= $this->left->build( $database );
-    $string .= ' ';
-    $string .= $this->getSymbol();
-    return $string;
+    return $database->buildOrderBy( $this );
   }
 
   /* (non-PHPdoc)
