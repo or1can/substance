@@ -32,12 +32,12 @@ class CreateTableTest extends AbstractDatabaseTest {
   public function testBuild() {
     $table = new BasicTable( $this->connection, 'table' );
     $definition = new CreateTable( $this->connection, $table );
-    $sql = $definition->build();
+    $sql = $definition->build( $this->connection );
     $this->assertEquals( 'CREATE TABLE `table` ( )', $sql );
 
     $table = new BasicTable( $this->connection, 'table.dot' );
     $definition = new CreateTable( $this->connection, $table );
-    $sql = $definition->build();
+    $sql = $definition->build( $this->connection );
     $this->assertEquals( 'CREATE TABLE `table.dot` ( )', $sql );
   }
 

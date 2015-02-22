@@ -143,6 +143,39 @@ abstract class AbstractDatabase implements Database {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildCreateTable()
+   */
+  public function buildCreateTable( CreateTable $create_table ) {
+    $sql = 'CREATE';
+    if ( $create_table->isTemporary() ) {
+      $sql .= ' TEMPORARY';
+    }
+    $sql .= ' TABLE ';
+    $table = $create_table->getTable();
+    $sql .= $this->quoteName( $table->getName() );
+    $sql .= ' (';
+    $separator = '';
+    foreach ( $table->listColumns() as $column ) {
+      $sql .= $separator;
+      $separator = ', ';
+      $sql .= $this->quoteName( $column->getName() );
+      $sql .= ' ';
+      $sql .= $column->getType()->getName();
+    }
+    $sql .= ' )';
+    return $sql;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildDropTable()
+   */
+  public function buildDropTable( DropTable $drop_table ) {
+    $sql = 'DROP TABLE ';
+    $sql .= $this->quoteName( $drop_table->getTableName() );
+    return $sql;
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\Database::buildComponentList()
    */
   public function buildComponentList( ComponentList $comonent_list ) {

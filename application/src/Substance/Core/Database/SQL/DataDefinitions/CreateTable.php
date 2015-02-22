@@ -55,26 +55,10 @@ class CreateTable extends DataDefinition {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Definition::build()
+   * @see \Substance\Core\Database\SQL\Buildable::build()
    */
-  public function build() {
-    $sql = 'CREATE';
-    if ( $this->temporary ) {
-      $sql .= ' TEMPORARY';
-    }
-    $sql .= ' TABLE ';
-    $sql .= $this->database->quoteName( $this->table->getName() );
-    $sql .= ' (';
-    $separator = '';
-    foreach ( $this->table->listColumns() as $column ) {
-      $sql .= $separator;
-      $separator = ', ';
-      $sql .= $this->database->quoteName( $column->getName() );
-      $sql .= ' ';
-      $sql .= $column->getType()->getName();
-    }
-    $sql .= ' )';
-    return $sql;
+  public function build( Database $database ) {
+    return $database->buildCreateTable( $this );
   }
 
   /* (non-PHPdoc)
@@ -85,6 +69,24 @@ class CreateTable extends DataDefinition {
       throw IllegalStateAlert::illegalState( 'Cannot create a table without any columns' )
         ->culprit( 'table', $this->table->getName() );
     }
+  }
+
+  /**
+   * Returns the table to create.
+   *
+   * @return Table the table to create.
+   */
+  public function getTable() {
+    return $this->table;
+  }
+
+  /**
+   * Checks if this is a temporary table.
+   *
+   * @return boolean TRUE if this is a temporary table and FALSE otherwise.
+   */
+  public function isTemporary() {
+    return $this->temporary;
   }
 
 }

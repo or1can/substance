@@ -25,7 +25,7 @@ use Substance\Core\Database\Schema\Database;
 /**
  * Represents a database definition.
  */
-abstract class DataDefinition {
+abstract class DataDefinition implements Buildable {
 
   /**
    * @var Database the database this operation affects.
@@ -48,7 +48,7 @@ abstract class DataDefinition {
    */
   public function apply() {
     $this->check();
-    $sql = $this->build();
+    $sql = $this->build( $this->database );
     try {
       $this->database->getConnection()->execute( $sql );
     } catch ( \PDOException $pdoe ) {
@@ -57,13 +57,6 @@ abstract class DataDefinition {
         ->culprit( 'PDO message', $pdoe->getMessage() );
     }
   }
-
-  /**
-   * Builds this data definition for the database we are operating on.
-   *
-   * @return string the data definition SQL
-   */
-  abstract public function build();
 
   /**
    * Checks the data definition and throws an exception if it should not be

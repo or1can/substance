@@ -44,12 +44,10 @@ class DropTable extends DataDefinition {
   }
 
   /* (non-PHPdoc)
-   * @see \Substance\Core\Database\SQL\Definition::build()
+   * @see \Substance\Core\Database\SQL\Buildable::build()
    */
-  public function build() {
-    $sql = 'DROP TABLE ';
-    $sql .= $this->database->quoteName( $this->name );
-    return $sql;
+  public function build( Database $database ) {
+    return $database->buildDropTable( $this );
   }
 
   /* (non-PHPdoc)
@@ -57,6 +55,15 @@ class DropTable extends DataDefinition {
    */
   public function check() {
     // OK
+  }
+
+  /**
+   * Returns the name of the table to drop.
+   *
+   * @return string the name of the table to drop.
+   */
+  public function getTableName() {
+    return $this->name;
   }
 
 }

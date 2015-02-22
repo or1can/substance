@@ -41,6 +41,8 @@ use Substance\Core\Database\SQL\TableReferences\InnerJoin;
 use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
 use Substance\Core\Database\SQL\TableReferences\TableName;
 use Substance\Core\Database\SQL\Queries\Select;
+use Substance\Core\Database\SQL\DataDefinitions\DropTable;
+use Substance\Core\Database\SQL\DataDefinitions\CreateTable;
 
 /**
  * Represents a database schema.
@@ -120,6 +122,22 @@ interface Database {
    * @return string the built ComponentList.
    */
   public function buildComponentList( ComponentList $comonent_list );
+
+  /**
+   * Build the specified CreateTable object.
+   *
+   * @param CreateTable $create_table the CreateTable to build.
+   * @return string the built CreateTable.
+   */
+  public function buildCreateTable( CreateTable $create_table );
+
+  /**
+   * Build the specified DropTable object.
+   *
+   * @param DropTable $drop_table the DropTable to build.
+   * @return string the built DropTable.
+   */
+  public function buildDropTable( DropTable $drop_table );
 
   /**
    * Build the specified InfixExpression object.
