@@ -25,25 +25,25 @@ use Substance\Core\Database\SQL\Buildable;
 use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Columns\AllColumnsFromTable;
 use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
+use Substance\Core\Database\SQL\Components\ComponentList;
+use Substance\Core\Database\SQL\Components\OrderBy;
 use Substance\Core\Database\SQL\DataDefinition;
 use Substance\Core\Database\SQL\DataDefinitionQueue;
 use Substance\Core\Database\SQL\DataDefinitions\CreateTable;
 use Substance\Core\Database\SQL\DataDefinitions\DropTable;
-use Substance\Core\Database\SQL\Query;
-use Substance\Core\Database\SQL\Components\ComponentList;
-use Substance\Core\Database\SQL\Components\OrderBy;
-use Substance\Core\Database\SQL\Expressions\NameExpression;
-use Substance\Core\Database\SQL\Expressions\LiteralExpression;
-use Substance\Core\Database\SQL\PrefixExpression;
-use Substance\Core\Database\SQL\PostfixExpression;
-use Substance\Core\Database\SQL\InfixExpression;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
-use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
-use Substance\Core\Database\SQL\TableReferences\LeftJoin;
-use Substance\Core\Database\SQL\TableReferences\InnerJoin;
-use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
-use Substance\Core\Database\SQL\TableReferences\TableName;
+use Substance\Core\Database\SQL\Expressions\LiteralExpression;
+use Substance\Core\Database\SQL\Expressions\NameExpression;
+use Substance\Core\Database\SQL\InfixExpression;
+use Substance\Core\Database\SQL\PostfixExpression;
+use Substance\Core\Database\SQL\PrefixExpression;
 use Substance\Core\Database\SQL\Queries\Select;
+use Substance\Core\Database\SQL\Query;
+use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
+use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
+use Substance\Core\Database\SQL\TableReferences\InnerJoin;
+use Substance\Core\Database\SQL\TableReferences\LeftJoin;
+use Substance\Core\Database\SQL\TableReferences\TableName;
 
 /**
  * An abstract database schema implementation.
@@ -143,6 +143,20 @@ abstract class AbstractDatabase implements Database {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildComponentList()
+   */
+  public function buildComponentList( ComponentList $comonent_list ) {
+    $string = '';
+    $glue = '';
+    foreach ( $comonent_list->getComponents() as $component ) {
+      $string .= $glue;
+      $string .= $component->build( $this );
+      $glue = ', ';
+    }
+    return $string;
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\Database::buildCreateTable()
    */
   public function buildCreateTable( CreateTable $create_table ) {
@@ -173,20 +187,6 @@ abstract class AbstractDatabase implements Database {
     $sql = 'DROP TABLE ';
     $sql .= $this->quoteName( $drop_table->getTableName() );
     return $sql;
-  }
-
-  /* (non-PHPdoc)
-   * @see \Substance\Core\Database\Schema\Database::buildComponentList()
-   */
-  public function buildComponentList( ComponentList $comonent_list ) {
-    $string = '';
-    $glue = '';
-    foreach ( $comonent_list->getComponents() as $component ) {
-      $string .= $glue;
-      $string .= $component->build( $this );
-      $glue = ', ';
-    }
-    return $string;
   }
 
   /* (non-PHPdoc)
