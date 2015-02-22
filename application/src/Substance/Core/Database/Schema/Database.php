@@ -100,6 +100,14 @@ interface Database {
   public function buildAllColumnsFromTable( AllColumnsFromTable $all_columns_from_table );
 
   /**
+   * Build the specified Column object.
+   *
+   * @param Column $column_name_expression the Column to build.
+   * @return string the built Column.
+   */
+  public function buildColumn( Column $column );
+
+  /**
    * Build the specified ColumnNameExpression object.
    *
    * @param ColumnNameExpression $column_name_expression the

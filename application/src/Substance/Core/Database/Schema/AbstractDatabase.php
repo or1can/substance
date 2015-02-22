@@ -120,6 +120,16 @@ abstract class AbstractDatabase implements Database {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildColumn()
+   */
+  public function buildColumn( Column $column ) {
+    $sql = $this->quoteName( $column->getName() );
+    $sql .= ' ';
+    $sql .= $column->getType()->build( $this );
+    return $sql;
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\Database::buildColumnNameExpression()
    */
   public function buildColumnNameExpression( ColumnNameExpression $column_name_expression ) {
@@ -173,9 +183,7 @@ abstract class AbstractDatabase implements Database {
     foreach ( $table->listColumns() as $column ) {
       $sql .= $separator;
       $separator = ', ';
-      $sql .= $this->quoteName( $column->getName() );
-      $sql .= ' ';
-      $sql .= $column->getType()->build( $this );
+      $sql .= $column->build( $this );
     }
     $sql .= ' )';
     return $sql;

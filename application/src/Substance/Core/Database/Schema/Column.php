@@ -18,10 +18,12 @@
 
 namespace Substance\Core\Database\Schema;
 
+use Substance\Core\Database\SQL\Buildable;
+
 /**
  * Represents a column in a database table.
  */
-interface Column {
+interface Column extends Buildable {
 
   /**
    * Returns TRUE if this column allows NULL values and FALSE otherwise.
