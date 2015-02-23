@@ -20,16 +20,39 @@ namespace Substance\Core\Database\Drivers\MySQL;
 
 use Substance\Core\Database\Schema\ColumnImpl;
 use Substance\Core\Database\Schema\Types\Integer;
+use Substance\Core\Database\Schema\Size;
+
 /**
  * Base for MySQL database tests.
  */
 class MySQLDatabaseTest extends AbstractMySQLDatabaseTest {
 
+  /**
+   * Test building a integer.
+   */
+  public function testBuildInteger() {
+    $integer = new Integer( Size::size( Size::TINY ) );
+    $this->assertEquals( 'TINYINT', $this->database->buildInteger( $integer ) );
+    $integer->setSize( Size::size( Size::SMALL ) );
+    $this->assertEquals( 'SMALLINT', $this->database->buildInteger( $integer ) );
+    $integer->setSize( Size::size( Size::MEDIUM ) );
+    $this->assertEquals( 'MEDIUMINT', $this->database->buildInteger( $integer ) );
+    $integer->setSize( Size::size( Size::NORMAL ) );
+    $this->assertEquals( 'INTEGER', $this->database->buildInteger( $integer ) );
+    $integer->setSize( Size::size( Size::BIG ) );
+    $this->assertEquals( 'BIGINT', $this->database->buildInteger( $integer ) );
+  }
+
+  /**
+   * Test creating a table.
+   */
   public function testCreateTable() {
-//     $test_db_name = $this->test_database_names[ 0 ];
-//     $test = $this->connection->createDatabase( $test_db_name );
-//     $this->assertInstanceOf( 'Substance\Core\Database\Drivers\MySQL\MySQLDatabase', $test );
-//     $this->assertEquals( $test_db_name, $test->getName() );
+    $this->assertCount( 0, $this->database->listTables() );
+    $table = $this->database->createTable('table');
+    $table->addColumnByName( 'col2', new Integer() );
+    $this->database->applyDataDefinitions();
+    $this->assertCount( 1, $this->database->listTables() );
+    $this->assertTrue( $this->database->hasTableByName('table') );
   }
 
   /**
@@ -38,7 +61,7 @@ class MySQLDatabaseTest extends AbstractMySQLDatabaseTest {
    * @expectedException Substance\Core\Alert\Alert
    */
   public function testCreateTableNoColumns() {
-    $table = $this->database->createTable( 'table');
+    $table = $this->database->createTable('table');
     $this->database->applyDataDefinitions();
   }
 

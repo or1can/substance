@@ -83,7 +83,7 @@ class MySQLDatabase extends AbstractDatabase {
     $statement = $this->execute( $select );
     if ( $statement->rowCount() == 1 ) {
       $record = $statement->fetchObject();
-      return new MySQLTable( $this, $record->TABLE_NAME );
+      return new BasicTable( $this, $record->TABLE_NAME );
     } else {
       return NULL;
     }
