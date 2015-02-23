@@ -67,6 +67,17 @@ abstract class AbstractDatabaseTest extends AbstractConnectionTest {
     $this->database->applyDataDefinitions();
     $this->assertCount( 1, $this->database->listTables() );
     $this->assertTrue( $this->database->hasTableByName('table') );
+
+    // Now try another table with multiple columns.
+    $table = $this->database->createTable('table2');
+    $column = new ColumnImpl( $table, 'col', new Integer() );
+    $table->addColumn( $column );
+    $table->addColumnByName( 'col2', new Integer() );
+    $table->addColumnByName( 'col3', new Integer( Size::size( Size::TINY ) ) );
+    $table->addColumnByName( 'col4', new Integer( Size::size( Size::BIG ) ) );
+    $this->database->applyDataDefinitions();
+    $this->assertCount( 2, $this->database->listTables() );
+    $this->assertTrue( $this->database->hasTableByName('table2') );
   }
 
   /**

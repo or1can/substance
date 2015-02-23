@@ -53,16 +53,4 @@ $database = $connection->getDatabase();
 
 var_dump( $database->listTables() );
 
-$sample = $database->createTable( 'sample' );
-$column = new ColumnImpl( $sample, 'col', new Integer() );
-$sample->addColumn( $column );
-$sample->addColumnByName( 'col2', new Integer() );
-$sample->addColumnByName( 'col3', new Integer( Size::size( Size::TINY ) ) );
-$sample->addColumnByName( 'col4', new Integer( Size::size( Size::BIG ) ) );
-$database->applyDataDefinitions();
-
-var_dump( $sample );
-
-var_dump( $database->listTables() );
-
 throw $alert;
