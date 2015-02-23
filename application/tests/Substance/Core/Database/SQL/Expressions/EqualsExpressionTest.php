@@ -18,13 +18,13 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
-use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\AbstractSQLTest;
 use Substance\Core\Database\SQL\Queries\Select;
 
 /**
  * Tests the equals expression.
  */
-class EqualsExpressionTest extends AbstractDatabaseTest {
+class EqualsExpressionTest extends AbstractSQLTest {
 
   /**
    * Test an equals expression with no alias.

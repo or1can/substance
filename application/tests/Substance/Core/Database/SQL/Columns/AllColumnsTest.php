@@ -18,13 +18,13 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
-use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\AbstractSQLTest;
 use Substance\Core\Database\SQL\Columns\AllColumns;
 
 /**
  * Tests the all columns select expression.
  */
-class AllColumnsTest extends AbstractDatabaseTest {
+class AllColumnsTest extends AbstractSQLTest {
 
   /**
    * Test a build of the all columns select expression.

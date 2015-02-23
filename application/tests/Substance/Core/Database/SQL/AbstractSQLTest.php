@@ -16,14 +16,15 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database;
+namespace Substance\Core\Database\SQL;
 
 use Substance\Core\Database\Drivers\MySQL\MySQLDatabase;
+use Substance\Core\Database\TestConnection;
 
 /**
- * Abstract database test.
+ * Abstract SQL test.
  */
-abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
+abstract class AbstractSQLTest extends \PHPUnit_Framework_TestCase {
 
   protected $connection;
 

@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\SQL\TableReferences;
 
-use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\AbstractSQLTest;
 use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Queries\Select;
@@ -26,7 +26,7 @@ use Substance\Core\Database\SQL\Queries\Select;
 /**
  * Tests the table name table reference.
  */
-class TableNameTest extends AbstractDatabaseTest {
+class TableNameTest extends AbstractSQLTest {
 
   /**
    * Test a table expression with no database and no alias.

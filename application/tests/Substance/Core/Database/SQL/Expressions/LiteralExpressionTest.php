@@ -18,12 +18,12 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
-use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\AbstractSQLTest;
 
 /**
  * Tests the literal expression.
  */
-class LiteralExpressionTest extends AbstractDatabaseTest {
+class LiteralExpressionTest extends AbstractSQLTest {
 
   /**
    * Test a boolean false literal expression.

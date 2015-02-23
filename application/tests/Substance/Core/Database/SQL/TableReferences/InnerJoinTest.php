@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\SQL\TableReferences;
 
-use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\AbstractSQLTest;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Queries\Select;
@@ -28,7 +28,7 @@ use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
 /**
  * Tests the inner join table reference.
  */
-class InnerJoinTest extends AbstractDatabaseTest {
+class InnerJoinTest extends AbstractSQLTest {
 
   /**
    * Test an inner join on two tables with no condition.

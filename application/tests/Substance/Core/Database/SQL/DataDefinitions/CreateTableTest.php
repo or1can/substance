@@ -18,13 +18,13 @@
 
 namespace Substance\Core\Database\SQL\DataDefinitions;
 
-use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\AbstractSQLTest;
 use Substance\Core\Database\Schema\BasicTable;
 
 /**
  * Tests the create table data definition.
  */
-class CreateTableTest extends AbstractDatabaseTest {
+class CreateTableTest extends AbstractSQLTest {
 
   /**
    * Test the build with simple table names.

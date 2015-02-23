@@ -18,12 +18,12 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
-use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\AbstractSQLTest;
 
 /**
  * Tests the is null expression.
  */
-class IsNullExpressionTest extends AbstractDatabaseTest {
+class IsNullExpressionTest extends AbstractSQLTest {
 
   /**
    * Test constructing with an illegal not argument.

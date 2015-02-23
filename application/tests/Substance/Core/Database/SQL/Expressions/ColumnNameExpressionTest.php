@@ -18,14 +18,14 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
-use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\AbstractSQLTest;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Database\SQL\TableReferences\TableName;
 
 /**
  * Tests the column expression.
  */
-class ColumnNameExpressionTest extends AbstractDatabaseTest {
+class ColumnNameExpressionTest extends AbstractSQLTest {
 
   /**
    * Test a column expression with no table.

@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\SQL\TableReferences\JoinConditions;
 
-use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\AbstractSQLTest;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
@@ -26,7 +26,7 @@ use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 /**
  * Tests the ON join condition.
  */
-class OnTest extends AbstractDatabaseTest {
+class OnTest extends AbstractSQLTest {
 
   /**
    * Test an on condition.

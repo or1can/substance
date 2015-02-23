@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\SQL\Components;
 
-use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\AbstractSQLTest;
 use Substance\Core\Database\SQL\Components\OrderBy;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Queries\Select;
@@ -26,7 +26,7 @@ use Substance\Core\Database\SQL\Queries\Select;
 /**
  * Tests the order by component.
  */
-class OrderByTest extends AbstractDatabaseTest {
+class OrderByTest extends AbstractSQLTest {
 
   /**
    * Test an ascending order by expression.

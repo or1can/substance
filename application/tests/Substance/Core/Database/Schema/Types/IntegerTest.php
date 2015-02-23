@@ -18,13 +18,13 @@
 
 namespace Substance\Core\Database\Schema\Types;
 
-use Substance\Core\Database\AbstractDatabaseTest;
 use Substance\Core\Database\Schema\Size;
+use Substance\Core\Database\SQL\AbstractSQLTest;
 
 /**
  * Tests the integer type schema element.
  */
-class IntegerTest extends AbstractDatabaseTest {
+class IntegerTest extends AbstractSQLTest {
 
   /**
    * Test the integer get name.

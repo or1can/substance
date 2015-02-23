@@ -18,13 +18,13 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
-use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\AbstractSQLTest;
 use Substance\Core\Database\SQL\Queries\Select;
 
 /**
  * Tests the name expression.
  */
-class NameExpressionTest extends AbstractDatabaseTest {
+class NameExpressionTest extends AbstractSQLTest {
 
   /**
    * Test a name expression.

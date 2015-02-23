@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\SQL\Columns;
 
-use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\AbstractSQLTest;
 use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
 use Substance\Core\Database\SQL\Expressions\AndExpression;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
@@ -28,7 +28,7 @@ use Substance\Core\Database\SQL\TableReferences\TableName;
 /**
  * Tests the column alias.
  */
-class ColumnWithAliasTest extends AbstractDatabaseTest {
+class ColumnWithAliasTest extends AbstractSQLTest {
 
   /**
    * Test a column alias for a simple column expression.

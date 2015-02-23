@@ -18,12 +18,12 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
-use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\AbstractSQLTest;
 
 /**
  * Tests the or expression.
  */
-class OrExpressionTest extends AbstractDatabaseTest {
+class OrExpressionTest extends AbstractSQLTest {
 
   /**
    * Test adding an expression to an and expression.

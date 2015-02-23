@@ -18,14 +18,14 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
-use Substance\Core\Database\AbstractDatabaseTest;
+use Substance\Core\Database\SQL\AbstractSQLTest;
 use Substance\Core\Database\SQL\Columns\AllColumnsFromTable;
 use Substance\Core\Database\SQL\Queries\Select;
 
 /**
  * Tests the all columns from table select expression.
  */
-class AllColumnsFromTableTest extends AbstractDatabaseTest {
+class AllColumnsFromTableTest extends AbstractSQLTest {
 
   /**
    * Test a build of the all columns from table column without a database.
