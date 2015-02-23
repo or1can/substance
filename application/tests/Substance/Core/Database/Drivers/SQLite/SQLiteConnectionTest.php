@@ -18,16 +18,61 @@
 
 namespace Substance\Core\Database\Drivers\SQLite;
 
+use Substance\Core\Database\AbstractConnectionTest;
+
 /**
  * Base for SQLite connection tests.
  */
-class SQLiteConnectionTest extends AbstractSQLiteConnectionTest {
+class SQLiteConnectionTest extends AbstractConnectionTest {
+
+  /* (non-PHPdoc)
+   * @see AbstractConnectionTest::initialise()
+   */
+  public function initialise() {
+    // Remove known test databases.
+    if ( !file_exists('/tmp/substance') ) {
+      mkdir('/tmp/substance');
+    }
+    $clear_databases = $this->test_database_names;
+    $clear_databases[] = 'mydb';
+    foreach ( $clear_databases as $database ) {
+      $db = "/tmp/substance/$database.db";
+      if ( file_exists( $db ) ) {
+        $this->assertTrue( unlink("/tmp/substance/$database.db"), 'Failed to remove old SQLite database.' );
+      }
+    }
+    // Open the test database.
+    $this->connection = new SQLiteConnection('/tmp/substance/mydb.db');
+  }
 
   public function testCreateDatabase() {
     $test_db_name = $this->test_database_names[ 0 ];
     $test = $this->connection->createDatabase( $test_db_name );
     $this->assertInstanceOf( 'Substance\Core\Database\Drivers\SQLite\SQLiteDatabase', $test );
     $this->assertEquals( $test_db_name, $test->getName() );
+  }
+
+  /**
+   * Test the active database name.
+   */
+  public function testGetActiveDatabaseName() {
+    $this->assertEquals( 'main', $this->connection->getActiveDatabaseName() );
+  }
+
+  /**
+   * Test getting a database.
+   */
+  public function testGetDatabase() {
+    $database = $this->connection->getDatabase();
+    $this->assertInstanceOf( 'Substance\Core\Database\Drivers\SQLite\SQLiteDatabase', $database );
+  }
+
+  /**
+   * Test checking for a database by name.
+   */
+  public function testHasDatabaseByName() {
+    $this->assertTrue( $this->connection->hasDatabaseByName('main') );
+    $this->assertFalse( $this->connection->hasDatabaseByName('test') );
   }
 
   public function testListDatabases() {

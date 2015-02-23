@@ -18,81 +18,31 @@
 
 namespace Substance\Core\Database\Drivers\SQLite;
 
-use Substance\Core\Database\Schema\ColumnImpl;
-use Substance\Core\Database\Schema\Types\Integer;
-use Substance\Core\Database\Schema\Size;
+use Substance\Core\Database\Schema\AbstractDatabaseTest;
 
 /**
  * Base for SQLite database tests.
  */
-class SQLiteDatabaseTest extends AbstractSQLiteDatabaseTest {
+class SQLiteDatabaseTest extends AbstractDatabaseTest {
 
-  /**
-   * Test building a integer.
+  /* (non-PHPdoc)
+   * @see AbstractConnectionTest::initialise()
    */
-  public function testBuildInteger() {
-    $integer = new Integer( Size::size( Size::TINY ) );
-    $this->assertEquals( 'INTEGER', $this->database->buildInteger( $integer ) );
-    $integer->setSize( Size::size( Size::SMALL ) );
-    $this->assertEquals( 'INTEGER', $this->database->buildInteger( $integer ) );
-    $integer->setSize( Size::size( Size::MEDIUM ) );
-    $this->assertEquals( 'INTEGER', $this->database->buildInteger( $integer ) );
-    $integer->setSize( Size::size( Size::NORMAL ) );
-    $this->assertEquals( 'INTEGER', $this->database->buildInteger( $integer ) );
-    $integer->setSize( Size::size( Size::BIG ) );
-    $this->assertEquals( 'INTEGER', $this->database->buildInteger( $integer ) );
-  }
-
-  /**
-   * Test creating a table.
-   */
-  public function testCreateTable() {
-    $this->assertCount( 0, $this->database->listTables() );
-    $table = $this->database->createTable('table');
-    $table->addColumnByName( 'col2', new Integer() );
-    $this->database->applyDataDefinitions();
-    $this->assertCount( 1, $this->database->listTables() );
-    $this->assertTrue( $this->database->hasTableByName('table') );
-  }
-
-  /**
-   * Test creating a table with no columns.
-   *
-   * @expectedException Substance\Core\Alert\Alert
-   */
-  public function testCreateTableNoColumns() {
-    $table = $this->database->createTable('table');
-    $this->database->applyDataDefinitions();
-  }
-
-  public function testListTables() {
-    $tables = $this->database->listTables();
-    $this->assertTrue( is_array( $tables ) );
-    $this->assertCount( 0, $tables );
-
-    // Create a table and check it is listed now.
-    $table = $this->database->createTable('table');
-    $column = new ColumnImpl( $table, 'col', new Integer() );
-    $table->addColumn( $column );
-    $this->database->applyDataDefinitions();
-    $tables = $this->database->listTables();
-    $this->assertTrue( is_array( $tables ) );
-    $this->assertCount( 1, $tables );
-    $this->assertArrayHasKey( 'table', $tables );
-    $this->assertInstanceOf( 'Substance\Core\Database\Schema\BasicTable', $tables['table'] );
-
-    // Create another table and check it is listed now.
-    $table2 = $this->database->createTable('table2');
-    $column = new ColumnImpl( $table2, 'col', new Integer() );
-    $table2->addColumn( $column );
-    $this->database->applyDataDefinitions();
-    $tables = $this->database->listTables();
-    $this->assertTrue( is_array( $tables ) );
-    $this->assertCount( 2, $tables );
-    $this->assertArrayHasKey( 'table', $tables );
-    $this->assertInstanceOf( 'Substance\Core\Database\Schema\BasicTable', $tables['table'] );
-    $this->assertArrayHasKey( 'table2', $tables );
-    $this->assertInstanceOf( 'Substance\Core\Database\Schema\BasicTable', $tables['table2'] );
+  public function initialise() {
+    // Remove known test databases.
+    if ( !file_exists('/tmp/substance') ) {
+      mkdir('/tmp/substance');
+    }
+    $clear_databases = $this->test_database_names;
+    $clear_databases[] = 'mydb';
+    foreach ( $clear_databases as $database ) {
+      $db = "/tmp/substance/$database.db";
+      if ( file_exists( $db ) ) {
+        $this->assertTrue( unlink("/tmp/substance/$database.db"), 'Failed to remove old SQLite database.' );
+      }
+    }
+    // Open the test database.
+    $this->connection = new SQLiteConnection('/tmp/substance/mydb.db');
   }
 
   /**

@@ -18,16 +18,57 @@
 
 namespace Substance\Core\Database\Drivers\MySQL;
 
+use Substance\Core\Database\AbstractConnectionTest;
+
 /**
  * Base for MySQL connection tests.
  */
-class MySQLConnectionTest extends AbstractMySQLConnectionTest {
+class MySQLConnectionTest extends AbstractConnectionTest {
+
+  /* (non-PHPdoc)
+   * @see AbstractConnectionTest::initialise()
+   */
+  public function initialise() {
+    $this->connection = new MySQLConnection( '127.0.0.1', 'mydb', 'myuser', 'mypass' );
+    // Clear out mydb.
+    $sql = "SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'mydb'";
+    foreach ( $this->connection->query( $sql ) as $row ) {
+      $this->connection->execute( 'DROP TABLE ' . $this->connection->quoteTable( $row->TABLE_NAME ) );
+    }
+    // Remove known test databases.
+    foreach ( $this->test_database_names as $database ) {
+      $this->connection->execute( 'DROP DATABASE IF EXISTS' . $this->connection->quoteName( $database ) );
+    }
+  }
 
   public function testCreateDatabase() {
     $test_db_name = $this->test_database_names[ 0 ];
     $test = $this->connection->createDatabase( $test_db_name );
     $this->assertInstanceOf( 'Substance\Core\Database\Drivers\MySQL\MySQLDatabase', $test );
     $this->assertEquals( $test_db_name, $test->getName() );
+  }
+
+  /**
+   * Test the active database name.
+   */
+  public function testGetActiveDatabaseName() {
+    $this->assertEquals( 'mydb', $this->connection->getActiveDatabaseName() );
+  }
+
+  /**
+   * Test getting a database.
+   */
+  public function testGetDatabase() {
+    $database = $this->connection->getDatabase();
+    $this->assertInstanceOf( 'Substance\Core\Database\Drivers\MySQL\MySQLDatabase', $database );
+  }
+
+  /**
+   * Test checking for a database by name.
+   */
+  public function testHasDatabaseByName() {
+    $this->assertTrue( $this->connection->hasDatabaseByName('mydb') );
+    $this->assertFalse( $this->connection->hasDatabaseByName('test') );
   }
 
   public function testListDatabases() {

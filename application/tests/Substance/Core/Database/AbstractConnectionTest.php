@@ -1,6 +1,6 @@
 <?php
 /* Substance - Content Management System and application framework.
- * Copyright (C) 2014 - 2015 Kevin Rogers
+ * Copyright (C) 2015 Kevin Rogers
  *
  * Substance is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,12 @@
  * along with Substance.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Substance\Core\Database\Drivers\MySQL;
+namespace Substance\Core\Database;
 
 /**
- * Base for MySQL connection tests.
+ * Base for  connection tests.
  */
-abstract class AbstractMySQLConnectionTest extends \PHPUnit_Framework_TestCase {
+abstract class AbstractConnectionTest extends \PHPUnit_Framework_TestCase {
 
   protected $connection;
 
@@ -31,40 +31,10 @@ abstract class AbstractMySQLConnectionTest extends \PHPUnit_Framework_TestCase {
    * @see PHPUnit_Framework_TestCase::setUp()
    */
   public function setUp() {
-    $this->connection = new MySQLConnection( '127.0.0.1', 'mydb', 'myuser', 'mypass' );
-    // Clear out mydb.
-    $sql = "SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'mydb'";
-    foreach ( $this->connection->query( $sql ) as $row ) {
-      $this->connection->execute( 'DROP TABLE ' . $this->connection->quoteTable( $row->TABLE_NAME ) );
-    }
-    // Remove known test databases.
-    foreach ( $this->test_database_names as $database ) {
-      $this->connection->execute( 'DROP DATABASE IF EXISTS' . $this->connection->quoteName( $database ) );
-    }
+    $this->initialise();
   }
 
-  /**
-   * Test the active database name.
-   */
-  public function testGetActiveDatabaseName() {
-    $this->assertEquals( 'mydb', $this->connection->getActiveDatabaseName() );
-  }
-
-  /**
-   * Test getting a database.
-   */
-  public function testGetDatabase() {
-    $database = $this->connection->getDatabase();
-    $this->assertInstanceOf( 'Substance\Core\Database\Drivers\MySQL\MySQLDatabase', $database );
-  }
-
-  /**
-   * Test checking for a database by name.
-   */
-  public function testHasDatabaseByName() {
-    $this->assertTrue( $this->connection->hasDatabaseByName('mydb') );
-    $this->assertFalse( $this->connection->hasDatabaseByName('test') );
-  }
+  abstract public function initialise();
 
   /**
    * Test executing a SQL query.
@@ -94,7 +64,7 @@ abstract class AbstractMySQLConnectionTest extends \PHPUnit_Framework_TestCase {
    * Test setting the active database name.
    */
   public function testSetActiveDatabaseName() {
-    $this->assertEquals( 'mydb', $this->connection->getActiveDatabaseName() );
+    $this->assertNotEquals( 'test', $this->connection->getActiveDatabaseName() );
     $this->connection->setActiveDatabaseName('test');
     $this->assertEquals( 'test', $this->connection->getActiveDatabaseName() );
   }
