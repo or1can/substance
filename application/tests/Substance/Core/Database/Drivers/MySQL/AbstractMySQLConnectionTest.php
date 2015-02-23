@@ -43,4 +43,60 @@ abstract class AbstractMySQLConnectionTest extends \PHPUnit_Framework_TestCase {
     }
   }
 
+  /**
+   * Test the active database name.
+   */
+  public function testGetActiveDatabaseName() {
+    $this->assertEquals( 'mydb', $this->connection->getActiveDatabaseName() );
+  }
+
+  /**
+   * Test getting a database.
+   */
+  public function testGetDatabase() {
+    $database = $this->connection->getDatabase();
+    $this->assertInstanceOf( 'Substance\Core\Database\Drivers\MySQL\MySQLDatabase', $database );
+  }
+
+  /**
+   * Test checking for a database by name.
+   */
+  public function testHasDatabaseByName() {
+    $this->assertTrue( $this->connection->hasDatabaseByName('mydb') );
+    $this->assertFalse( $this->connection->hasDatabaseByName('test') );
+  }
+
+  /**
+   * Test executing a SQL query.
+   */
+  public function testExecute() {
+    $result = $this->connection->execute('SELECT 1');
+    $this->assertTrue( is_int( $result ) );
+  }
+
+  /**
+   * Test preparing a SQL query.
+   */
+  public function testPrepare() {
+    $result = $this->connection->prepare('SELECT 1');
+    $this->assertInstanceOf( 'Substance\Core\Database\Statement', $result );
+  }
+
+  /**
+   * Test executing a SQL query.
+   */
+  public function testQuery() {
+    $result = $this->connection->query('SELECT 1');
+    $this->assertInstanceOf( 'Substance\Core\Database\Statement', $result );
+  }
+
+  /**
+   * Test setting the active database name.
+   */
+  public function testSetActiveDatabaseName() {
+    $this->assertEquals( 'mydb', $this->connection->getActiveDatabaseName() );
+    $this->connection->setActiveDatabaseName('test');
+    $this->assertEquals( 'test', $this->connection->getActiveDatabaseName() );
+  }
+
 }

@@ -47,4 +47,60 @@ abstract class AbstractSQLiteConnectionTest extends \PHPUnit_Framework_TestCase 
     $this->connection = new SQLiteConnection('/tmp/substance/mydb.db');
   }
 
+  /**
+   * Test the active database name.
+   */
+  public function testGetActiveDatabaseName() {
+    $this->assertEquals( 'main', $this->connection->getActiveDatabaseName() );
+  }
+
+  /**
+   * Test getting a database.
+   */
+  public function testGetDatabase() {
+    $database = $this->connection->getDatabase();
+    $this->assertInstanceOf( 'Substance\Core\Database\Drivers\SQLite\SQLiteDatabase', $database );
+  }
+
+  /**
+   * Test checking for a database by name.
+   */
+  public function testHasDatabaseByName() {
+    $this->assertTrue( $this->connection->hasDatabaseByName('main') );
+    $this->assertFalse( $this->connection->hasDatabaseByName('test') );
+  }
+
+  /**
+   * Test executing a SQL query.
+   */
+  public function testExecute() {
+    $result = $this->connection->execute('SELECT 1');
+    $this->assertTrue( is_int( $result ) );
+  }
+
+  /**
+   * Test preparing a SQL query.
+   */
+  public function testPrepare() {
+    $result = $this->connection->prepare('SELECT 1');
+    $this->assertInstanceOf( 'Substance\Core\Database\Statement', $result );
+  }
+
+  /**
+   * Test executing a SQL query.
+   */
+  public function testQuery() {
+    $result = $this->connection->query('SELECT 1');
+    $this->assertInstanceOf( 'Substance\Core\Database\Statement', $result );
+  }
+
+  /**
+   * Test setting the active database name.
+   */
+  public function testSetActiveDatabaseName() {
+    $this->assertEquals( 'main', $this->connection->getActiveDatabaseName() );
+    $this->connection->setActiveDatabaseName('test');
+    $this->assertEquals( 'test', $this->connection->getActiveDatabaseName() );
+  }
+
 }

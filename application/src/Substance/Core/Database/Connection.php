@@ -253,7 +253,7 @@ abstract class Connection {
    */
   public function quoteString( $value ) {
     $quote_char = "'";
-    return $quote_char . str_replace( $quote_char, "\\$quote_char", $value ) . $quote_char;
+    return $quote_char . str_replace( $quote_char, $quote_char . $quote_char, $value ) . $quote_char;
   }
 
   /**
@@ -275,7 +275,7 @@ abstract class Connection {
    * @param string $name the database name, or NULL for the default.
    * @return self
    */
-  public static function setActiveDatabaseName( $name = NULL ) {
+  public function setActiveDatabaseName( $name = NULL ) {
     if ( is_null( $name ) ) {
       $this->active_database_name = $this->default_database_name;
     } else {

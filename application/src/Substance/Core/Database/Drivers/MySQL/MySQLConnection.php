@@ -132,6 +132,14 @@ class MySQLConnection extends PDOConnection {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Connection::quoteString()
+   */
+  public function quoteString( $value ) {
+    $quote_char = "'";
+    return $quote_char . str_replace( $quote_char, "\\$quote_char", $value ) . $quote_char;
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Database\Connection::quoteTable()
    */
   public function quoteTable( $table ) {

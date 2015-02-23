@@ -57,6 +57,36 @@ class SQLiteConnectionTest extends AbstractSQLiteConnectionTest {
   }
 
   /**
+   * Test quoting names.
+   */
+  public function testQuoteName() {
+    // Test a simple name.
+    $quoted = $this->connection->quoteName('table');
+    $this->assertEquals( '"table"', $quoted );
+
+    // Test a name with a period.
+    $quoted = $this->connection->quoteName('db.table');
+    $this->assertEquals( '"db.table"', $quoted );
+
+    // Test a name with a quote character.
+    $quoted = $this->connection->quoteName('db"table');
+    $this->assertEquals( '"db""table"', $quoted );
+  }
+
+  /**
+   * Test quoting strings.
+   */
+  public function testQuoteString() {
+    // Test a simple string.
+    $quoted = $this->connection->quoteString('string');
+    $this->assertEquals( '\'string\'', $quoted );
+
+    // Test a string with a quote character.
+    $quoted = $this->connection->quoteString('db\'table');
+    $this->assertEquals( '\'db\'\'table\'', $quoted );
+  }
+
+  /**
    * Test quoting table names.
    */
   public function testQuoteTable() {
