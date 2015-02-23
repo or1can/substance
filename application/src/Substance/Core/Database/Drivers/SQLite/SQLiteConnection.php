@@ -39,6 +39,9 @@ class SQLiteConnection extends PDOConnection {
   public function __construct( $file, $prefix = '', $pdo_options = array() ) {
     $dsn = 'sqlite:' . $file;
     parent::__construct( $dsn, 'main', NULL, NULL, $prefix, $pdo_options );
+    // SQLite calls the loaded database "main", so we have to manually insert
+    // this.
+    $this->databases['main'] = new SQLiteDatabase( $this, 'main' );
   }
 
   /* (non-PHPdoc)
@@ -49,8 +52,15 @@ class SQLiteConnection extends PDOConnection {
       throw Alert::alert( 'Database already exists', 'Cannot create new database with same name as an existing one' )
         ->culprit( 'database', $name );
     } else {
-      // TODO
-      return NULL;
+      // Create the database.
+      $sql = 'ATTACH DATABASE ';
+      $sql .= $this->quoteString("/tmp/substance/$name.db");
+      $sql .= ' AS ';
+      $sql .= $this->quoteName( $name );
+      $this->execute( $sql );
+      // Add the new database to the loaded list.
+      $this->databases[ $name ] = new SQLiteDatabase( $this, $name );
+      return $this->getDatabase( $name );
     }
   }
 
@@ -74,8 +84,19 @@ class SQLiteConnection extends PDOConnection {
    * @see \Substance\Core\Database\Connection::loadDatabase()
    */
   protected function loadDatabase( $name ) {
-    // TODO
-    return NULL;
+    $db_file = "/tmp/substance/$name.db";
+    if ( file_exists( $db_file ) ) {
+      // The database file exists, so load it.
+      $sql = 'ATTACH DATABASE ';
+      $sql .= $this->quoteString( $db_file );
+      $sql .= ' AS ';
+      $sql .= $this->quoteName( $name );
+      $this->execute( $sql );
+      return new SQLiteDatabase( $this, $name );
+    } else {
+      // The database file does not exist, so load nothing.
+      return NULL;
+    }
   }
 
   /* (non-PHPdoc)
