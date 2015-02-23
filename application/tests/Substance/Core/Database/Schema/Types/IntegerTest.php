@@ -27,11 +27,19 @@ use Substance\Core\Database\SQL\AbstractSQLTest;
 class IntegerTest extends AbstractSQLTest {
 
   /**
-   * Test the integer get name.
+   * Test building an integer.
    */
-  public function testGetName() {
+  public function testBuild() {
     $integer = new Integer();
     $this->assertEquals( 'INTEGER', $integer->build( $this->connection ) );
+  }
+
+  /**
+   * Test getting an integers size.
+   */
+  public function testGetSize() {
+    $integer = new Integer();
+    $this->assertSame( Size::size( Size::NORMAL ), $integer->getSize() );
   }
 
   /**
@@ -40,6 +48,7 @@ class IntegerTest extends AbstractSQLTest {
   public function testSetSize() {
     $integer = new Integer();
     $integer->setSize( Size::size( Size::SMALL ) );
+    $this->assertSame( Size::size( Size::SMALL ), $integer->getSize() );
   }
 
   /**
