@@ -20,6 +20,7 @@ namespace Substance\Core\Database\Schema;
 
 use Substance\Core\Alert\Alerts\UnsupportedOperationAlert;
 use Substance\Core\Alert\Culprit;
+
 /**
  * A basic implementation of a column.
  */
@@ -72,6 +73,13 @@ class ColumnImpl implements Column {
    */
   public function allowsNull() {
     return $this->allows_null;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\SQL\Buildable::build()
+   */
+  public function build( Database $database ) {
+    return $database->buildColumn( $this );
   }
 
   /* (non-PHPdoc)
