@@ -56,7 +56,7 @@ class MySQLDatabaseTest extends AbstractMySQLDatabaseTest {
     $this->assertTrue( is_array( $tables ) );
     $this->assertCount( 1, $tables );
     $this->assertArrayHasKey( 'table', $tables );
-    $this->assertInstanceOf( 'Substance\Core\Database\Drivers\MySQL\Schema\MySQLTable', $tables['table'] );
+    $this->assertInstanceOf( 'Substance\Core\Database\Schema\BasicTable', $tables['table'] );
 
     // Create another table and check it is listed now.
     $table2 = $this->database->createTable('table2');
@@ -67,9 +67,9 @@ class MySQLDatabaseTest extends AbstractMySQLDatabaseTest {
     $this->assertTrue( is_array( $tables ) );
     $this->assertCount( 2, $tables );
     $this->assertArrayHasKey( 'table', $tables );
-    $this->assertInstanceOf( 'Substance\Core\Database\Drivers\MySQL\Schema\MySQLTable', $tables['table'] );
+    $this->assertInstanceOf( 'Substance\Core\Database\Schema\BasicTable', $tables['table'] );
     $this->assertArrayHasKey( 'table2', $tables );
-    $this->assertInstanceOf( 'Substance\Core\Database\Drivers\MySQL\Schema\MySQLTable', $tables['table2'] );
+    $this->assertInstanceOf( 'Substance\Core\Database\Schema\BasicTable', $tables['table2'] );
   }
 
   /**

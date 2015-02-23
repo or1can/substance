@@ -18,8 +18,8 @@
 
 namespace Substance\Core\Database\Drivers\MySQL;
 
-use Substance\Core\Database\Drivers\MySQL\Schema\MySQLTable;
 use Substance\Core\Database\Schema\AbstractDatabase;
+use Substance\Core\Database\Schema\BasicTable;
 use Substance\Core\Database\Schema\Size;
 use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Database\SQL\Columns\AllColumns;
@@ -66,7 +66,7 @@ class MySQLDatabase extends AbstractDatabase {
     $statement = $this->execute( $select );
     foreach ( $statement as $row ) {
       if ( !array_key_exists( $row->TABLE_NAME, $this->tables ) ) {
-        $this->tables[ $row->TABLE_NAME ] = new MySQLTable( $this, $row->TABLE_NAME );
+        $this->tables[ $row->TABLE_NAME ] = new BasicTable( $this, $row->TABLE_NAME );
       }
     }
     return $this->tables;
