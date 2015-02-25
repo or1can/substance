@@ -28,11 +28,6 @@ use Substance\Core\Database\Schema\AbstractDatabase;
  */
 class UnconnectedDatabase extends AbstractDatabase {
 
-  /**
-   * @var UnconnectedConnection the single instance of this connection.
-   */
-  private static $instance;
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\Database::createTable()
    */
@@ -47,10 +42,7 @@ class UnconnectedDatabase extends AbstractDatabase {
    * @return self
    */
   public static function getInstance() {
-    if ( is_null( self::$instance ) ) {
-      self::$instance = new UnconnectedDatabase('unconnected');
-    }
-    return self::$instance;
+    return UnconnectedConnection::getInstance()->getDatabase();
   }
 
   /* (non-PHPdoc)
