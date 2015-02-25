@@ -18,6 +18,7 @@
 
 namespace Substance\Core\Database\Schema;
 
+use Substance\Core\Database\Alerts\DatabaseAlert;
 use Substance\Core\Database\Schema\Database;
 
 /**
@@ -66,7 +67,7 @@ class BasicTable implements Table {
    */
   public function addColumn( Column $column ) {
     if ( $this->hasColumnByName( $column->getName() ) ) {
-      throw Alert::alert( 'Column already exists', 'Each column must have a unique name.' )
+      throw DatabaseAlert::database('Each column must have a unique name')
         ->culprit( 'name', $column->getName() )
         ->culprit( 'existing column', $this->columns[ $column->getName() ] )
         ->culprit( 'duplicate column', $column );
@@ -87,7 +88,7 @@ class BasicTable implements Table {
    */
   public function addIndex( Index $index ) {
     if ( $this->hasIndexByName( $index->getName() ) ) {
-      throw Alert::alert( 'Index already exists', 'Each index must have a unique name.' )
+      throw DatabaseAlert::database('Each index must have a unique name')
         ->culprit( 'name', $index->getName() )
         ->culprit( 'existing index', $this->indexes[ $index->getName() ] )
         ->culprit( 'duplicate index', $index );
@@ -108,11 +109,11 @@ class BasicTable implements Table {
    */
   public function getColumn( $name ) {
     if ( $this->hasColumnByName( $name ) ) {
-      throw Alert::alert( 'No such column', 'There is no column with the specified name.' )
+      return $this->columns[ $name ];
+    } else {
+      throw DatabaseAlert::database('There is no column with the specified name')
         ->culprit( 'name', $name )
         ->culprit( 'table', $this->getName() );
-    } else {
-      return $this->columns[ $name ];
     }
   }
 
@@ -128,11 +129,11 @@ class BasicTable implements Table {
    */
   public function getIndex( $name ) {
     if ( $this->hasIndexByName( $name ) ) {
-      throw Alert::alert( 'No such index', 'There is no index with the specified name.' )
+      return $this->indexes[ $name ];
+    } else {
+      throw DatabaseAlert::database('There is no index with the specified name.')
         ->culprit( 'name', $name )
         ->culprit( 'table', $this->getName() );
-    } else {
-      return $this->indexes[ $name ];
     }
   }
 
