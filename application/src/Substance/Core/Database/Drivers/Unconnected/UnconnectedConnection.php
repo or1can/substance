@@ -38,6 +38,24 @@ class UnconnectedConnection extends Connection {
    * Construct a new NULL database connection.
    */
   public function __construct() {
+    parent::__construct('unconnected');
+    // The unconnected connection has a single database called "unconnected", so
+    // we have to manually insert this.
+    $this->databases['unconnected'] = new UnconnectedDatabase( $this, 'unconnected' );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Connection::execute()
+   */
+  public function execute( $sql ) {
+    throw UnsupportedOperationAlert::unsupportedOperation( 'Unconnected connection cannot execute queries' );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Connection::hasDatabaseByName()
+   */
+  public function hasDatabaseByName( $name ) {
+    return array_key_exists( $name, $this->databases );
   }
 
   /**
@@ -56,7 +74,7 @@ class UnconnectedConnection extends Connection {
    * @see \Substance\Core\Database\Connection::listDatabases()
    */
   public function listDatabases() {
-    throw UnsupportedOperationAlert::unsupportedOperation( 'Unconnected connection have no databases to list' );
+    return $this->databases;
   }
 
   /* (non-PHPdoc)
@@ -65,6 +83,20 @@ class UnconnectedConnection extends Connection {
   protected function loadDatabase( $name ) {
     throw UnsupportedOperationAlert::unsupportedOperation( 'Unconnected connection have no databases to load' )
       ->culprit( 'name', $name );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Connection::prepare()
+   */
+  public function prepare( $sql ) {
+    throw UnsupportedOperationAlert::unsupportedOperation( 'Unconnected connection cannot prepare statements' );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Connection::query()
+   */
+  public function query( $sql ) {
+    throw UnsupportedOperationAlert::unsupportedOperation( 'Unconnected connection cannot query databases' );
   }
 
   /* (non-PHPdoc)

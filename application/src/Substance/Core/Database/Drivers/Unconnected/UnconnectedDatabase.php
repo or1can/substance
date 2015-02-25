@@ -33,15 +33,6 @@ class UnconnectedDatabase extends AbstractDatabase {
    */
   private static $instance;
 
-  /**
-   * Construct a new unconnected database object.
-   *
-   * @param string $name the database name.
-   */
-  public function __construct( $name ) {
-    parent::__construct( UnconnectedConnection::getInstance(), $name );
-  }
-
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\Database::createTable()
    */

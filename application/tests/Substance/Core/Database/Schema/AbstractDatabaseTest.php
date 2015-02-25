@@ -18,25 +18,33 @@
 
 namespace Substance\Core\Database\Schema;
 
-use Substance\Core\Database\AbstractConnectionTest;
 use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\Schema\Types\Integer;
 
 /**
  * Base for database tests.
  */
-abstract class AbstractDatabaseTest extends AbstractConnectionTest {
+abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
+
+  /**
+   * @var Connection the database connection for testing
+   */
+  protected $connection;
 
   /**
    * @var Database the default database for testing.
    */
   protected $database;
 
+  protected $test_database_names = array( 'test' );
+
+  abstract public function initialise();
+
   /* (non-PHPdoc)
    * @see PHPUnit_Framework_TestCase::setUp()
    */
   public function setUp() {
-    parent::setUp();
+    $this->initialise();
     // Get the default database for the connection.
     $this->database = $this->connection->getDatabase();
   }

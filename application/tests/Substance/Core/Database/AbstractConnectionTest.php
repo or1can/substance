@@ -23,9 +23,14 @@ namespace Substance\Core\Database;
  */
 abstract class AbstractConnectionTest extends \PHPUnit_Framework_TestCase {
 
+  /**
+   * @var Connection the database connection for testing
+   */
   protected $connection;
 
   protected $test_database_names = array( 'test' );
+
+  abstract public function initialise();
 
   /* (non-PHPdoc)
    * @see PHPUnit_Framework_TestCase::setUp()
@@ -34,7 +39,15 @@ abstract class AbstractConnectionTest extends \PHPUnit_Framework_TestCase {
     $this->initialise();
   }
 
-  abstract public function initialise();
+  /**
+   * Test creating a database.
+   */
+  public function testCreateDatabase() {
+    $test_db_name = $this->test_database_names[ 0 ];
+    $test = $this->connection->createDatabase( $test_db_name );
+    $this->assertInstanceOf( 'Substance\Core\Database\Drivers\MySQL\MySQLDatabase', $test );
+    $this->assertEquals( $test_db_name, $test->getName() );
+  }
 
   /**
    * Test executing a SQL query.
