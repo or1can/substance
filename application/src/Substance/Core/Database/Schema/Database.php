@@ -23,6 +23,7 @@ use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
 use Substance\Core\Database\Schema\Types\Float;
 use Substance\Core\Database\Schema\Types\Integer;
+use Substance\Core\Database\Schema\Types\Numeric;
 use Substance\Core\Database\SQL\Buildable;
 use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Columns\AllColumnsFromTable;
@@ -205,6 +206,14 @@ interface Database {
    * @return string the built NameExpression.
    */
   public function buildNameExpression( NameExpression $name_expression );
+
+  /**
+   * Build the specified Numeric object.
+   *
+   * @param Numeric $numeric the Numeric to build.
+   * @return string the built Numeric.
+   */
+  public function buildNumeric( Numeric $numeric );
 
   /**
    * Build the specified On object.

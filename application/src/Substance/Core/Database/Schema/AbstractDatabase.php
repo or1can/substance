@@ -46,6 +46,7 @@ use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
 use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
 use Substance\Core\Database\SQL\TableReferences\LeftJoin;
 use Substance\Core\Database\SQL\TableReferences\TableName;
+use Substance\Core\Database\Schema\Types\Numeric;
 
 /**
  * An abstract database schema implementation.
@@ -288,6 +289,18 @@ abstract class AbstractDatabase implements Database {
    */
   public function buildNameExpression( NameExpression $name_expression ) {
     return $this->quoteName( $name_expression->getName() );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildNumeric()
+   */
+  public function buildNumeric( Numeric $numeric ) {
+    $string = 'NUMERIC(';
+    $string .= $numeric->getPrecision();
+    $string .= ', ';
+    $string .= $numeric->getScale();
+    $string .= ')';
+    return $string;
   }
 
   /* (non-PHPdoc)

@@ -21,6 +21,7 @@ namespace Substance\Core\Database\Schema;
 use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\Schema\Types\Float;
 use Substance\Core\Database\Schema\Types\Integer;
+use Substance\Core\Database\Schema\Types\Numeric;
 
 /**
  * Base for database tests.
@@ -80,6 +81,14 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals( 'INTEGER', $this->database->buildInteger( $integer ) );
     $integer->setSize( Size::size( Size::BIG ) );
     $this->assertEquals( 'INTEGER', $this->database->buildInteger( $integer ) );
+  }
+
+  /**
+   * Test building a numeric.
+   */
+  public function testBuildNumeric() {
+    $numeric = new Numeric( 10, 5 );
+    $this->assertEquals( 'NUMERIC(10, 5)', $this->database->buildNumeric( $numeric ) );
   }
 
   /**
