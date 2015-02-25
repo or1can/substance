@@ -21,6 +21,7 @@ namespace Substance\Core\Database\Drivers\MySQL;
 use Substance\Core\Database\Schema\AbstractDatabase;
 use Substance\Core\Database\Schema\BasicTable;
 use Substance\Core\Database\Schema\Size;
+use Substance\Core\Database\Schema\Types\Float;
 use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
@@ -33,6 +34,29 @@ use Substance\Core\Database\SQL\Queries\Select;
  */
 class MySQLDatabase extends AbstractDatabase {
 
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\AbstractDatabase::buildFloat()
+   */
+  public function buildFloat( Float $float ) {
+    switch ( $float->getSize()->getValue() ) {
+      case Size::TINY:
+      case Size::SMALL:
+      case Size::MEDIUM:
+      case Size::NORMAL:
+        return 'FLOAT';
+        break;
+      case Size::BIG:
+        return 'DOUBLE';
+        break;
+      default:
+        throw IllegalValueAlert::illegal_value('Only tiny, small, medium, normal and big sizes are supported')
+        ->culprit( 'size', $float->getSize() );
+    }
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\AbstractDatabase::buildInteger()
+   */
   public function buildInteger( Integer $integer ) {
     switch ( $integer->getSize()->getValue() ) {
       case Size::TINY:

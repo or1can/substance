@@ -21,15 +21,15 @@ namespace Substance\Core\Database\Schema\Types;
 use Substance\Core\Database\Schema\Database;
 
 /**
- * Represents a data type.
+ * Represents a floating point data type.
  */
-class Integer extends AbstractType {
+class Float extends AbstractType {
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\SQL\Buildable::build()
    */
   public function build( Database $database ) {
-    return $database->buildInteger( $this );
+    return $database->buildFloat( $this );
   }
 
 }

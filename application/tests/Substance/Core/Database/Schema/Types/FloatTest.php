@@ -22,33 +22,33 @@ use Substance\Core\Database\Schema\Size;
 use Substance\Core\Database\SQL\AbstractSQLTest;
 
 /**
- * Tests the integer type schema element.
+ * Tests the float type schema element.
  */
-class IntegerTest extends AbstractSQLTest {
+class FloatTest extends AbstractSQLTest {
 
   /**
    * Test building an integer.
    */
   public function testBuild() {
-    $integer = new Integer();
-    $this->assertEquals( 'INTEGER', $integer->build( $this->connection ) );
+    $float = new Float();
+    $this->assertEquals( 'FLOAT', $float->build( $this->connection ) );
   }
 
   /**
    * Test getting an integers size.
    */
   public function testGetSize() {
-    $integer = new Integer();
-    $this->assertSame( Size::size( Size::NORMAL ), $integer->getSize() );
+    $float = new Float();
+    $this->assertSame( Size::size( Size::NORMAL ), $float->getSize() );
   }
 
   /**
    * Test setting an integers size.
    */
   public function testSetSize() {
-    $integer = new Integer();
-    $integer->setSize( Size::size( Size::SMALL ) );
-    $this->assertSame( Size::size( Size::SMALL ), $integer->getSize() );
+    $float = new Float();
+    $float->setSize( Size::size( Size::SMALL ) );
+    $this->assertSame( Size::size( Size::SMALL ), $float->getSize() );
   }
 
   /**

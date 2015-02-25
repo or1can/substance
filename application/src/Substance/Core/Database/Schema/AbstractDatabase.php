@@ -21,6 +21,7 @@ namespace Substance\Core\Database\Schema;
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
+use Substance\Core\Database\Schema\Types\Float;
 use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Database\SQL\Buildable;
 use Substance\Core\Database\SQL\Columns\AllColumns;
@@ -40,9 +41,9 @@ use Substance\Core\Database\SQL\PostfixExpression;
 use Substance\Core\Database\SQL\PrefixExpression;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Database\SQL\Query;
+use Substance\Core\Database\SQL\TableReferences\InnerJoin;
 use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
 use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
-use Substance\Core\Database\SQL\TableReferences\InnerJoin;
 use Substance\Core\Database\SQL\TableReferences\LeftJoin;
 use Substance\Core\Database\SQL\TableReferences\TableName;
 
@@ -196,6 +197,14 @@ abstract class AbstractDatabase implements Database {
     $sql = 'DROP TABLE ';
     $sql .= $this->quoteName( $drop_table->getTableName() );
     return $sql;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildFloat()
+   */
+  public function buildFloat( Float $float ) {
+    // For the default implementation, we ignore the float size.
+    return 'FLOAT';
   }
 
   /* (non-PHPdoc)

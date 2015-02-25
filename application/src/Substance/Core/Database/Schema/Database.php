@@ -21,6 +21,7 @@ namespace Substance\Core\Database\Schema;
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
+use Substance\Core\Database\Schema\Types\Float;
 use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Database\SQL\Buildable;
 use Substance\Core\Database\SQL\Columns\AllColumns;
@@ -147,6 +148,14 @@ interface Database {
    * @return string the built DropTable.
    */
   public function buildDropTable( DropTable $drop_table );
+
+  /**
+   * Build the specified Float object.
+   *
+   * @param Float $float the Float to build.
+   * @return string the built Float.
+   */
+  public function buildFloat( Float $float );
 
   /**
    * Build the specified InfixExpression object.

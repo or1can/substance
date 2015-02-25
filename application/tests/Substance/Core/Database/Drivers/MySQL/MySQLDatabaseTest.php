@@ -20,8 +20,9 @@ namespace Substance\Core\Database\Drivers\MySQL;
 
 use Substance\Core\Database\Schema\AbstractDatabaseTest;
 use Substance\Core\Database\Schema\ColumnImpl;
-use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Database\Schema\Size;
+use Substance\Core\Database\Schema\Types\Float;
+use Substance\Core\Database\Schema\Types\Integer;
 
 /**
  * Base for MySQL database tests.
@@ -42,6 +43,22 @@ class MySQLDatabaseTest extends AbstractDatabaseTest {
     foreach ( $this->test_database_names as $database ) {
       $this->connection->execute( 'DROP DATABASE IF EXISTS' . $this->connection->quoteName( $database ) );
     }
+  }
+
+  /**
+   * Test building a float for MySQL.
+   */
+  public function testBuildFloat() {
+    $float = new Float( Size::size( Size::TINY ) );
+    $this->assertEquals( 'FLOAT', $this->database->buildFloat( $float ) );
+    $float->setSize( Size::size( Size::SMALL ) );
+    $this->assertEquals( 'FLOAT', $this->database->buildFloat( $float ) );
+    $float->setSize( Size::size( Size::MEDIUM ) );
+    $this->assertEquals( 'FLOAT', $this->database->buildFloat( $float ) );
+    $float->setSize( Size::size( Size::NORMAL ) );
+    $this->assertEquals( 'FLOAT', $this->database->buildFloat( $float ) );
+    $float->setSize( Size::size( Size::BIG ) );
+    $this->assertEquals( 'DOUBLE', $this->database->buildFloat( $float ) );
   }
 
   /**

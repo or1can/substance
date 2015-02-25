@@ -19,11 +19,29 @@
 namespace Substance\Core\Database\Drivers\SQLite;
 
 use Substance\Core\Database\Schema\AbstractDatabaseTest;
+use Substance\Core\Database\Schema\Size;
+use Substance\Core\Database\Schema\Types\Float;
 
 /**
  * Base for SQLite database tests.
  */
 class SQLiteDatabaseTest extends AbstractDatabaseTest {
+
+  /**
+   * Test building a float for MySQL.
+   */
+  public function testBuildFloat() {
+    $float = new Float( Size::size( Size::TINY ) );
+    $this->assertEquals( 'REAL', $this->database->buildFloat( $float ) );
+    $float->setSize( Size::size( Size::SMALL ) );
+    $this->assertEquals( 'REAL', $this->database->buildFloat( $float ) );
+    $float->setSize( Size::size( Size::MEDIUM ) );
+    $this->assertEquals( 'REAL', $this->database->buildFloat( $float ) );
+    $float->setSize( Size::size( Size::NORMAL ) );
+    $this->assertEquals( 'REAL', $this->database->buildFloat( $float ) );
+    $float->setSize( Size::size( Size::BIG ) );
+    $this->assertEquals( 'REAL', $this->database->buildFloat( $float ) );
+  }
 
   /* (non-PHPdoc)
    * @see AbstractConnectionTest::initialise()

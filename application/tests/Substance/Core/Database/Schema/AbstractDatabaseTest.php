@@ -19,6 +19,7 @@
 namespace Substance\Core\Database\Schema;
 
 use Substance\Core\Database\Schema\Database;
+use Substance\Core\Database\Schema\Types\Float;
 use Substance\Core\Database\Schema\Types\Integer;
 
 /**
@@ -47,6 +48,22 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
     $this->initialise();
     // Get the default database for the connection.
     $this->database = $this->connection->getDatabase();
+  }
+
+  /**
+   * Test building a float.
+   */
+  public function testBuildFloat() {
+    $float = new Float( Size::size( Size::TINY ) );
+    $this->assertEquals( 'FLOAT', $this->database->buildFloat( $float ) );
+    $float->setSize( Size::size( Size::SMALL ) );
+    $this->assertEquals( 'FLOAT', $this->database->buildFloat( $float ) );
+    $float->setSize( Size::size( Size::MEDIUM ) );
+    $this->assertEquals( 'FLOAT', $this->database->buildFloat( $float ) );
+    $float->setSize( Size::size( Size::NORMAL ) );
+    $this->assertEquals( 'FLOAT', $this->database->buildFloat( $float ) );
+    $float->setSize( Size::size( Size::BIG ) );
+    $this->assertEquals( 'FLOAT', $this->database->buildFloat( $float ) );
   }
 
   /**

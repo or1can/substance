@@ -19,45 +19,51 @@
 namespace Substance\Core\Database\Schema\Types;
 
 use Substance\Core\Database\Schema\Size;
-use Substance\Core\Database\SQL\AbstractSQLTest;
+use Substance\Core\Database\Schema\Type;
+use Substance\Core\Alert\Alerts\NullValueAlert;
 
 /**
- * Tests the integer type schema element.
+ * An implementation of the common parts of the Type interface.
  */
-class IntegerTest extends AbstractSQLTest {
+abstract class AbstractType implements Type {
 
   /**
-   * Test building an integer.
+   * @var Size the float size.
    */
-  public function testBuild() {
-    $integer = new Integer();
-    $this->assertEquals( 'INTEGER', $integer->build( $this->connection ) );
-  }
+  protected $size;
 
   /**
-   * Test getting an integers size.
-   */
-  public function testGetSize() {
-    $integer = new Integer();
-    $this->assertSame( Size::size( Size::NORMAL ), $integer->getSize() );
-  }
-
-  /**
-   * Test setting an integers size.
-   */
-  public function testSetSize() {
-    $integer = new Integer();
-    $integer->setSize( Size::size( Size::SMALL ) );
-    $this->assertSame( Size::size( Size::SMALL ), $integer->getSize() );
-  }
-
-  /**
-   * Test setting an integers size with null.
+   * Constructs a new float type.
    *
-   * @expectedException Substance\Core\Alert\Alert
+   * @param Size $size the float size or NULL for the default
    */
-  public function testSetSizeNull() {
-    $size = Size::size( NULL );
+  public function __construct( Size $size = NULL ) {
+    if ( is_null( $size ) ) {
+      $this->size = Size::size( Size::NORMAL );
+    } else {
+      $this->size = $size;
+    }
+  }
+
+  /**
+   * Returns this integers size.
+   *
+   * @return Size this integers size.
+   */
+  public function getSize() {
+    return $this->size;
+  }
+
+  /**
+   * Sets this integers size.
+   *
+   * @param Size $size the size of this integer.
+   */
+  public function setSize( Size $size ) {
+    if ( is_null( $size ) ) {
+      throw NullValueAlert::nullValue('Supplied size must be an instance of Size');
+    }
+    $this->size = $size;
   }
 
 }
