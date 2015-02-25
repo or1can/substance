@@ -27,7 +27,7 @@ use Substance\Core\Database\SQL\AbstractSQLTest;
 class FloatTest extends AbstractSQLTest {
 
   /**
-   * Test building an integer.
+   * Test building an float.
    */
   public function testBuild() {
     $float = new Float();
@@ -35,7 +35,7 @@ class FloatTest extends AbstractSQLTest {
   }
 
   /**
-   * Test getting an integers size.
+   * Test getting an floats size.
    */
   public function testGetSize() {
     $float = new Float();
@@ -43,7 +43,7 @@ class FloatTest extends AbstractSQLTest {
   }
 
   /**
-   * Test setting an integers size.
+   * Test setting an floats size.
    */
   public function testSetSize() {
     $float = new Float();
@@ -52,7 +52,7 @@ class FloatTest extends AbstractSQLTest {
   }
 
   /**
-   * Test setting an integers size with null.
+   * Test setting an floats size with null.
    *
    * @expectedException Substance\Core\Alert\Alert
    */
