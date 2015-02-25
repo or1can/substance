@@ -22,6 +22,8 @@ use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\Schema\Types\Float;
 use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Database\Schema\Types\Numeric;
+use Substance\Core\Database\Schema\Types\VarChar;
+use Substance\Core\Database\Schema\Types\Char;
 
 /**
  * Base for database tests.
@@ -49,6 +51,14 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
     $this->initialise();
     // Get the default database for the connection.
     $this->database = $this->connection->getDatabase();
+  }
+
+  /**
+   * Test building a char.
+   */
+  public function testBuildChar() {
+    $char = new Char( 10 );
+    $this->assertEquals( 'CHAR(10)', $this->database->buildChar( $char ) );
   }
 
   /**
@@ -89,6 +99,14 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
   public function testBuildNumeric() {
     $numeric = new Numeric( 10, 5 );
     $this->assertEquals( 'NUMERIC(10, 5)', $this->database->buildNumeric( $numeric ) );
+  }
+
+  /**
+   * Test building a varchar.
+   */
+  public function testBuildVarChar() {
+    $varchar = new VarChar( 10 );
+    $this->assertEquals( 'VARCHAR(10)', $this->database->buildVarChar( $varchar ) );
   }
 
   /**
