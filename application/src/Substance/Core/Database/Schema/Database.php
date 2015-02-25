@@ -21,6 +21,7 @@ namespace Substance\Core\Database\Schema;
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
+use Substance\Core\Database\Schema\Types\Char;
 use Substance\Core\Database\Schema\Types\Float;
 use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Database\Schema\Types\Numeric;
@@ -46,6 +47,7 @@ use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
 use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
 use Substance\Core\Database\SQL\TableReferences\LeftJoin;
 use Substance\Core\Database\SQL\TableReferences\TableName;
+use Substance\Core\Database\Schema\Types\VarChar;
 
 /**
  * Represents a database schema.
@@ -100,6 +102,14 @@ interface Database {
    * @return string the built AllColumnsFromTable.
    */
   public function buildAllColumnsFromTable( AllColumnsFromTable $all_columns_from_table );
+
+  /**
+   * Build the specified Char object.
+   *
+   * @param Char $char the Char to build.
+   * @return string the built Char.
+   */
+  public function buildChar( Char $char );
 
   /**
    * Build the specified Column object.
@@ -271,6 +281,14 @@ interface Database {
    * @return string the built Using.
    */
   public function buildUsing( Using $using );
+
+  /**
+   * Build the specified VarChar object.
+   *
+   * @param VarChar $varchar the VarChar to build.
+   * @return string the built VarChar.
+   */
+  public function buildVarChar( VarChar $varchar );
 
   /**
    * Creates a table with the specified name in the database specified in this

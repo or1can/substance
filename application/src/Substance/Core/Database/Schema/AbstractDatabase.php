@@ -47,6 +47,8 @@ use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
 use Substance\Core\Database\SQL\TableReferences\LeftJoin;
 use Substance\Core\Database\SQL\TableReferences\TableName;
 use Substance\Core\Database\Schema\Types\Numeric;
+use Substance\Core\Database\Schema\Types\Char;
+use Substance\Core\Database\Schema\Types\VarChar;
 
 /**
  * An abstract database schema implementation.
@@ -118,6 +120,16 @@ abstract class AbstractDatabase implements Database {
     // FIXME - This needs to support aliases and tables.
     $string = $this->quoteTable( $all_columns_from_table->getTable() );
     $string .= '.*';
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildChar()
+   */
+  public function buildChar( Char $char ) {
+    $string = 'CHAR(';
+    $string .= $char->getLength();
+    $string .= ')';
     return $string;
   }
 
@@ -409,6 +421,16 @@ abstract class AbstractDatabase implements Database {
     $string = 'USING ( ';
     $string .= $using->getColumns()->build( $this );
     $string .= ' )';
+    return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildVarChar()
+   */
+  public function buildVarChar( VarChar $varchar ) {
+    $string = 'VARCHAR(';
+    $string .= $varchar->getLength();
+    $string .= ')';
     return $string;
   }
 
