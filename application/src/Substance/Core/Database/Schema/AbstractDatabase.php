@@ -203,7 +203,7 @@ abstract class AbstractDatabase implements Database {
       $separator = ', ';
       $sql .= $column->build( $this );
     }
-    $sql .= ' )';
+    $sql .= ')';
     return $sql;
   }
 
