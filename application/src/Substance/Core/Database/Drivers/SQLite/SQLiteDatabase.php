@@ -20,12 +20,15 @@ namespace Substance\Core\Database\Drivers\SQLite;
 
 use Substance\Core\Database\Schema\AbstractDatabase;
 use Substance\Core\Database\Schema\BasicTable;
+use Substance\Core\Database\Schema\Types\Char;
+use Substance\Core\Database\Schema\Types\Date;
+use Substance\Core\Database\Schema\Types\DateTime;
 use Substance\Core\Database\Schema\Types\Float;
+use Substance\Core\Database\Schema\Types\Time;
+use Substance\Core\Database\Schema\Types\VarChar;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Queries\Select;
-use Substance\Core\Database\Schema\Types\Char;
-use Substance\Core\Database\Schema\Types\VarChar;
 
 /**
  * A SQLite database schema object, handling SQLite database level
@@ -41,11 +44,38 @@ class SQLiteDatabase extends AbstractDatabase {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\AbstractDatabase::buildDate()
+   */
+  public function buildDate( Date $date ) {
+    // TODO - Allow columns to be automatically converted appropriately for
+    // storage. e.g. convert to unix time or number of days since epoch.
+    return 'TEXT';
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\AbstractDatabase::buildDateTime()
+   */
+  public function buildDateTime( DateTime $datetime ) {
+    // TODO - Allow columns to be automatically converted appropriately for
+    // storage. e.g. convert to unix time or number of days since epoch.
+    return 'TEXT';
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\AbstractDatabase::buildFloat()
    */
   public function buildFloat( Float $float ) {
     // SQLite only has one floating point type.
     return 'REAL';
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\AbstractDatabase::buildTime()
+   */
+  public function buildTime( Time $time ) {
+    // TODO - Allow columns to be automatically converted appropriately for
+    // storage. e.g. convert to unix time or number of days since epoch.
+    return 'TEXT';
   }
 
   /* (non-PHPdoc)

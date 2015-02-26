@@ -22,10 +22,13 @@ use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
 use Substance\Core\Database\Schema\Types\Char;
+use Substance\Core\Database\Schema\Types\Date;
+use Substance\Core\Database\Schema\Types\DateTime;
 use Substance\Core\Database\Schema\Types\Float;
 use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Database\Schema\Types\Numeric;
 use Substance\Core\Database\Schema\Types\Text;
+use Substance\Core\Database\Schema\Types\Time;
 use Substance\Core\Database\Schema\Types\VarChar;
 use Substance\Core\Database\SQL\Buildable;
 use Substance\Core\Database\SQL\Columns\AllColumns;
@@ -202,6 +205,20 @@ abstract class AbstractDatabase implements Database {
     }
     $sql .= ' )';
     return $sql;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildDate()
+   */
+  public function buildDate( Date $date ) {
+    return 'DATE';
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildDateTime()
+   */
+  public function buildDateTime( DateTime $datetime ) {
+    return 'DATETIME';
   }
 
   /* (non-PHPdoc)
@@ -420,6 +437,13 @@ abstract class AbstractDatabase implements Database {
    */
   public function buildText( Text $text ) {
     return 'TEXT';
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildTime()
+   */
+  public function buildTime( Time $time ) {
+    return 'TIME';
   }
 
   /* (non-PHPdoc)

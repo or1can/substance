@@ -20,10 +20,13 @@ namespace Substance\Core\Database\Schema;
 
 use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\Schema\Types\Char;
+use Substance\Core\Database\Schema\Types\Date;
+use Substance\Core\Database\Schema\Types\DateTime;
 use Substance\Core\Database\Schema\Types\Float;
 use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Database\Schema\Types\Numeric;
 use Substance\Core\Database\Schema\Types\Text;
+use Substance\Core\Database\Schema\Types\Time;
 use Substance\Core\Database\Schema\Types\VarChar;
 
 /**
@@ -60,6 +63,22 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
   public function testBuildChar() {
     $char = new Char( 10 );
     $this->assertEquals( 'CHAR(10)', $this->database->buildChar( $char ) );
+  }
+
+  /**
+   * Test building a date.
+   */
+  public function testBuildDate() {
+    $date = new Date();
+    $this->assertEquals( 'DATE', $this->database->buildDate( $date ) );
+  }
+
+  /**
+   * Test building a datetime.
+   */
+  public function testBuildDateTime() {
+    $datetime = new DateTime();
+    $this->assertEquals( 'DATETIME', $this->database->buildDateTime( $datetime ) );
   }
 
   /**
@@ -108,6 +127,14 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
   public function testBuildText() {
     $text = new Text();
     $this->assertEquals( 'TEXT', $this->database->buildText( $text ) );
+  }
+
+  /**
+   * Test building a time.
+   */
+  public function testBuildTime() {
+    $time = new Time();
+    $this->assertEquals( 'TIME', $this->database->buildTime( $time ) );
   }
 
   /**

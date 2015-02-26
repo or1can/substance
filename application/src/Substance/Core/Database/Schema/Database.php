@@ -22,10 +22,13 @@ use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
 use Substance\Core\Database\Schema\Types\Char;
+use Substance\Core\Database\Schema\Types\Date;
+use Substance\Core\Database\Schema\Types\DateTime;
 use Substance\Core\Database\Schema\Types\Float;
 use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Database\Schema\Types\Numeric;
 use Substance\Core\Database\Schema\Types\Text;
+use Substance\Core\Database\Schema\Types\Time;
 use Substance\Core\Database\Schema\Types\VarChar;
 use Substance\Core\Database\SQL\Buildable;
 use Substance\Core\Database\SQL\Columns\AllColumns;
@@ -152,6 +155,22 @@ interface Database {
    * @return string the built CreateTable.
    */
   public function buildCreateTable( CreateTable $create_table );
+
+  /**
+   * Build the specified Date object.
+   *
+   * @param Date $date the Date to build.
+   * @return string the built Date.
+   */
+  public function buildDate( Date $date );
+
+  /**
+   * Build the specified DateTime object.
+   *
+   * @param DateTime $datetime the DateTime to build.
+   * @return string the built DateTime.
+   */
+  public function buildDateTime( DateTime $datetime );
 
   /**
    * Build the specified DropTable object.
@@ -282,6 +301,14 @@ interface Database {
    * @return string the built Text.
    */
   public function buildText( Text $text );
+
+  /**
+   * Build the specified Time object.
+   *
+   * @param Time $time the Time to build.
+   * @return string the built Time.
+   */
+  public function buildTime( Time $time );
 
   /**
    * Build the specified Using object.

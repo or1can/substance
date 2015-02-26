@@ -21,7 +21,10 @@ namespace Substance\Core\Database\Drivers\SQLite;
 use Substance\Core\Database\Schema\AbstractDatabaseTest;
 use Substance\Core\Database\Schema\Size;
 use Substance\Core\Database\Schema\Types\Char;
+use Substance\Core\Database\Schema\Types\Date;
+use Substance\Core\Database\Schema\Types\DateTime;
 use Substance\Core\Database\Schema\Types\Float;
+use Substance\Core\Database\Schema\Types\Time;
 use Substance\Core\Database\Schema\Types\VarChar;
 
 /**
@@ -38,6 +41,22 @@ class SQLiteDatabaseTest extends AbstractDatabaseTest {
   }
 
   /**
+   * Test building a date.
+   */
+  public function testBuildDate() {
+    $date = new Date();
+    $this->assertEquals( 'TEXT', $this->database->buildDate( $date ) );
+  }
+
+  /**
+   * Test building a datetime.
+   */
+  public function testBuildDateTime() {
+    $datetime = new DateTime();
+    $this->assertEquals( 'TEXT', $this->database->buildDateTime( $datetime ) );
+  }
+
+  /**
    * Test building a float for MySQL.
    */
   public function testBuildFloat() {
@@ -51,6 +70,14 @@ class SQLiteDatabaseTest extends AbstractDatabaseTest {
     $this->assertEquals( 'REAL', $this->database->buildFloat( $float ) );
     $float->setSize( Size::size( Size::BIG ) );
     $this->assertEquals( 'REAL', $this->database->buildFloat( $float ) );
+  }
+
+  /**
+   * Test building a time.
+   */
+  public function testBuildTime() {
+    $time = new Time();
+    $this->assertEquals( 'TEXT', $this->database->buildTime( $time ) );
   }
 
   /**
