@@ -21,6 +21,7 @@ namespace Substance\Core\Database\Schema;
 use Substance\Core\Database\Drivers\Unconnected\UnconnectedConnection;
 use Substance\Core\Database\Drivers\Unconnected\UnconnectedDatabase;
 use Substance\Core\Database\Schema\Types\Integer;
+use Substance\Core\Database\Schema\Types\VarChar;
 use Substance\Core\Database\SQL\AbstractSQLTest;
 
 /**
@@ -49,6 +50,30 @@ class BasicTableTest extends AbstractSQLTest {
     // Check it contains the column.
     $this->assertCount( 1, $table->listColumns() );
     $this->assertTrue( $table->hasColumnByName('col') );
+    // Add another column.
+    $column = new ColumnImpl( $table, 'col2', new VarChar( 5 ) );
+    $table->addColumn( $column );
+    // Check it contains the column.
+    $this->assertCount( 2, $table->listColumns() );
+    $this->assertTrue( $table->hasColumnByName('col') );
+    $this->assertTrue( $table->hasColumnByName('col2') );
+  }
+
+  /**
+   * Tests adding two columns with the same name.
+   *
+   * @expectedException Substance\Core\Database\Alerts\DatabaseAlert
+   */
+  public function testAddColumnDuplicate() {
+    // Create a table.
+    $table = new BasicTable( $this->connection, 'table' );
+    $this->assertCount( 0, $table->listColumns() );
+    // Add a column.
+    $column = new ColumnImpl( $table, 'col', new Integer() );
+    $table->addColumn( $column );
+    // Add another column with the same name.
+    $column = new ColumnImpl( $table, 'col', new VarChar( 5 ) );
+    $table->addColumn( $column );
   }
 
   /**
@@ -63,6 +88,27 @@ class BasicTableTest extends AbstractSQLTest {
     // Check it contains the column.
     $this->assertCount( 1, $table->listColumns() );
     $this->assertTrue( $table->hasColumnByName('col') );
+    // Add another column.
+    $table->addColumnByName( 'col2', new VarChar( 5 ) );
+    // Check it contains the column.
+    $this->assertCount( 2, $table->listColumns() );
+    $this->assertTrue( $table->hasColumnByName('col') );
+    $this->assertTrue( $table->hasColumnByName('col2') );
+  }
+
+  /**
+   * Tests adding two columns by name with the same name.
+   *
+   * @expectedException Substance\Core\Database\Alerts\DatabaseAlert
+   */
+  public function testAddColumnByNameDuplicate() {
+    // Create a table.
+    $table = new BasicTable( $this->connection, 'table' );
+    $this->assertCount( 0, $table->listColumns() );
+    // Add a column
+    $table->addColumnByName( 'col', new Integer() );
+    // Add another column with the same name.
+    $table->addColumnByName( 'col', new Integer() );
   }
 
   /**
