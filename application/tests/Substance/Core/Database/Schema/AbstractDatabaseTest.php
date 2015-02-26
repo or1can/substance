@@ -19,11 +19,12 @@
 namespace Substance\Core\Database\Schema;
 
 use Substance\Core\Database\Schema\Database;
+use Substance\Core\Database\Schema\Types\Char;
 use Substance\Core\Database\Schema\Types\Float;
 use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Database\Schema\Types\Numeric;
+use Substance\Core\Database\Schema\Types\Text;
 use Substance\Core\Database\Schema\Types\VarChar;
-use Substance\Core\Database\Schema\Types\Char;
 
 /**
  * Base for database tests.
@@ -99,6 +100,14 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
   public function testBuildNumeric() {
     $numeric = new Numeric( 10, 5 );
     $this->assertEquals( 'NUMERIC(10, 5)', $this->database->buildNumeric( $numeric ) );
+  }
+
+  /**
+   * Test building a text.
+   */
+  public function testBuildText() {
+    $text = new Text();
+    $this->assertEquals( 'TEXT', $this->database->buildText( $text ) );
   }
 
   /**

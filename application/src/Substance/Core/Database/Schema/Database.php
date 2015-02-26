@@ -25,6 +25,8 @@ use Substance\Core\Database\Schema\Types\Char;
 use Substance\Core\Database\Schema\Types\Float;
 use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Database\Schema\Types\Numeric;
+use Substance\Core\Database\Schema\Types\Text;
+use Substance\Core\Database\Schema\Types\VarChar;
 use Substance\Core\Database\SQL\Buildable;
 use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Columns\AllColumnsFromTable;
@@ -47,7 +49,6 @@ use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
 use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
 use Substance\Core\Database\SQL\TableReferences\LeftJoin;
 use Substance\Core\Database\SQL\TableReferences\TableName;
-use Substance\Core\Database\Schema\Types\VarChar;
 
 /**
  * Represents a database schema.
@@ -273,6 +274,14 @@ interface Database {
    * @return string the built TableName.
    */
   public function buildTableName( TableName $table_name );
+
+  /**
+   * Build the specified Text object.
+   *
+   * @param Text $text the Text to build.
+   * @return string the built Text.
+   */
+  public function buildText( Text $text );
 
   /**
    * Build the specified Using object.

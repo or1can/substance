@@ -20,12 +20,22 @@ namespace Substance\Core\Database\Drivers\SQLite;
 
 use Substance\Core\Database\Schema\AbstractDatabaseTest;
 use Substance\Core\Database\Schema\Size;
+use Substance\Core\Database\Schema\Types\Char;
 use Substance\Core\Database\Schema\Types\Float;
+use Substance\Core\Database\Schema\Types\VarChar;
 
 /**
  * Base for SQLite database tests.
  */
 class SQLiteDatabaseTest extends AbstractDatabaseTest {
+
+  /**
+   * Test building a char.
+   */
+  public function testBuildChar() {
+    $char = new Char( 10 );
+    $this->assertEquals( 'TEXT', $this->database->buildChar( $char ) );
+  }
 
   /**
    * Test building a float for MySQL.
@@ -41,6 +51,14 @@ class SQLiteDatabaseTest extends AbstractDatabaseTest {
     $this->assertEquals( 'REAL', $this->database->buildFloat( $float ) );
     $float->setSize( Size::size( Size::BIG ) );
     $this->assertEquals( 'REAL', $this->database->buildFloat( $float ) );
+  }
+
+  /**
+   * Test building a varchar.
+   */
+  public function testBuildVarChar() {
+    $varchar = new VarChar( 10 );
+    $this->assertEquals( 'TEXT', $this->database->buildVarChar( $varchar ) );
   }
 
   /* (non-PHPdoc)

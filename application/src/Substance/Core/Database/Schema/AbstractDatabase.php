@@ -21,8 +21,12 @@ namespace Substance\Core\Database\Schema;
 use Substance\Core\Alert\Alert;
 use Substance\Core\Database\Connection;
 use Substance\Core\Database\Schema\Table;
+use Substance\Core\Database\Schema\Types\Char;
 use Substance\Core\Database\Schema\Types\Float;
 use Substance\Core\Database\Schema\Types\Integer;
+use Substance\Core\Database\Schema\Types\Numeric;
+use Substance\Core\Database\Schema\Types\Text;
+use Substance\Core\Database\Schema\Types\VarChar;
 use Substance\Core\Database\SQL\Buildable;
 use Substance\Core\Database\SQL\Columns\AllColumns;
 use Substance\Core\Database\SQL\Columns\AllColumnsFromTable;
@@ -46,9 +50,6 @@ use Substance\Core\Database\SQL\TableReferences\JoinConditions\On;
 use Substance\Core\Database\SQL\TableReferences\JoinConditions\Using;
 use Substance\Core\Database\SQL\TableReferences\LeftJoin;
 use Substance\Core\Database\SQL\TableReferences\TableName;
-use Substance\Core\Database\Schema\Types\Numeric;
-use Substance\Core\Database\Schema\Types\Char;
-use Substance\Core\Database\Schema\Types\VarChar;
 
 /**
  * An abstract database schema implementation.
@@ -412,6 +413,13 @@ abstract class AbstractDatabase implements Database {
       $string .= $this->quoteName( $table_name->getAlias() );
     }
     return $string;
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildText()
+   */
+  public function buildText( Text $text ) {
+    return 'TEXT';
   }
 
   /* (non-PHPdoc)
