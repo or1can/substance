@@ -30,6 +30,35 @@ use Substance\Core\Database\Schema\Types\Integer;
 class MySQLDatabaseTest extends AbstractDatabaseTest {
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\AbstractDatabaseTest::getBuildCreateTableValues()
+   */
+  public function getBuildCreateTableValues() {
+    return array(
+      array(
+        array(
+          'CREATE TABLE `table` ()',
+          'CREATE TABLE `table` (`col` INTEGER, `col2` CHAR(5), `col3` VARCHAR(10), `col4` NUMERIC(10, 5), `col5` TEXT, `col6` DATE, `col7` DATETIME, `col8` TIME)',
+          'CREATE TABLE `table.dot` ()',
+        )
+      )
+    );
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\AbstractDatabaseTest::getBuildSelectValues()
+   */
+  public function getBuildSelectValues() {
+    return array(
+      array(
+        array(
+          'SELECT `column1`, `t`.`column2`, `t2`.`column3` FROM `table1` AS `t1` INNER JOIN `table2` AS `t` LEFT JOIN `table3` AS `t2` ON `column1` = `column2` WHERE `column1` = :dbph GROUP BY `column1` ORDER BY `column1` ASC LIMIT 5 OFFSET 1',
+          array( ':dbph' => 5 ),
+        )
+      )
+    );
+  }
+
+  /* (non-PHPdoc)
    * @see AbstractConnectionTest::initialise()
    */
   public function initialise() {

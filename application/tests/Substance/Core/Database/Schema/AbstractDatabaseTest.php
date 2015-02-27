@@ -28,6 +28,11 @@ use Substance\Core\Database\Schema\Types\Numeric;
 use Substance\Core\Database\Schema\Types\Text;
 use Substance\Core\Database\Schema\Types\Time;
 use Substance\Core\Database\Schema\Types\VarChar;
+use Substance\Core\Database\SQL\DataDefinitions\CreateTable;
+use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
+use Substance\Core\Database\SQL\Expressions\EqualsExpression;
+use Substance\Core\Database\SQL\Expressions\LiteralExpression;
+use Substance\Core\Database\SQL\Queries\Select;
 
 /**
  * Base for database tests.
@@ -46,6 +51,41 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
 
   protected $test_database_names = array( 'test' );
 
+  /**
+   * Returns the expected values for the build create table test.
+   *
+   * @return multitype:multitype:multitype:string multitype:number
+   * @see AbstractDatabaseTest::testBuildCreateTable()
+   */
+  public function getBuildCreateTableValues() {
+    return array(
+      array(
+        array(
+          'CREATE TABLE "table" ()',
+          'CREATE TABLE "table" ("col" INTEGER, "col2" CHAR(5), "col3" VARCHAR(10), "col4" NUMERIC(10, 5), "col5" TEXT, "col6" DATE, "col7" DATETIME, "col8" TIME)',
+          'CREATE TABLE "table.dot" ()',
+        )
+      )
+    );
+  }
+
+  /**
+   * Returns the expected values for the build select test.
+   *
+   * @return multitype:multitype:multitype:string multitype:number
+   * @see AbstractDatabaseTest::testBuildSelect()
+   */
+  public function getBuildSelectValues() {
+    return array(
+      array(
+        array(
+          'SELECT "column1", "t"."column2", "t2"."column3" FROM "table1" AS "t1" INNER JOIN "table2" AS "t" LEFT JOIN "table3" AS "t2" ON "column1" = "column2" WHERE "column1" = :dbph GROUP BY "column1" ORDER BY "column1" ASC LIMIT 5 OFFSET 1',
+          array( ':dbph' => 5 ),
+        )
+      )
+    );
+  }
+
   abstract public function initialise();
 
   /* (non-PHPdoc)
@@ -63,6 +103,35 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
   public function testBuildChar() {
     $char = new Char( 10 );
     $this->assertEquals( 'CHAR(10)', $this->database->buildChar( $char ) );
+  }
+
+  /**
+   * Test the building a create table.
+   *
+   * @dataProvider getBuildCreateTableValues
+   */
+  public function testBuildCreateTable( $expected_sql ) {
+    $table = new BasicTable( $this->database, 'table' );
+    $definition = new CreateTable( $this->database, $table );
+    $sql = $definition->build( $this->database );
+    $this->assertEquals( $expected_sql[ 0 ], $sql );
+
+    // Add some columns
+    $table->addColumnByName( 'col', new Integer() );
+    $table->addColumnByName( 'col2', new Char( 5 ) );
+    $table->addColumnByName( 'col3', new VarChar( 10 ) );
+    $table->addColumnByName( 'col4', new Numeric( 10, 5 ) );
+    $table->addColumnByName( 'col5', new Text() );
+    $table->addColumnByName( 'col6', new Date() );
+    $table->addColumnByName( 'col7', new DateTime() );
+    $table->addColumnByName( 'col8', new Time() );
+    $sql = $definition->build( $this->database );
+    $this->assertEquals( $expected_sql[ 1 ], $sql );
+
+    $table = new BasicTable( $this->database, 'table.dot' );
+    $definition = new CreateTable( $this->database, $table );
+    $sql = $definition->build( $this->database );
+    $this->assertEquals( $expected_sql[ 2 ], $sql );
   }
 
   /**
@@ -119,6 +188,30 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
   public function testBuildNumeric() {
     $numeric = new Numeric( 10, 5 );
     $this->assertEquals( 'NUMERIC(10, 5)', $this->database->buildNumeric( $numeric ) );
+  }
+
+  /**
+   * Test building a select statement.
+   *
+   * @dataProvider getBuildSelectValues
+   */
+  public function testBuildSelect( $expected_sql ) {
+    // Build a select query with everything we can think of.
+    $select = Select::select( 'table1', 't1' );
+    $sql = $select
+      ->innerJoinByName( 'table2', $table2 = $select->uniqueTableAlias('t') )
+      ->leftJoinByNameOn( 'table3', $table3 = $select->uniqueTableAlias('t'), new EqualsExpression( new ColumnNameExpression('column1'), new ColumnNameExpression('column2') ) )
+      ->addColumn( new ColumnNameExpression('column1') )
+      ->addColumnByName( 'column2', NULL, $table2 )
+      ->addColumnByName( 'column3', NULL, $table3 )
+      ->where( new EqualsExpression( new ColumnNameExpression('column1'), new LiteralExpression( 5 ) ) )
+      ->groupBy( new ColumnNameExpression('column1') )
+      ->orderBy( new ColumnNameExpression('column1') )
+      ->limit( 5 )
+      ->offset( 1 )
+      ->build( $this->database );
+    $this->assertEquals( $expected_sql[ 0 ], $sql );
+    $this->assertEquals( $expected_sql[ 1 ], $select->getArguments() );
   }
 
   /**

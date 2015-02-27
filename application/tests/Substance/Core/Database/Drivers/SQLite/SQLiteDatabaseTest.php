@@ -33,6 +33,44 @@ use Substance\Core\Database\Schema\Types\VarChar;
 class SQLiteDatabaseTest extends AbstractDatabaseTest {
 
   /**
+   * Returns the expected values for the build create table test.
+   *
+   * @return multitype:multitype:multitype:string multitype:number
+   * @see AbstractDatabaseTest::testBuildCreateTable()
+   */
+  public function getBuildCreateTableValues() {
+    return array(
+      array(
+        array(
+          'CREATE TABLE "table" ()',
+          'CREATE TABLE "table" ("col" INTEGER, "col2" TEXT, "col3" TEXT, "col4" NUMERIC(10, 5), "col5" TEXT, "col6" TEXT, "col7" TEXT, "col8" TEXT)',
+          'CREATE TABLE "table.dot" ()',
+        )
+      )
+    );
+  }
+
+  /* (non-PHPdoc)
+   * @see AbstractConnectionTest::initialise()
+   */
+  public function initialise() {
+    // Remove known test databases.
+    if ( !file_exists('/tmp/substance') ) {
+      mkdir('/tmp/substance');
+    }
+    $clear_databases = $this->test_database_names;
+    $clear_databases[] = 'mydb';
+    foreach ( $clear_databases as $database ) {
+      $db = "/tmp/substance/$database.db";
+      if ( file_exists( $db ) ) {
+        $this->assertTrue( unlink("/tmp/substance/$database.db"), 'Failed to remove old SQLite database.' );
+      }
+    }
+    // Open the test database.
+    $this->connection = new SQLiteConnection('/tmp/substance/mydb.db');
+  }
+
+  /**
    * Test building a char.
    */
   public function testBuildChar() {
@@ -86,26 +124,6 @@ class SQLiteDatabaseTest extends AbstractDatabaseTest {
   public function testBuildVarChar() {
     $varchar = new VarChar( 10 );
     $this->assertEquals( 'TEXT', $this->database->buildVarChar( $varchar ) );
-  }
-
-  /* (non-PHPdoc)
-   * @see AbstractConnectionTest::initialise()
-   */
-  public function initialise() {
-    // Remove known test databases.
-    if ( !file_exists('/tmp/substance') ) {
-      mkdir('/tmp/substance');
-    }
-    $clear_databases = $this->test_database_names;
-    $clear_databases[] = 'mydb';
-    foreach ( $clear_databases as $database ) {
-      $db = "/tmp/substance/$database.db";
-      if ( file_exists( $db ) ) {
-        $this->assertTrue( unlink("/tmp/substance/$database.db"), 'Failed to remove old SQLite database.' );
-      }
-    }
-    // Open the test database.
-    $this->connection = new SQLiteConnection('/tmp/substance/mydb.db');
   }
 
   /**
