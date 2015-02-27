@@ -22,8 +22,8 @@ use Substance\Core\Alert\Alert;
 use Substance\Core\Alert\Alerts\IllegalStateAlert;
 use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\Schema\Column;
-use Substance\Core\Database\SQL\DataDefinition;
 use Substance\Core\Database\Schema\Table;
+use Substance\Core\Database\SQL\DataDefinition;
 
 /**
  * Represents a CREATE TABLE query.
@@ -44,12 +44,10 @@ class CreateTable extends DataDefinition {
    * Constructs a create table object to create a table with the specified
    * name.
    *
-   * @param Database $database the database to create the table in.
    * @param Table $table the table to create.
    * @param boolean $temporary TRUE if this table is temporary and FALSE otherwise.
    */
-  public function __construct( Database $database, Table $table, $temporary = FALSE ) {
-    parent::__construct( $database );
+  public function __construct( Table $table, $temporary = FALSE ) {
     $this->table = $table;
     $this->temporary = $temporary;
   }

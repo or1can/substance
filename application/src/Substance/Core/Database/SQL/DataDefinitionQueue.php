@@ -40,9 +40,9 @@ class DataDefinitionQueue {
   /**
    * Apply the data definitions in this queue.
    */
-  public function apply() {
+  public function apply( Database $database ) {
     while ( $data_definition = array_shift( $this->queue ) ) {
-      $data_definition->apply();
+      $data_definition->apply( $database );
     }
   }
 

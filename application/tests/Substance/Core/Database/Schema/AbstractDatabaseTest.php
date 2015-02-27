@@ -33,6 +33,7 @@ use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Queries\Select;
+use Substance\Core\Database\SQL\DataDefinitions\DropTable;
 
 /**
  * Base for database tests.
@@ -64,6 +65,22 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
           'CREATE TABLE "table" ()',
           'CREATE TABLE "table" ("col" INTEGER, "col2" CHAR(5), "col3" VARCHAR(10), "col4" NUMERIC(10, 5), "col5" TEXT, "col6" DATE, "col7" DATETIME, "col8" TIME)',
           'CREATE TABLE "table.dot" ()',
+        )
+      )
+    );
+  }
+
+  /**
+   * Returns the expected values for the build drop table test.
+   *
+   * @return multitype:multitype:multitype:string multitype:number
+   * @see AbstractDatabaseTest::testBuildDropTable()
+   */
+  public function getBuildDropTableValues() {
+    return array(
+      array(
+        array(
+          'DROP TABLE "table"',
         )
       )
     );
@@ -112,7 +129,7 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
    */
   public function testBuildCreateTable( $expected_sql ) {
     $table = new BasicTable( $this->database, 'table' );
-    $definition = new CreateTable( $this->database, $table );
+    $definition = new CreateTable( $table );
     $sql = $definition->build( $this->database );
     $this->assertEquals( $expected_sql[ 0 ], $sql );
 
@@ -129,7 +146,7 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals( $expected_sql[ 1 ], $sql );
 
     $table = new BasicTable( $this->database, 'table.dot' );
-    $definition = new CreateTable( $this->database, $table );
+    $definition = new CreateTable( $table );
     $sql = $definition->build( $this->database );
     $this->assertEquals( $expected_sql[ 2 ], $sql );
   }
@@ -148,6 +165,17 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
   public function testBuildDateTime() {
     $datetime = new DateTime();
     $this->assertEquals( 'DATETIME', $this->database->buildDateTime( $datetime ) );
+  }
+
+  /**
+   * Test the building a drop table.
+   *
+   * @dataProvider getBuildDropTableValues
+   */
+  public function testBuildDropTable( $expected_sql ) {
+    $definition = new DropTable('table');
+    $sql = $definition->build( $this->database );
+    $this->assertEquals( $expected_sql[ 0 ], $sql );
   }
 
   /**

@@ -35,11 +35,9 @@ class DropTable extends DataDefinition {
    * Constructs a drop table object to drop a table with the specified
    * name.
    *
-   * @param Database $database the database to drop the table from.
    * @param string $name the name of the table to create.
    */
-  public function __construct( Database $database, $name ) {
-    parent::__construct( $database );
+  public function __construct( $name ) {
     $this->name = $name;
   }
 

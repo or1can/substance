@@ -28,31 +28,18 @@ use Substance\Core\Database\Schema\Database;
 abstract class DataDefinition implements Buildable {
 
   /**
-   * @var Database the database this operation affects.
-   */
-  protected $database;
-
-  /**
-   * Constructs a new data definition operating on the specified database.
-   *
-   * @param Database $database the database to operate on.
-   */
-  public function __construct( Database $database ) {
-    $this->database = $database;
-  }
-
-  /**
    * Apply this database definition to the underlying database.
    *
+   * @param Database $database the database to apply this data definition to.
    * @throws Alert if something goes wrong.
    */
-  public function apply() {
+  public function apply( Database $database ) {
     $this->check();
-    $sql = $this->build( $this->database );
+    $sql = $this->build( $database );
     try {
-      $this->database->getConnection()->execute( $sql );
+      $database->getConnection()->execute( $sql );
     } catch ( \PDOException $pdoe ) {
-      throw DatabaseAlert::database('Failed to apply database schema change.')
+      throw DatabaseAlert::database('Failed to apply database schema change')
         ->culprit( 'data definiton', $sql )
         ->culprit( 'PDO message', $pdoe->getMessage() );
     }

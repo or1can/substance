@@ -45,6 +45,19 @@ class MySQLDatabaseTest extends AbstractDatabaseTest {
   }
 
   /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\AbstractDatabaseTest::getBuildDropTableValues()
+   */
+  public function getBuildDropTableValues() {
+    return array(
+      array(
+        array(
+          'DROP TABLE `table`',
+        )
+      )
+    );
+  }
+
+  /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\AbstractDatabaseTest::getBuildSelectValues()
    */
   public function getBuildSelectValues() {
