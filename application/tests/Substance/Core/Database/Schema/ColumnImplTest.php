@@ -27,6 +27,28 @@ use Substance\Core\Database\Schema\Types\Integer;
 class ColumnImplTest extends AbstractSQLTest {
 
   /**
+   * Tests constructing a ColumnImpl with various default values.
+   */
+  public function testConstructDefault() {
+    $table = new BasicTable( $this->connection, 'table' );
+    new ColumnImpl( $table, 'col', new Integer(), NULL );
+    new ColumnImpl( $table, 'col', new Integer(), TRUE );
+    new ColumnImpl( $table, 'col', new Integer(), 'string' );
+    new ColumnImpl( $table, 'col', new Integer(), 5 );
+    new ColumnImpl( $table, 'col', new Integer(), 4.29723 );
+  }
+
+  /**
+   * Tests constructing a ColumnImpl with an illegal default.
+   *
+   * @expectedException Substance\Core\Alert\Alerts\IllegalValueAlert
+   */
+  public function testConstructDefaultIllegal() {
+    $table = new BasicTable( $this->connection, 'table' );
+    new ColumnImpl( $table, 'col', new Integer(), $table );
+  }
+
+  /**
    * Tests a colummn allowing null values.
    */
   public function testAllowsNull() {

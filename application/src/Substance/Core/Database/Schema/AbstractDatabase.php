@@ -144,6 +144,14 @@ abstract class AbstractDatabase implements Database {
     $sql = $this->quoteName( $column->getName() );
     $sql .= ' ';
     $sql .= $column->getType()->build( $this );
+    if ( $column->allowsNull() ) {
+      $sql .= ' NULL';
+    } else {
+      $sql .= ' NOT NULL';
+    }
+    $sql .= ' DEFAULT ';
+    $default = new LiteralExpression( $column->getDefault() );
+    $sql .= $this->buildLiteralExpression( $default );
     return $sql;
   }
 
@@ -301,7 +309,9 @@ abstract class AbstractDatabase implements Database {
       $string = $placeholder;
     } else {
       $value = $literal_expression->getValue();
-      if ( is_bool( $value ) ) {
+      if ( is_null( $value ) ) {
+        $string = 'NULL';
+      } elseif ( is_bool( $value ) ) {
         $string = $value ? 'TRUE' : 'FALSE';
       } elseif ( is_string( $value ) ) {
         $string = $this->quoteString( $value );

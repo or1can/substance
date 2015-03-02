@@ -53,7 +53,7 @@ class CreateTableTest extends AbstractSQLTest {
     $table->addColumnByName( 'col7', new DateTime() );
     $table->addColumnByName( 'col8', new Time() );
     $sql = $definition->build( $this->connection );
-    $this->assertEquals( 'CREATE TABLE `table` (`col` INTEGER, `col2` CHAR(5), `col3` VARCHAR(10), `col4` NUMERIC(10, 5), `col5` TEXT, `col6` DATE, `col7` DATETIME, `col8` TIME)', $sql );
+    $this->assertEquals( 'CREATE TABLE `table` (`col` INTEGER NULL DEFAULT NULL, `col2` CHAR(5) NULL DEFAULT NULL, `col3` VARCHAR(10) NULL DEFAULT NULL, `col4` NUMERIC(10, 5) NULL DEFAULT NULL, `col5` TEXT NULL DEFAULT NULL, `col6` DATE NULL DEFAULT NULL, `col7` DATETIME NULL DEFAULT NULL, `col8` TIME NULL DEFAULT NULL)', $sql );
 
     $table = new BasicTable( $this->connection, 'table.dot' );
     $definition = new CreateTable( $table );

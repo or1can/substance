@@ -36,7 +36,7 @@ class UnconnectedDatabaseTest extends AbstractDatabaseTest {
       array(
         array(
           'CREATE TABLE table ()',
-          'CREATE TABLE table (col INTEGER, col2 CHAR(5), col3 VARCHAR(10), col4 NUMERIC(10, 5), col5 TEXT, col6 DATE, col7 DATETIME, col8 TIME)',
+          'CREATE TABLE table (col INTEGER NULL DEFAULT NULL, col2 CHAR(5) NULL DEFAULT NULL, col3 VARCHAR(10) NULL DEFAULT NULL, col4 NUMERIC(10, 5) NULL DEFAULT NULL, col5 TEXT NULL DEFAULT NULL, col6 DATE NULL DEFAULT NULL, col7 DATETIME NULL DEFAULT NULL, col8 TIME NULL DEFAULT NULL)',
           'CREATE TABLE table.dot ()',
         )
       )

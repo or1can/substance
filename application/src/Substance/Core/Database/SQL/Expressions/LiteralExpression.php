@@ -18,7 +18,7 @@
 
 namespace Substance\Core\Database\SQL\Expressions;
 
-use Substance\Core\Alert\Alert;
+use Substance\Core\Alert\Alerts\IllegalValueAlert;
 use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\SQL\Query;
 
@@ -42,14 +42,17 @@ class LiteralExpression extends AbstractExpression {
       $this->value = $value;
     } else {
       // TODO - Would an Illegal argument alert be useful?
-      throw Alert::alert( 'Illegal argument', 'Only boolean, string, integer and float types are allowed' )
+      throw IllegalValueAlert::illegal_value( 'Only null, boolean, string, integer and float types are allowed' )
+        ->culprit( 'value', $value )
         ->culprit( 'type', gettype( $value ) );
     }
   }
 
   public function __toString() {
     $string = '';
-    if ( is_bool( $this->value ) ) {
+    if ( is_null( $this->value ) ) {
+      $string = 'NULL';
+    } elseif ( is_bool( $this->value ) ) {
       $string = $this->value ? 'TRUE' : 'FALSE';
     } elseif ( is_string( $this->value ) ) {
       $string = $this->value;
@@ -104,7 +107,7 @@ class LiteralExpression extends AbstractExpression {
    * otherwise.
    */
   public static function is_supported( $value ) {
-    return is_bool( $value ) || is_string( $value ) || is_int( $value ) || is_float( $value );
+    return is_null( $value ) || is_bool( $value ) || is_string( $value ) || is_int( $value ) || is_float( $value );
   }
 
 }

@@ -43,7 +43,7 @@ class SQLiteDatabaseTest extends AbstractDatabaseTest {
       array(
         array(
           'CREATE TABLE "table" ()',
-          'CREATE TABLE "table" ("col" INTEGER, "col2" TEXT, "col3" TEXT, "col4" NUMERIC(10, 5), "col5" TEXT, "col6" TEXT, "col7" TEXT, "col8" TEXT)',
+          'CREATE TABLE "table" ("col" INTEGER NULL DEFAULT NULL, "col2" TEXT NULL DEFAULT NULL, "col3" TEXT NULL DEFAULT NULL, "col4" NUMERIC(10, 5) NULL DEFAULT NULL, "col5" TEXT NULL DEFAULT NULL, "col6" TEXT NULL DEFAULT NULL, "col7" TEXT NULL DEFAULT NULL, "col8" TEXT NULL DEFAULT NULL)',
           'CREATE TABLE "table.dot" ()',
         )
       )

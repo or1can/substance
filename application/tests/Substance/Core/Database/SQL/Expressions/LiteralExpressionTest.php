@@ -26,6 +26,16 @@ use Substance\Core\Database\SQL\AbstractSQLTest;
 class LiteralExpressionTest extends AbstractSQLTest {
 
   /**
+   * Test a NULL literal expression.
+   */
+  public function testBuildNullNoAlias() {
+    $literal = new LiteralExpression( NULL );
+    $sql = $literal->build( $this->connection );
+
+    $this->assertEquals( 'NULL', $sql );
+  }
+
+  /**
    * Test a boolean false literal expression.
    */
   public function testBuildBooleanFalseNoAlias() {

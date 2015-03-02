@@ -20,6 +20,8 @@ namespace Substance\Core\Database\Schema;
 
 use Substance\Core\Alert\Alerts\UnsupportedOperationAlert;
 use Substance\Core\Alert\Culprit;
+use Substance\Core\Alert\Alert;
+use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 
 /**
  * A basic implementation of a column.
@@ -63,6 +65,9 @@ class ColumnImpl implements Column {
   public function __construct( Table $table, $name, Type $type, $default = NULL, $allows_null = TRUE ) {
     $this->allows_null = $allows_null;
     $this->default = $default;
+    // Use the literal value constructor to test if the default value is
+    // supported.
+    new LiteralExpression( $default );
     $this->name = $name;
     $this->table = $table;
     $this->type = $type;
