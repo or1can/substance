@@ -29,9 +29,6 @@ require dirname( __DIR__ ) . '/vendor/autoload.php';
 use Substance\Core\Alert\Alert;
 use Substance\Core\Bootstrap;
 use Substance\Core\Database\ConnectionFactory;
-use Substance\Core\Database\Schema\ColumnImpl;
-use Substance\Core\Database\Schema\Size;
-use Substance\Core\Database\Schema\Types\Integer;
 use Substance\Core\Module;
 
 // Bootstap the system.
