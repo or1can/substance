@@ -27,7 +27,7 @@ require dirname( __DIR__ ) . '/vendor/autoload.php';
 
 use Substance\Core\Alert\Alert;
 use Substance\Core\Bootstrap;
-use Substance\Core\Database\Connection;
+use Substance\Core\Database\ConnectionFactory;
 use Substance\Core\Module;
 
 // Bootstap the system.
@@ -39,13 +39,13 @@ $alert = Alert::alert('ahhhh')->culprit( 'who', 'me' );
 
 echo $alert;
 
-$connection = Connection::getConnection();
+$connection = ConnectionFactory::getConnection();
 
 var_dump( $connection );
 
 var_dump( $connection->listDatabases() );
 
-$database = $connection->getDatabase( 'mydb' );
+$database = $connection->getDatabase();
 
 var_dump( $database->listTables() );
 
