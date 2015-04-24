@@ -32,6 +32,7 @@ use Substance\Core\Database\ConnectionFactory;
 use Substance\Core\Module;
 use Substance\Core\Util\CommandLine\Option;
 use Substance\Core\Util\CommandLine\Options;
+use Substance\Core\Database\AbstractRecord;
 
 // Bootstap the system.
 Bootstrap::initialise();
@@ -56,5 +57,13 @@ $options = Options::getInstance();
 $option = $options->create( 'h', 'Show this help' );
 
 echo $options;
+
+class Table extends AbstractRecord {
+
+}
+
+$table = new Table();
+
+echo Table::select();
 
 throw $alert;

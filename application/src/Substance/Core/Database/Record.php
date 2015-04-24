@@ -38,14 +38,6 @@ interface Record {
   public function all();
 
   /**
-   * Constructs a new Record object and returns it without saving to the
-   * database.
-   *
-   * @return self
-  */
-  public function construct();
-
-  /**
    * Creates a new Record object, saves it to the database then returns it.
    *
    * @return self
