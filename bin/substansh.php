@@ -30,6 +30,8 @@ use Substance\Core\Alert\Alert;
 use Substance\Core\Bootstrap;
 use Substance\Core\Database\ConnectionFactory;
 use Substance\Core\Module;
+use Substance\Core\Util\CommandLine\Option;
+use Substance\Core\Util\CommandLine\Options;
 
 // Bootstap the system.
 Bootstrap::initialise();
@@ -49,5 +51,10 @@ var_dump( $connection->listDatabases() );
 $database = $connection->getDatabase();
 
 var_dump( $database->listTables() );
+
+$options = Options::getInstance();
+$option = $options->create( 'h', 'Show this help' );
+
+echo $options;
 
 throw $alert;
