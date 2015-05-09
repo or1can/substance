@@ -508,6 +508,7 @@ abstract class AbstractDatabase implements Database {
     } else {
       $table = new BasicTable( $this, $name );
       $this->queueDataDefinition( new CreateTable( $table ) );
+      $this->tables[ $name ] = $table;
       return $table;
     }
   }
@@ -517,6 +518,7 @@ abstract class AbstractDatabase implements Database {
    */
   public function dropTable( Table $table ) {
     $this->queueDataDefinition( new DropTable( $table->getName() ) );
+    unset( $this->tables[ $table->getName() ] );
     return $this;
   }
 
