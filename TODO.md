@@ -2,6 +2,8 @@ TODO
 ====
 
 * Database
+  * Record
+    * More AbstractRecord tests.
   * Schema
     * Use SCHEMA as the basis for MySQL multiple database support, as we can
       map this across SQLite and PostgreSQL in a consistent way.

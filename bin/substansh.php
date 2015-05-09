@@ -28,11 +28,11 @@ require dirname( __DIR__ ) . '/vendor/autoload.php';
 
 use Substance\Core\Alert\Alert;
 use Substance\Core\Bootstrap;
+use Substance\Core\Database\AbstractRecord;
 use Substance\Core\Database\ConnectionFactory;
 use Substance\Core\Module;
 use Substance\Core\Util\CommandLine\Option;
 use Substance\Core\Util\CommandLine\Options;
-use Substance\Core\Database\AbstractRecord;
 
 // Bootstap the system.
 Bootstrap::initialise();
@@ -64,6 +64,7 @@ class Table extends AbstractRecord {
 
 $table = new Table();
 
-echo Table::select();
+var_dump( $table->backingStoreExists() );
+echo "\n";
 
 throw $alert;

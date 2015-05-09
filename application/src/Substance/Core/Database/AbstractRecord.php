@@ -19,20 +19,62 @@
 namespace Substance\Core\Database;
 
 use Substance\Core\Alert\Alerts\UnsupportedOperationAlert;
+use Substance\Core\Database\SQL\Columns\AllColumns;
+use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
+use Substance\Core\Database\SQL\Expressions\EqualsExpression;
+use Substance\Core\Database\SQL\Expressions\FunctionExpression;
+use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Queries\Select;
+use Substance\Core\Database\Schema\Types\Integer;
 
 /**
- * Represents a database statement in Substance, which is an extension of the
- * core PHP PDOStatement class.
+ * An abstract implementation of Record, providing all the standard
+ * functionality.
+ *
+ * A concrete implementation simply needs to extend this and provide the
+ * implementation specific details.
  */
 abstract class AbstractRecord implements Record {
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Record::all()
    */
-  public function all() {
-    // FIXME
-    throw UnsupportedOperationAlert::unsupportedOperation();
+  public static function all() {
+    return self::select()->execute();
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Record::backingStoreCreate()
+   */
+  public static function backingStoreCreate() {
+    if ( !self::backingStoreExists() ) {
+      $table = self::backingStoreTableName();
+      $connection = ConnectionFactory::getConnection();
+      $database = $connection->getDatabase();
+      $table = $database->createTable( $table );
+      // FIXME - This should add the records columns, not example ones!
+      $table->addColumnByName( 'col1', new Integer() );
+    }
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Record::backingStoreExists()
+   */
+  public static function backingStoreExists() {
+    $table = self::backingStoreTableName();
+    $connection = ConnectionFactory::getConnection();
+    $database = $connection->getDatabase();
+    return $database->hasTableByName( $table );
+  }
+
+  /**
+   * Returns the name of the table in the backing store that is used to store
+   * this objects information.
+   */
+  public static function backingStoreTableName() {
+    $table = get_called_class();
+    $table = strtr( $table, '\\', '_' );
+    return $table;
   }
 
   /* (non-PHPdoc)
@@ -70,17 +112,41 @@ abstract class AbstractRecord implements Record {
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Record::find()
    */
-  public function find( array $conditions ) {
-    // FIXME
-    throw UnsupportedOperationAlert::unsupportedOperation();
+  public static function find( array $conditions = array() ) {
+    $select = self::select();
+    foreach ( $conditions as $column => $value ) {
+      $select->where(
+        new EqualsExpression(
+          new ColumnNameExpression( $column ),
+          new LiteralExpression( $value )
+        )
+      );
+    }
+    $select->limit( 1 );
+    $results = $select->execute();
+    // This is a little crude, but we want to return an instance of the current
+    // class here.
+    $result = $results->fetchObject( get_called_class() );
+    return $result === FALSE ? NULL : $result;
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Record::findAll()
    */
-  public function findAll( array $conditions ) {
-    // FIXME
-    throw UnsupportedOperationAlert::unsupportedOperation();
+  public static function findAll( array $conditions = array() ) {
+    $select = self::select();
+    foreach ( $conditions as $column => $value ) {
+      $select->where(
+        new EqualsExpression(
+          new ColumnNameExpression( $column ),
+          new LiteralExpression( $value )
+        )
+      );
+    }
+    // FIXME - The following statement does not know what kind of objects it
+    // should be generating. We need to pass the calling class through to the
+    // statement.
+    return $select->execute();
   }
 
   /* (non-PHPdoc)
@@ -127,25 +193,33 @@ abstract class AbstractRecord implements Record {
    * @see \Substance\Core\Database\Record::select()
    */
   public static function select() {
-    $table = get_called_class();
-    $table = strtr( $table, '\\', '_' );
-    return Select::select( $table );
+    $table = self::backingStoreTableName();
+    return Select::select( $table )->addColumn( new AllColumns() );
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Record::take()
    */
   public function take() {
-    // FIXME
-    throw UnsupportedOperationAlert::unsupportedOperation();
+    $results = self::select()
+      ->limit( 1 )
+      ->execute();
+    // This is a little crude, but we want to return an instance of the current
+    // class here.
+    return $results->fetchObject( get_called_class() );
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Record::takeSome()
    */
   public function takeSome( $limit ) {
-    // FIXME
-    throw UnsupportedOperationAlert::unsupportedOperation();
+    $results = self::select()
+      ->limit( $limit )
+      ->execute();
+    // FIXME - The following statement does not know what kind of objects it
+    // should be generating. We need to pass the calling class through to the
+    // statement.
+    return $results;
   }
 
   /* (non-PHPdoc)
