@@ -56,6 +56,25 @@ class UnconnectedDatabaseTest extends AbstractDatabaseTest {
     );
   }
 
+  /**
+   * Returns the expected values for the build function expression test.
+   *
+   * @return multitype:multitype:multitype:string multitype:number
+   * @see AbstractDatabaseTest::testBuildFunctionExpression()
+   */
+  public function getBuildFunctionExpressionValues() {
+    return array(
+      array(
+        array(
+          'FUNC()',
+          'FUNC( \'arg1\' )',
+          'FUNC( \'arg1\', 10 )',
+          'FUNC( \'string\', column1 )',
+        )
+      )
+    );
+  }
+
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Schema\AbstractDatabaseTest::getBuildSelectValues()
    */
