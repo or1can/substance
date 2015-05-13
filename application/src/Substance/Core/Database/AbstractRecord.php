@@ -113,6 +113,7 @@ abstract class AbstractRecord implements Record {
    * @see \Substance\Core\Database\Record::find()
    */
   public static function find( array $conditions = array() ) {
+    // Use SELECT query to find first matching record.
     $select = self::select();
     foreach ( $conditions as $column => $value ) {
       $select->where(
@@ -134,6 +135,7 @@ abstract class AbstractRecord implements Record {
    * @see \Substance\Core\Database\Record::findAll()
    */
   public static function findAll( array $conditions = array() ) {
+    // Use SELECT query to find all matching record.
     $select = self::select();
     foreach ( $conditions as $column => $value ) {
       $select->where(
@@ -193,6 +195,9 @@ abstract class AbstractRecord implements Record {
    * @see \Substance\Core\Database\Record::select()
    */
   public static function select() {
+    // Check backing store.
+    self::backingStoreCreate();
+    // Prepare SELECT query.
     $table = self::backingStoreTableName();
     return Select::select( $table )->addColumn( new AllColumns() );
   }
@@ -200,19 +205,15 @@ abstract class AbstractRecord implements Record {
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Record::take()
    */
-  public function take() {
-    $results = self::select()
-      ->limit( 1 )
-      ->execute();
-    // This is a little crude, but we want to return an instance of the current
-    // class here.
-    return $results->fetchObject( get_called_class() );
+  public static function take() {
+    // take() is a shorthand for find() with no conditions.
+    return self::find();
   }
 
   /* (non-PHPdoc)
    * @see \Substance\Core\Database\Record::takeSome()
    */
-  public function takeSome( $limit ) {
+  public static function takeSome( $limit ) {
     $results = self::select()
       ->limit( $limit )
       ->execute();

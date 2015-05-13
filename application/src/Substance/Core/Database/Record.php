@@ -179,7 +179,7 @@ interface Record {
    *
    * @return self
    */
-  public function take();
+  public static function take();
 
   /**
    * Returns the required number of record without any implicit ordering.
@@ -192,7 +192,7 @@ interface Record {
    *
    * @return Statement
    */
-  public function takeSome( $limit );
+  public static function takeSome( $limit );
 
   /**
    * Updates this record, saving changes to the database.
