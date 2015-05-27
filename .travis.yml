@@ -2,6 +2,9 @@ language: php
 php:
   - 5.3
   - 5.4
+install:
+  # Install required dependencies
+  - composer install
 before_script:
   - mysql -e "CREATE DATABASE IF NOT EXISTS mydb CHARACTER SET utf8 COLLATE utf8_general_ci;" --user=root
   - mysql -e "GRANT ALL ON mydb.* TO 'myuser'@'localhost' IDENTIFIED BY 'mypw';" --user=root
