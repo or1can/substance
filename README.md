@@ -9,6 +9,9 @@ framework can do and as a driver for the development of the framework.
 The framework is based on carefully chosen standards (which ideally *would
 not* include PHP as a base!).
 
+[![Build Status](https://travis-ci.org/or1can/substance.svg?branch=master)](https://travis-ci.org/or1can/substance)
+[![Dependency Status](https://www.versioneye.com/user/projects/55671aeb63653200268e1100/badge.svg?style=flat)](https://www.versioneye.com/user/projects/55671aeb63653200268e1100)
+
 Requirements
 ============
 
