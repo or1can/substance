@@ -18,6 +18,7 @@
 
 namespace Substance\Core\Database\SQL\Queries;
 
+use Substance\Core\Database\ConnectionFactory;
 use Substance\Core\Database\Schema\Database;
 use Substance\Core\Database\SQL\Column;
 use Substance\Core\Database\SQL\Columns\ColumnWithAlias;
@@ -191,7 +192,8 @@ class Select extends Query {
    * @see Database::getConnection()
    */
   public function execute( $type = 'master', $name = NULL ) {
-    $database = Database::getConnection( $type, $name );
+    $connection = ConnectionFactory::getConnection( $type, $name );
+    $database = $connection->getDatabase();
     $statement = $database->execute( $this );
     return $statement;
   }

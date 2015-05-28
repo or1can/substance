@@ -41,6 +41,7 @@ use Substance\Core\Database\SQL\DataDefinitionQueue;
 use Substance\Core\Database\SQL\DataDefinitions\CreateTable;
 use Substance\Core\Database\SQL\DataDefinitions\DropTable;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
+use Substance\Core\Database\SQL\Expressions\FunctionExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Expressions\NameExpression;
 use Substance\Core\Database\SQL\InfixExpression;
@@ -244,6 +245,26 @@ abstract class AbstractDatabase implements Database {
   public function buildFloat( Float $float ) {
     // For the default implementation, we ignore the float size.
     return 'FLOAT';
+  }
+
+  /* (non-PHPdoc)
+   * @see \Substance\Core\Database\Schema\Database::buildFunctionExpression()
+   */
+  public function buildFunctionExpression( FunctionExpression $function_expression ) {
+    $string = '';
+    $string .= $function_expression->getName();
+    $string .= '(';
+    $glue = ' ';
+    $terminator = '';
+    foreach ( $function_expression->getArguments() as $argument ) {
+      $string .= $glue;
+      $string .= $argument->build( $this );
+      $glue = ', ';
+      $terminator = ' ';
+    }
+    $string .= $terminator;
+    $string .= ')';
+    return $string;
   }
 
   /* (non-PHPdoc)
@@ -487,6 +508,7 @@ abstract class AbstractDatabase implements Database {
     } else {
       $table = new BasicTable( $this, $name );
       $this->queueDataDefinition( new CreateTable( $table ) );
+      $this->tables[ $name ] = $table;
       return $table;
     }
   }
@@ -496,6 +518,7 @@ abstract class AbstractDatabase implements Database {
    */
   public function dropTable( Table $table ) {
     $this->queueDataDefinition( new DropTable( $table->getName() ) );
+    unset( $this->tables[ $table->getName() ] );
     return $this;
   }
 

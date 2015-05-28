@@ -33,9 +33,21 @@ interface Record {
    *
    * Record->select()->execute()
    *
-   * @return \PDOStatement
+   * @return Statement
    */
-  public function all();
+  public static function all();
+
+  /**
+   * Creates the backing store for this record, if it does not already exist.
+   */
+  public static function backingStoreCreate();
+
+  /**
+   * Checks if the backing store for this record exists.
+   *
+   * @return bool TRUE if the backing store exists and FALSE otherwise.
+   */
+  public static function backingStoreExists();
 
   /**
    * Creates a new Record object, saves it to the database then returns it.
@@ -69,20 +81,21 @@ interface Record {
    *
    * @param array $conditions associative array of column-value pairs for the
    * record to find.
-   * @return self
+   * @return self an instance of self for the found record, or NULL if no record
+   * is found.
    */
-  public function find( array $conditions );
+  public static function find( array $conditions = array() );
 
   /**
-   * Returns a PDO statment for all records matching the specified conditions.
+   * Returns a Statment for all records matching the specified conditions.
    *
    * SELECT * FROM table WHERE ($conditions match)
    *
    * @param array $conditions associative array of column-value pairs for the
    * records to find.
-   * @return \PDOStatement
+   * @return Statement
    */
-  public function findAll( array $conditions );
+  public static function findAll( array $conditions = array() );
 
   /**
    * Returns the record with the specified primary key.
@@ -117,7 +130,7 @@ interface Record {
    *
    * Record->select()->orderBy( 'primary_key', 'ASC' )->limit( $limit )->execute()
    *
-   * @return \PDOStatement
+   * @return Statement
    */
   public function firstFew( $limit );
 
@@ -144,7 +157,7 @@ interface Record {
    *
    * Record->select()->orderBy( 'primary_key', 'DESC' )->limit( $limit )->execute()
    *
-   * @return \PDOStatement
+   * @return Statement
    */
   public function lastFew( $limit );
 
@@ -166,7 +179,7 @@ interface Record {
    *
    * @return self
    */
-  public function take();
+  public static function take();
 
   /**
    * Returns the required number of record without any implicit ordering.
@@ -177,9 +190,9 @@ interface Record {
    *
    * Record->select()->limit( $limit )->execute()
    *
-   * @return \PDOStatement
+   * @return Statement
    */
-  public function takeSome( $limit );
+  public static function takeSome( $limit );
 
   /**
    * Updates this record, saving changes to the database.

@@ -31,6 +31,7 @@ use Substance\Core\Database\Schema\Types\VarChar;
 use Substance\Core\Database\SQL\DataDefinitions\CreateTable;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
 use Substance\Core\Database\SQL\Expressions\EqualsExpression;
+use Substance\Core\Database\SQL\Expressions\FunctionExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Queries\Select;
 use Substance\Core\Database\SQL\DataDefinitions\DropTable;
@@ -81,6 +82,25 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
       array(
         array(
           'DROP TABLE "table"',
+        )
+      )
+    );
+  }
+
+  /**
+   * Returns the expected values for the build function expression test.
+   *
+   * @return multitype:multitype:multitype:string multitype:number
+   * @see AbstractDatabaseTest::testBuildFunctionExpression()
+   */
+  public function getBuildFunctionExpressionValues() {
+    return array(
+      array(
+        array(
+          'FUNC()',
+          'FUNC( \'arg1\' )',
+          'FUNC( \'arg1\', 10 )',
+          'FUNC( \'string\', `column1` )',
         )
       )
     );
@@ -192,6 +212,22 @@ abstract class AbstractDatabaseTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals( 'FLOAT', $this->database->buildFloat( $float ) );
     $float->setSize( Size::size( Size::BIG ) );
     $this->assertEquals( 'FLOAT', $this->database->buildFloat( $float ) );
+  }
+
+  /**
+   * Test building a function expression.
+   *
+   * @dataProvider getBuildFunctionExpressionValues
+   */
+  public function testBuildFunctionExpression( $expected_sql ) {
+    $function = new FunctionExpression('FUNC');
+    $this->assertEquals( $expected_sql[ 0 ], $this->database->buildFunctionExpression( $function ) );
+    $function->addArgument( new LiteralExpression('arg1') );
+    $this->assertEquals(  $expected_sql[ 1 ], $this->database->buildFunctionExpression( $function ) );
+    $function->addArgument( new LiteralExpression( 10 ) );
+    $this->assertEquals(  $expected_sql[ 2 ], $this->database->buildFunctionExpression( $function ) );
+    $function = new FunctionExpression( 'FUNC', new LiteralExpression('string'), new ColumnNameExpression('column1') );
+    $this->assertEquals(  $expected_sql[ 3 ], $this->database->buildFunctionExpression( $function ) );
   }
 
   /**

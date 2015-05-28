@@ -40,6 +40,7 @@ use Substance\Core\Database\SQL\DataDefinition;
 use Substance\Core\Database\SQL\DataDefinitions\CreateTable;
 use Substance\Core\Database\SQL\DataDefinitions\DropTable;
 use Substance\Core\Database\SQL\Expressions\ColumnNameExpression;
+use Substance\Core\Database\SQL\Expressions\FunctionExpression;
 use Substance\Core\Database\SQL\Expressions\LiteralExpression;
 use Substance\Core\Database\SQL\Expressions\NameExpression;
 use Substance\Core\Database\SQL\InfixExpression;
@@ -187,6 +188,14 @@ interface Database {
    * @return string the built Float.
    */
   public function buildFloat( Float $float );
+
+  /**
+   * Build the specified FunctionExpression object.
+   *
+   * @param FunctionExpression $function_expression the FunctionExpression to build.
+   * @return string the built FunctionExpression.
+   */
+  public function buildFunctionExpression( FunctionExpression $function_expression );
 
   /**
    * Build the specified InfixExpression object.
